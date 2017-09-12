@@ -1,3 +1,6 @@
+## My own ignores
+th.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
