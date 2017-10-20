@@ -1,0 +1,128 @@
+
+\include{snippet_preamble}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section{Coupled 1d-2d model}
+
+In ambient 3d space, induces point sources (0d-2d problem).
+  
+  Mixed form:
+  \begin{eqnarray}
+\vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,2  \\
+\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2\\
+\nabla \cdot \vc u_1 &=& f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\color{blue}\avg{\vc u_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
+p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
+\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
+  \end{eqnarray}
+  
+  
+  We shall use the following FE discrete spaces:
+  $\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf singular enrichment}\\
+  $p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
+  $\lambda_d$ (pressure head traces) - piecewise constant, $P_0$ on edges \\
+  \textcolor{blue}{$\lambda_w$ (pressure head traces) - piecewise constant, $P_0$ on $\Gamma_w$}
+  
+  
+  Mixed-Hybrid form (saddle point problem): 
+\begin{align}
+        \label{Saddle1}
+ a(\vc{u},\vc \psi) + b(\vc\psi, p) &= \langle G, \vc \psi\rangle &&\forall 
+\vc\psi\in V,\\
+        \label{Saddle2}
+ b(\vc{u}, \phi) - c(p,\phi) &= \langle F, \phi \rangle &&\forall \phi \in Q,
+\end{align}
+where bilinear forms on the left-hand side are
+\begin{align*}
+ a(\vc u, \vc \psi)=&\sum_{d=1,2}\sum_{i\in \mathcal T_d} \int_{T_d^i}
+   \frac{1}{\delta_d} \vc u_d \vc K_d^{-1} \vc \psi_d,\\
+%
+ b(\vc \psi, p)=&\sum_{d=1,2}\sum_{i\in \mathcal T_d} 
+        \left(
+        \int_{T_d^i} -p_d\, \div\,\vc \psi_d
+        +\int_{\prtl T_d^i}
+                 \lambda_d (\vc \psi_d \cdot \vc n)
+        \right) \\
+        &+\color{blue}{\int_{\Gamma_w}
+                 \lambda_w \avg{\vc \psi_2 \cdot \vc n}_w},\\
+%
+\color{blue}
+ c(p,\phi) =& \color{blue}
+          \int_{\Gamma_w}
+               \sigma_w(p_{1}-\lambda_w)(\phi_{1}-\mu_w),
+\end{align*}
+where $p=(p_d,\lambda_d, \lambda_w)$, $\phi=(\phi_d,\mu_d, \mu_w)$.
+
+In the Dirichlet problem (setting constant pressure in 1d and supposing only 2d mesh) we have $c(p,\phi)=0$.
+
+We use SGFEM like approach to enrich velocity.
+The enriched velocity has the form:
+\[\sum \limits_{w\in\mathcal{W}} b_w \vc L_w, \]
+where every well $w$ is enriched exactly by one DoF $b_w$.
+\[
+  \vc L_w(\vc x) = \textcolor{red}{\vc s_w(\vc x)} - \sum \limits_{j=1}^3 \textcolor{ForestGreen}{z_j} \vc\psi_j(\vc x),
+  \quad \textcolor{ForestGreen}{z_j=\int_{E_j} \vc s_w(\vc x)\cdot \vc n_j},
+  \quad \textcolor{red}{\vc s_w(\vc x) = -\frac{1}{2\pi} \frac{\vc r_w}{r_w^2}}
+\]
+
+Accurate integration on sides is needed to compute for coefficients $\color{ForestGreen}z_j$ of the $RT_0$ interpolation of $s_w$.
+    
+The local velocity enrichment function has the following important properties:
+  \begin{enumerate}[label=\alph*)]
+%     \setlength{\itemsep}{5pt}
+    \item
+      $\displaystyle \int_T \div\, \vc L_w = \begin{cases}
+        0 & \forall T, T \cap \Gamma_w = \emptyset \\
+        -\sum \limits_{j=1}^3 z_j, & \forall T, T \cap \Gamma_w \neq \emptyset
+    \end{cases}$
+    \item $\displaystyle \int_{E_i} \vc L_w \cdot \vc n_i = 0, \quad \int_{\Gamma_w} \vc \psi \cdot \vc n_w = 0$
+    \item $\displaystyle \int_{\Gamma_w} \vc L_w \cdot \vc n_w = 1$
+  \end{enumerate}
+
+\begin{equation}
+  \begin{pmatrix}
+     u_1 & u_2 & u_3 & b_w & p & \lambda & \lambda_w
+  \end{pmatrix}
+\end{equation}
+
+\section{Branch PE xfem innovations}
+
+\subsection{Output Mesh and quadrature refinement}
+The refinement of elements for the output mesh is done using edge splitting technique (so called red refinement).
+Since we use this only for better output visualization of non-polynomial solutions, we do not
+care for existence of hanging nodes.
+
+In 2D case, it is straightforward process: find the midpoints of all sides, connect them and generate 4 triangles.
+These triangles are congruent and have equal surface areas.
+
+On the other hand, the 3D case is more complicated. After splitting the edges, we obtain 4 tetrahedra at the vertices
+of the original one. The octahedron that remains in the middle can be subdivided according to one of its three diagonals.
+Only the choice of the shortest octahedron diagonal leads to a regular tetrahedra decomposition.
+This algorithm originally comes from Bey~\cite{}.
+
+% Bey's algorithm (red refinement of tetrahedron):
+%p.29 https://www5.in.tum.de/pub/Joshi2016_Thesis.pdf
+%p.108 http://www.bcamath.org/documentos_public/archivos/publicaciones/sergey_book.pdf
+%https://www.math.uci.edu/~chenlong/iFEM/doc/html/uniformrefine3doc.html#1
+%J. Bey. Simplicial grid refinement: on Freudenthal's algorithm and the optimal number of congruence classes. Numer. Math. 85(1):1--29, 2000. p11 Algorithm: RedRefinement3D.
+%p.4 http://www.vis.uni-stuttgart.de/uploads/tx_vispublications/vis97-grosso.pdf
+
+
+\subsection{SGFEM enrichment}
+The SGFEM enriched shape function on an element $T$ has the form
+\[
+  \vc L_w(\vc x) = \textcolor{red}{\vc s_w(\vc x)} - \sum \limits_{j=1}^{n_E} \textcolor{ForestGreen}{z_j} \vc\psi_j(\vc x),
+  \quad \textcolor{ForestGreen}{z_j=\int_{E_j} \vc s_w(\vc x)\cdot \vc n_j},
+  \quad \textcolor{red}{\vc s_w(\vc x) = -\frac{1}{D_T} \frac{\vc r_w}{r_w^2}},
+\]
+where $n_E$ is the number of sides in 2D, or faces in 3D, $z_j$ is the flux of the global enrichment function $\vc s_w$ over side or face $E_j$ of $T$
+and $D_T$ is the so called effective surface. $D_T$ is a portion of the surface of the singularity (circle $2\pi\rho_w$, cylinder $2\pi\rho_w v$)
+that communicates with the element $T$. This area is approximated using the quadrature points on the singularity surface belonging to $T$.
+
+The flux $z_j$ is computed using adaptive quadrature on sides and faces. The quadrature rules are analogical to the rules
+for adaptive quadrature in elements. These values are computed only once and saved in a vector for further usage (assembly, error computation, output).
+
+
+\end{document}

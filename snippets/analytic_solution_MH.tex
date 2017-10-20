@@ -1,0 +1,110 @@
+
+\include{snippet_preamble}
+
+\usepackage{array}  % tables
+
+\begin{document}
+
+
+\section{2d singular model}
+
+In ambient 3d space, consider 2d problem with point singularity where the pressure $P_w$ is given.
+  
+  Mixed form:
+  \begin{eqnarray}
+\vc K_2^{-1}\vc u_2 + \nabla p_2 &=& 0 \qquad \textrm{in } \Omega_2, \label{eqn:2d_darcy_law}\\
+\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2, \label{eqn:2d_continuity}\\
+\avg{\vc u_2 \cdot \vc n}_w &=& \sigma_w (\avg{p_2}_w - P_w) \qquad \textrm{on } \Gamma_w,\label{eqn:2d_well_cond}\\
+p_2 &=& g_{2D} \qquad \textrm{on } \Gamma_{2D}.
+  \end{eqnarray}
+  
+  \paragraph{Geometry:} well center at $\vc x_w=[x_w,y_w]$, domain of different shapes (square, triangle, circle) with characteristic length $D$, Dirichlet BC $g_{2D}$ on the whole boundary.
+  
+  \emph{Settings 1}: $\vc x_w=[3.33,3.33],\, P_w = 100,\, \rho_w=0.03,\, \sigma_w=10,\, \vc K_2=K_2=1,\, f_2=0,\, D=10.$
+  
+  \emph{Settings 2}: same, $f_2=KU\omega^2\sin(\omega x_w),\, U=20,\, \omega=1.$
+  
+  \paragraph{Analytic solution.} The pressure solution in Settings 1 is set in such form 
+  \begin{eqnarray}
+      p_2 &=& a\log r,\label{eqn:2d_press_sol1}\\
+      \vc u_2 &=& -\vc K_2 a \frac{\vc r}{r^2} \label{eqn:2d_vel_sol1}
+  \end{eqnarray} 
+  that it fulfills the condition \eqref{eqn:2d_well_cond} on the well edge
+  \[ -\vc K_2\nabla p_2(\rho_w) \cdot \vc n = K_2a\frac{1}{\rho_w} = \sigma_w(p_2(\rho_w) - P_w),\]
+  which results in setting
+  \[a=\frac{-\sigma_w\rho_w P_w}{K_2 - \sigma_w\rho_w\log r}\]
+  Logarithm is a harmonic function so it holds $\Delta \log(r) = 0$ and the equation in strong form is satisfied.
+  
+  Setting the nonzero source term $f_2$ in Settings 2, we obtain additional regular part of the solution
+  \begin{eqnarray}
+    p_2 &=& a\log r + U\sin(\omega x_w) \label{eqn:2d_press_sol2}\\
+    \vc u_2 &=& -\vc K_2\nabla p_2 = -K_2 a\frac{\vc r}{r^2} -K_2 U\omega\cos(\omega x_w)\vc e_x \label{eqn:2d_vel_sol2}
+  \end{eqnarray}
+  
+  With Settings 1, we can use these analytic values to observe error in our numerical model:
+  \begin{center}
+  \begin{tabular}{rl}
+    flux over $\Gamma_w$: & $\bar{b}_w \doteq 6.5628$ \\ % 6.5627733533
+    pressure $\avg{p}_w$: & $\bar{\lambda}_w \doteq 78.1241$ %78.1240888223
+  \end{tabular}
+  
+  \centering
+  \begin{tabular}{>{\centering\arraybackslash}p{4.5ex}|
+                    >{\centering\arraybackslash}p{8.3ex}|
+                    >{\centering\arraybackslash}p{9ex}|
+                    >{\centering\arraybackslash}p{12.5ex}
+                    >{\centering\arraybackslash}p{4ex}|
+                    >{\centering\arraybackslash}p{12.5ex}
+                    >{\centering\arraybackslash}p{4ex}}
+                    \multicolumn{5}{c}{$\;\;\;$ source $f=0$} & \multicolumn{2}{c}{\textcolor{OrangeRed}{source $f$}} \\
+    ref level  & $\abs{b_w-\bar{b}_w}$ & $\abs{\lambda_w - \bar{\lambda}_w}$ & $\norm{\vc u- \bar{\vc u}}_{L^2(\Omega)}$ & rate & $\norm{\vc u- \bar{\vc u}}_{L^2(\Omega)}$ & rate \\\hline
+    1  &  0.1000  &  0.0528  &  6.73  &  -   &  112.5  &  -   \\
+    2  &  0.1600  &  0.0871  &  2.96  & 1.18 &  46.1   & 1.29 \\
+    3  &  0.0290  &  0.0155  &  1.68  & 0.82 &  21.9   & 1.08 \\
+    4  &  0.0064  &  0.0034  &  0.94  & 0.84 &  10.6   & 1.05 \\
+    5  &  0.0027  &  0.0014  &  0.51  & 0.88 &  5.6    & 0.91 
+  \end{tabular}
+  \end{center}
+  
+  
+  \subsection{Multiple singularity solution}
+  Considering multiple singularities in the domain, denoted using index set $\mathcal{W}=i=1\ldots W$, we can obtain the solution using the superposition principle.
+  The solution is searched in the form
+  \begin{eqnarray}
+    p_2 &=& p_{sin} + p_{reg} = \sum\limits_{j\in\mathcal{W}} a_j\log r_j + p_{reg}, \label{eqn:2d_press_sol_mult}\\
+    \vc u_2 &=& -\vc K_2\nabla p_2 = -K_2 \sum\limits_{j\in\mathcal{W}} a_j\frac{\vc r_j}{r_j^2} - K_2 \grad p_{reg}, \label{eqn:2d_vel_mult}
+  \end{eqnarray}
+  which satisfies equations \eqref{eqn:2d_continuity} and \eqref{eqn:2d_darcy_law}.
+  To find the unknowns $a_j$, we need to solve the system of linear equations given by the conditions \eqref{eqn:2d_well_cond}
+  \begin{equation}
+    \avg{\vc u_2 \cdot \vc n}_{\Gamma_i} = \sigma_i (\avg{p_2}_{\Gamma_i} - P_i) \qquad  \forall i\in\mathcal{W}. \label{eqn:2d_well_cond_mult}
+  \end{equation}
+  For an average $\avg{\cdot}_{\Gamma_i}$, it holds $\avg{u+v}_{\Gamma_i} = \avg{u}_{\Gamma_i} + \avg{v}_{\Gamma_i}$.
+  Substituing \eqref{eqn:2d_press_sol_mult} and \eqref{eqn:2d_vel_mult} into \eqref{eqn:2d_well_cond_mult}, we get
+  the linear system $\vc M\vc a = \vc b$ where
+  \begin{eqnarray}
+    M_{ii} &=& \frac{K_2}{\rho_i} - \sigma_i\log\rho_i \qquad \forall i\in\mathcal{W},\\
+    M_{ij} &=& K_2\avg{\frac{\vc r_j \cdot \vc n_i}{r_j^2}}_{\Gamma_i} - \sigma_i\avg{\log r_j}_{\Gamma_i} \qquad \forall i,j\in\mathcal{W}, i\neq j,\\
+    b_{i} &=& \sigma_i\left(\avg{p_{reg}}_{\Gamma_i} - P_i \right) - \avg{- K_2 \grad p_{reg}\cdot n_i}_{\Gamma_i} \qquad \forall i\in\mathcal{W}.
+  \end{eqnarray}
+  We evaluate all the averages $\avg{\cdot}_{\Gamma_i}$ in the linear system numerically.
+  
+\section{Coupled 1d-2d model}
+
+In ambient 3d space, induces point sources (0d-2d problem).
+  
+  Mixed form:
+  \begin{eqnarray}
+\vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,2  \\
+\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2\\
+\nabla \cdot \vc u_1 &=& f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\color{blue}\avg{\vc u_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
+p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
+\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
+  \end{eqnarray}
+
+
+
+ \bibliographystyle{abbrv} 
+ \bibliography{../citace.bib}
+\end{document}
