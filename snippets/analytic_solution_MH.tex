@@ -87,7 +87,8 @@ p_2 &=& g_{2D} \qquad \textrm{on } \Gamma_{2D}.
     M_{ij} &=& K_2\avg{\frac{\vc r_j \cdot \vc n_i}{r_j^2}}_{\Gamma_i} - \sigma_i\avg{\log r_j}_{\Gamma_i} \qquad \forall i,j\in\mathcal{W}, i\neq j,\\
     b_{i} &=& \sigma_i\left(\avg{p_{reg}}_{\Gamma_i} - P_i \right) - \avg{- K_2 \grad p_{reg}\cdot n_i}_{\Gamma_i} \qquad \forall i\in\mathcal{W}.
   \end{eqnarray}
-  We evaluate all the averages $\avg{\cdot}_{\Gamma_i}$ in the linear system numerically.
+  We evaluate all the averages $\avg{\cdot}_{\Gamma_i}$ in the linear system numerically,
+  using simple composite midpoint rule integration with 1000 equidistant intervals on $\Gamma_i$ .
   
 \section{Coupled 1d-2d model}
 
