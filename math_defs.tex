@@ -62,10 +62,11 @@
 \def\dodt{\genfrac{}{}{}{}{\rm d}{{\rm d}t}}
 %
 \def\vc#1{\mathbf{\boldsymbol{#1}}}     % vector
-\def\bx{\mathbf{\boldsymbol{x}}}     % vector x
+\def\bx{\vc{x}}     % vector x
 \def\tn#1{{\mathbb{#1}}}    % tensor
-\def\abs#1{\lvert#1\rvert}
+\def\abs#1{\left|#1\right|}
 \def\Abs#1{\bigl\lvert#1\bigr\rvert}
+\def\avg#1{\langle#1\rangle}
 \def\bigabs#1{\bigl\lvert#1\bigr\rvert}
 \def\Bigabs#1{\Big\lvert#1\Big\rvert}
 \def\ABS#1{\left\lvert#1\right\rvert}
@@ -85,3 +86,8 @@
 \def\Names#1{{\scshape #1}}
 \def\rem#1{{\parskip=0cm\par!! {\sl\small #1} !!}}
 \def\vysl#1{\par$[$ #1 $]$}
+
+%math:
+% \def\d{\,\mathrm{d}}
+% \def\norm#1{\| #1 \|}
+\def\R{\mathbb{R}}

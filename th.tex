@@ -1,4 +1,4 @@
-\documentclass[FM,Dis]{tulthesis}
+\documentclass[dvipsnames,FM,Dis]{tulthesis}
 
 \usepackage[czech, english]{babel}
 \usepackage[utf8]{inputenc}
@@ -38,6 +38,12 @@
 \TULauthor{Ing. Pavel Exner}
 \TULsupervisor{Mgr. Jan B{\v r}ezina, Ph.D.}
 \TULyear{}
+
+
+% just for our notes
+% \usepackage[usenames,dvipsnames]{color}   %colors
+\newcommand{\noteJB}[1]{{\color{Blue} \textbf{JB: } \textit{#1}}}
+\newcommand{\notePE}[1]{{\color{Orange} \textbf{PE: } \textit{#1}}}
 
 %
 %*************************************************************************************************************
@@ -184,6 +190,77 @@ of different dimensions using Pl{\"u}cker coordinates.
 
 Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
 The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the literature.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Aims of the Thesis}\label{chap:aims}
+% define aims, characterize and briefly explain solution
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The research aims of the thesis can be summarized in two major points
+\begin{itemize}
+  \item Propose suitable enrichments for the pressure and the velocity that are stable (satisfy inf-sup condition). 
+        If possible, emphasise a~good approximation of the velocity field which is necessary for the transport equation.
+        
+  \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
+\end{itemize}
+
+\section{Research aims}
+
+The following types of enrichments can be considered: wells (point source in 2D, line source in 3D), 
+fractures (discontinuity in velocity), boundary of 1D and 2D fractures. 
+To narrow the ambitious plan, we will focus on the enrichment for 0D-2D and 1D-3D interactions.
+
+The model with the mixed-hybrid formulation as in \cite{brezina_mixed-hybrid_2010, sistek_bddc_2015} will be followed.
+The enrichment will be chosen and incorporated in the formulation so that the singularities in 0D-2D and
+1D-3D are better approximated and incompatible meshes can be used. 
+We shall start by enriching the pressure field with a~logarithmic function like we
+do in Section \ref{sec:model_aquifer} and investigate the consequences in the mixed and mixed-hybrid formulation.
+
+Secondly the velocity field will be enriched. We will look for a~proper vectorial enrichment functions.
+The accuracy of the velocity field, in particular the flow across the elements edges, is very important for
+the transport equation which is in the main focus in most of the applications.
+
+In a consequence of the enrichment, the discrete spaces will be extended. The influence of the enrichment on the inf-sup 
+condition will be investigated and the proof of stability for the enriched formulation should be provided.
+The aim is to understand the stability condition good enough so that some constraints on the choice of the enrichment 
+functions can be defined. 
+
+The realization of the model in the means of code implementation will require several non-standard techniques.
+Efficient data structure must be provided for the enrichment implementation in finite element classes.
+The intersections of the mesh domains of different dimensions must be computed. A specialized integration
+on the intersected elements is needed to assembly the integrals in the system matrix. 
+Solving the final linear algebraic system will require an efficient numerical method.
+Each of these sub-problems is not trivial and requires a new approach or at least extending the existing one.
+The steps of the realization are summarized below in Section \ref{sec:realization}.
+
+\section{Realization} \label{sec:realization}
+The suggested numerical model will be implemented and tested in the software Flow123d.
+The following upgrades and changes are to be considered.
+
+The enrichment functions need to be defined and support for the enrichment in the finite element classes must be implemented. 
+A class that handles the degrees of freedom must be then updated to include the additional enriched degrees of freedom
+and the structure of the linear system must be reorganized accordingly.
+
+The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
+of different dimensions is now being finished (see Section \ref{sec:elements_intersections}). The enrichment will propagate from the intersected 3D elements.
+The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
+near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
+the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
+a~constant parameter.
+
+Then the assembly routines of the enriched terms into the linear system must be provided.
+Since the enrichment function would not be polynomial, accurate integration on the enriched elements is required. 
+The adaptive elements sub-refinement approach can be used to obtain more precise quadrature, 
+or quadrature points defined in cylindrical coordinate system in the vicinity of 1D elements intersections
+might be suitable in this case.
+
+Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
+can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
 
 
 
@@ -356,6 +433,7 @@ investigated by K{\" o}ppl in\cite{koppl_tum_2015}.
 
 
 \section{Flow123d} \label{sec:soa_flow123d}
+
 The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
 is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
 developed as an open source code under the versioning system Git where the eponymous project can be found, or 
@@ -366,7 +444,14 @@ one can find it on the web page
 It has been developed at the Technical University of Liberec approximately since 2007.
 The main feature of the software is a computation on complex compatible meshes of combined dimensions, described in
 previous section. Therefore, the continuum models and discrete fracture network models can be combined.
-
+%
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
+  \caption{Flow balance in the well.}
+  \label{fig:logo_flow123d}
+\end{figure}
+%
 Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
 and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
 Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
@@ -381,78 +466,19 @@ Section \ref{chap:aims}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Aims of the Thesis}\label{chap:aims}
-% define aims, characterize and briefly explain solution
+\chapter{Model Formulation} \label{chap:results}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The research aims of the thesis can be summarized in two major points
-\begin{itemize}
-  \item Propose suitable enrichments for the pressure and the velocity that are stable (satisfy inf-sup condition). 
-        If possible, emphasise a~good approximation of the velocity field which is necessary for the transport equation.
-        
-  \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
-\end{itemize}
-
-\section{Research aims}
-
-The following types of enrichments can be considered: wells (point source in 2D, line source in 3D), 
-fractures (discontinuity in velocity), boundary of 1D and 2D fractures. 
-To narrow the ambitious plan, we will focus on the enrichment for 0D-2D and 1D-3D interactions.
-
-The model with the mixed-hybrid formulation as in \cite{brezina_mixed-hybrid_2010, sistek_bddc_2015} will be followed.
-The enrichment will be chosen and incorporated in the formulation so that the singularities in 0D-2D and
-1D-3D are better approximated and incompatible meshes can be used. 
-We shall start by enriching the pressure field with a~logarithmic function like we
-do in Section \ref{sec:model_aquifer} and investigate the consequences in the mixed and mixed-hybrid formulation.
-
-Secondly the velocity field will be enriched. We will look for a~proper vectorial enrichment functions.
-The accuracy of the velocity field, in particular the flow across the elements edges, is very important for
-the transport equation which is in the main focus in most of the applications.
-
-In a consequence of the enrichment, the discrete spaces will be extended. The influence of the enrichment on the inf-sup 
-condition will be investigated and the proof of stability for the enriched formulation should be provided.
-The aim is to understand the stability condition good enough so that some constraints on the choice of the enrichment 
-functions can be defined. 
-
-The realization of the model in the means of code implementation will require several non-standard techniques.
-Efficient data structure must be provided for the enrichment implementation in finite element classes.
-The intersections of the mesh domains of different dimensions must be computed. A specialized integration
-on the intersected elements is needed to assembly the integrals in the system matrix. 
-Solving the final linear algebraic system will require an efficient numerical method.
-Each of these sub-problems is not trivial and requires a new approach or at least extending the existing one.
-The steps of the realization are summarized below in Section \ref{sec:realization}.
-
-\section{Realization} \label{sec:realization}
-The suggested numerical model will be implemented and tested in the software Flow123d.
-The following upgrades and changes are to be considered.
-
-The enrichment functions need to be defined and support for the enrichment in the finite element classes must be implemented. 
-A class that handles the degrees of freedom must be then updated to include the additional enriched degrees of freedom
-and the structure of the linear system must be reorganized accordingly.
-
-The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
-of different dimensions is now being finished (see Section \ref{sec:elements_intersections}). The enrichment will propagate from the intersected 3D elements.
-The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
-near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
-the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
-a~constant parameter.
-
-Then the assembly routines of the enriched terms into the linear system must be provided.
-Since the enrichment function would not be polynomial, accurate integration on the enriched elements is required. 
-The adaptive elements sub-refinement approach can be used to obtain more precise quadrature, 
-or quadrature points defined in cylindrical coordinate system in the vicinity of 1D elements intersections
-might be suitable in this case.
-
-Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
-can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
+\input th-model.tex
 
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Achieved Results} \label{chap:results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 In this chapter, we shall describe the work that has already been done. First part (Section \ref{sec:model_aquifer}) 
 is regarding a~model of a~well-aquifer system where the XFEM is applied to resolve a~point singularity in 2D domain. 
 The second part (Section \ref{sec:elements_intersections}) is aimed at a~geometrical problem of finding 

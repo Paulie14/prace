@@ -1,0 +1,484 @@
+
+% \include{snippet_preamble}
+% \usepackage{enumitem}
+
+
+\section{Mixed Dirichlet Problem}
+
+Mixed form:
+\begin{eqnarray}
+    \vc K^{-1} \vc u + \nabla p &=& 0 \qquad \textrm{in } \Omega, \label{eqn:mixed_form_1}\\
+    \nabla \cdot \vc u &=& f \qquad \textrm{in } \Omega, \label{eqn:mixed_form_2}\\
+    \avg{\vc u \cdot \vc n}_w &=& \sigma_w (\avg{p}_w - P) \qquad \textrm{on } \Gamma_w, \label{eqn:mixed_form_3}\\
+    p &=& g_{D} \qquad \textrm{on } \Gamma_{D} \label{eqn:mixed_form_4}.
+\end{eqnarray}
+  
+The boundary consists of $\prtl\Omega=\Gamma_D \cup \Gamma_w$. The derivation of the weak form follows
+\begin{align}
+    \int_\Omega \vc u \vc K^{-1} \vc v
+    + \int_{\prtl\Omega} p \,(\vc v \cdot \vc n)
+    - \int_\Omega p\,\div\, \vc v &= 0 && \forall \vc v\in V, \label{eqn:mixed_weak_1}\\
+    - \int_\Omega q\,\div\, \vc u &= - \int_\Omega fq &&  \forall q\in Q, \label{eqn:mixed_weak_2}
+\end{align}
+with spaces $V,Q$ defined below.
+To apply the given boundary condition on $\Gamma_w$ we define
+the following decomposition of the normal flux into average and fluctuating parts
+\notePE{(according to MOX-Report No. 36/2017
+Mathematical modelling, analysis and numerical approximation of second order elliptic problems with inclusions,
+Koeppl, T.; Vodotto, E.; Wohlmuth, B.; Zunino, P.)}
+\begin{equation}
+    \vc v\cdot\vc n = \avg{\vc v\cdot \vc n}_w + \{\vc v\cdot \vc n\}_w \quad \textrm{on } \Gamma_w,
+\end{equation}
+where
+\begin{eqnarray}
+    \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
+    \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
+\end{eqnarray}
+Next we suppose the fluctuation part to be negligible $\{\vc v\cdot \vc n\}_w \approx 0$
+(in the real situation the well radius is considered very small and the pressure, and so the flux,
+is considered nearly constant around the well edge).
+We then have
+\begin{equation}
+    \int_{\Gamma_w} p \,(\vc v \cdot \vc n) = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n} 
+    = \avg{p}_w \avg{\vc v \cdot \vc n}_w \abs{\Gamma_w}
+\end{equation}
+Using
+\begin{equation}
+    \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P
+\end{equation}
+from \eqref{eqn:mixed_form_3} and substituing for the boundary integral in \eqref{eqn:mixed_weak_1},
+we obtain the saddle point weak form
+\begin{align}
+    a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle &&
+        \forall \vc v\in V = H(\div,\Omega), \label{eqn:mixed_saddle1}\\
+    b(\vc{u}, q) &= \langle F, q \rangle &&\forall q \in Q=L^2(\Omega)
+        \label{eqn:mixed_saddle2},
+\end{align}
+with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
+\begin{align*}
+ a(\vc u, \vc v)=& \int_\Omega \vc u \vc K^{-1} \vc v
+                   + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
+%
+ b(\vc v, p)=& - \int_\Omega p \div\, \vc v,\\
+%
+ \langle G, \vc v\rangle =&
+        -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P\avg{\vc v\cdot\vc n} \abs{\Gamma_w},\\
+ \langle F, q\rangle =& - \int_{\Omega} f q.
+\end{align*}
+The bilinear form $a,b$ are continuous
+\begin{multline}
+    a(\vc u,\vc v) \leq \norm{\vc K^{-1}}_{L_\infty(\Omega)} \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+        + \abs{\sigma_w} \abs{\Gamma_w} \avg{\vc u\cdot\vc n} \avg{\vc v\cdot\vc n}\\
+        \leq \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,
+\end{multline}
+\notePE{I don't understand the last step of Theorem 90 proof, p.103, 'numpde.pdf' to bound the average terms.}
+\begin{multline}
+    b(\vc v,p) \leq \norm{p}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}
+        \leq \norm{p}_{L_2(\Omega)} \norm{v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V. \\
+\end{multline}
+
+The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v: b(v,q)=0\;\forall q\in Q\}$
+\begin{multline}
+    a(\vc v,\vc v) \geq \inf_{x\in\Omega}\lambda_{\min}(\vc K^{-1}) \norm{\vc v}^2_{L_2(\Omega)}
+                + \sigma_w^{-1}\abs{\Gamma_w}\avg{\vc v\cdot\vc n}^2 \\
+        \geq  \alpha_1 \norm{\vc v}^2_{L_2(\Omega)} = \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
+\end{multline}
+with $\alpha_1=\inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1})$ and having the average term greater than zero.
+
+The LBB condition holds
+\begin{equation}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
+\end{equation}
+To proove it, we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
+We solve the artificial Poisson problem $-\Delta\varphi = q$ with Dirichlet boundary condition $\varphi = 0$ on $\prtl\Omega$. We have from the ellipticity of the artificial problem
+\begin{equation}
+    \norm{\grad\varphi}_{L_2(\Omega)} \leq \norm{\varphi}_{H^1(\Omega)}
+        \leq C_F^2 \norm{q}_{L_2(\Omega)},
+\end{equation}
+with $C_F(\Omega,\prtl\Omega)$ from Friedrich's inequality. Next we set $\vc v = -\grad \varphi$, and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
+\begin{equation}
+    \norm{\vc v}^2_{H(\div,\Omega)} = \norm{\vc v}^2_{L_2(\Omega)} 
+        + \norm{\div\,\vc v}^2_{L_2(\Omega)}
+        \leq (1+C_F^4) \norm{q}^2_{L_2(\Omega)}.
+\end{equation}
+Using it in the LBB condition, we obtain
+\begin{equation}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} =
+    \sup_{\vc v\in V} \frac{\norm{q}^2_{L_2(\Omega)}}{\norm{\vc v}_{H(\div,\Omega)}}
+    \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)}.
+\end{equation}
+\notePE{There is also some lemma in Brezzi, which says: if B is surjective (and $\div$ is) then the LBB condition holds.}
+
+The bilinear forms $a,b$ then define the operators
+\begin{eqnarray}
+A:& V \rightarrow V',\\ 
+B:& V \rightarrow Q',\\
+B^T:& Q \rightarrow V,'
+\end{eqnarray}
+and the problem can be rewritten in
+\begin{align}
+ A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:saddle3} \\
+ B\vc u &= F  \;\textrm{  in } Q'. \label{eqn:saddle4}
+\end{align}
+
+
+\paragraph{Discretization.}
+The pressure space $Q_h=\{q: q|_T\in \mathbb{P}^0\}$ consists of piecewise constant functions.
+Next we use the standard Raviart-Thomas shape functions space
+\begin{equation}
+    \mathbb{RT}^0(T) = \{\vc\psi_j\}_j^{nE}
+\end{equation}
+with the side fluxes defining its degrees of freedom
+\begin{equation}
+    \int_{E_i} \vc\psi_j \cdot \vc n \dd s = \delta_{ij}.
+\end{equation}
+At first, we suppose the simpler case when the well cross section is
+inside the elements $T\cap\Gamma_w = \Gamma_w$ in 2d case.
+This means the edges are not cut by the well edge.
+We define the interpolation operator into $\mathbb{RT}^0(T)$ space
+\begin{equation}
+    \pi^{RT}_T\vc v = \sum_{j=1}^{nE} \left( \int_{E_j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j, \label{eqn:local_rt_interpolator}
+\end{equation}
+which satisfies
+\begin{align}
+b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \quad \forall q\in Q_h\\ 
+\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \quad \textrm{since } q|_T\in \mathbb{P}^0.
+\end{align}
+
+% \begin{eqnarray}
+%     V_T = \mathbb{RT}^0(T) &=& \{\vc\psi_j\}_j^{nE}\\
+%     V_h &=& \{\vc v: \vc v|_T\in V_T,\; \}\\
+% \end{eqnarray}
+
+We now introduce SGFEM like enrichment for the velocity.
+The global enrichment function is
+\begin{equation}
+    \vc s_w(\vc x) = -\frac{1}{S_e} \frac{\vc r_w}{r_w^2} \label{eqn:global_enr_vel},
+\end{equation}
+where $S_e$ is the so called effective surface
+\[
+S_e = \begin{cases}2\pi\rho_w, \qquad \textrm{in 2d (circle)}, \\ 2\pi\rho_w v \qquad \textrm{in 3d (cylinder of length }v).\end{cases}
+\]
+The global enrichment functions have these flux properties
+\begin{align}
+    \int_{\prtl T} \vc s_w\cdot\vc n \dd s = - \int_T \div\,\vc s_w \dd\vc x = \nonumber\\
+    = \begin{cases}
+        \sum \limits_{j=1}^{n_E} \int_{E_j} \vc s_w\cdot\vc n \dd s = 0
+            & \quad T \cap \Gamma_w=\emptyset, \\
+        \sum \limits_{j=1}^{n_E} \int_{E_j} \vc s_w\cdot\vc n \dd s = 
+            - \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s
+            &\quad T \cap \Gamma_w=\Gamma_w, \\
+        \sum \limits_{j=1}^{n_E} \int_{E_j\setminus B_w} \vc s_w\cdot\vc n \dd s 
+        = - \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s &\quad T \cap \Gamma_w\subset\Gamma_w. \\
+    \end{cases}
+\end{align}
+
+The local enrichment functions have a form
+\begin{equation}
+    \vc L_{iw}(\vc x) = N_i(\vc x)\vc s_w(\vc x) - \sum \limits_{j=1}^{n_E} \textcolor{ForestGreen}{z^{iw}_j} \vc\psi_j(\vc x),
+  \quad \textcolor{ForestGreen}{z^{iw}_j=\int_{E_j} N_i (\vc s_w\cdot \vc n)\dd s} \label{eqn:local_enr_vel},
+\end{equation}
+and the following divergence properties
+\begin{equation}
+    \div\,\vc L_{iw} = \grad N_i \cdot \vc s_w - \sum \limits_{j=1}^{n_E} z^{iw}_j \div\,\vc\psi_j
+    \label{eqn:local_enr_vel_div},
+\end{equation}
+\begin{equation}
+    \sum \limits_{i=1}^{n_N} \div\,\vc L_{iw} = - \sum \limits_{j=1}^{n_E} \div\,\vc\psi_j \int_{E_j} \vc s_w\cdot\vc n \dd s
+    \label{eqn:local_enr_vel_sum_div},
+\end{equation}
+and following flux properties
+\begin{align}
+    \int_{E_k} \vc L_{iw}\cdot\vc n \dd s = \int_{E_k} N_i \vc s_w\cdot\vc n \dd s
+        - \sum \limits_{j=1}^{n_E} z^{iw}_j \int_{E_k} \vc\psi_j \cdot \vc n \dd s \nonumber\\
+    = \int_{E_k} N_i \vc s_w\cdot\vc n \dd s - z^{iw}_k = 0
+    \label{eqn:local_enr_vel_normal},
+\end{align}
+\begin{align}
+    \int_{T} \sum \limits_{i=1}^{n_E} \div\,\vc L_{iw}\dd\vc x =
+        - \sum \limits_{j=1}^{n_E} \int_{E_j} \vc s_w\cdot\vc n \dd s
+        \int_T \div\,\vc\psi_j \dd \vc x \nonumber\\
+    = \begin{cases}
+        0 & \quad T \cap \Gamma_w=\emptyset, \\
+        \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s &\quad T \cap \Gamma_w=\Gamma_w \\
+        \end{cases}
+    \label{eqn:local_enr_vel_int_sum_div},
+\end{align}
+since for $\mathbb{RT}^0(T)$ functions it holds
+\begin{align}
+    -\int_{T} \div\,\vc\psi_{j}\dd\vc x
+    = \int_{\prtl T} \vc\psi_{j}\cdot\vc n \dd s
+    = \int_{E_j\setminus B_w} \vc\psi_j\cdot\vc n \dd s
+      +\int_{\Gamma_w\cap T} \vc\psi_j\cdot\vc n \dd s \\
+    = \begin{cases}
+        1 & \quad T \cap \Gamma_w=\emptyset, \\
+        1 & \quad T \cap \Gamma_w=\Gamma_w, \\
+        \int_{E_j\setminus B_w} \vc\psi_j\cdot\vc n \dd s
+            +\int_{\Gamma_w\cap T} \vc\psi_j\cdot\vc n \dd s
+            &\quad T \cap \Gamma_w\subset\Gamma_w. \\
+        \end{cases}
+    \label{eqn:local_reg_vel_int_div}
+\end{align}
+
+The enriched velocity has the form:
+\[
+    \vc u = 
+    \sum \limits_{i\in\mathcal{I}} a_i \vc \psi_i + 
+    \sum \limits_{w\in\mathcal{W}} \sum \limits_{i\in\mathcal{I}_w} b_{iw} \vc L_{iw},
+\]
+where every well $w$ enriches all nodes in index set $\mathcal{I}_w$.
+
+\notePE{Below following the proof in 'numpde.pdf' from page 108, 'Brezzi' p.42}
+\paragraph{Coercivity of $a$ on $V_{0h}=\ker B_h$.}
+Since we enriched space $V_h$, we no longer have $\div\,V_{h}\subset Q_h$
+($\div\,V_{h}$ is not the space of piecewise constant functions anymore).
+Therefore the simple restriction $V_{0h}\not\subset V_0$ does not hold and 
+we need to check the coercivity
+\[a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in V_{0h}\].
+
+\notePE{
+    Instead it might be sufficient to proove one of the weaker conditions:
+    \begin{eqnarray}
+    \inf_{\vc u_h\in V_{0h}}\sup_{\vc v_h\in V_{0h}}
+        \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
+    \geq \alpha_{1h}, \\
+    \inf_{\vc v_h\in V_{0h}}\sup_{\vc u_h\in V_{0h}}
+        \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
+    \geq \alpha'_{1h},
+    \end{eqnarray}
+    (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
+}
+
+\paragraph{Discrete LBB condition.}
+According to Lemma 99 ('numpde.pdf'), if there exists an interpolation operator
+$\pi_h: V\rightarrow V_h$ which is continuous and satisfies
+\begin{equation}
+    b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
+\end{equation}
+then the LBB condition holds.
+For standard space choice $\mathbb{RT}^0\times\mathbb{P}^0$ we define
+the operator 
+\begin{equation}
+    (\pi^{RT}_h \vc v)|_T = \pi^{RT}_T \vc v
+\end{equation}
+using the local interpolation operator from \eqref{eqn:local_rt_interpolator}.
+This operator is not continuous on $V=H(\div,\Omega)$ but on
+smaller space we have
+\begin{equation}
+    \norm{\pi^{RT}_h \vc v}_V \leq C_\pi \norm{\vc v}_W \qquad \forall \vc v\in W=[H^1(\Omega)]^d
+\end{equation}
+and
+\begin{equation}
+    \sup_{\vc v\in W} \frac{(\div\,\vc v, q)}{\norm{\vc v}_W} \geq \tilde{k}_0 \norm{q}_Q \qquad \forall q\in Q.
+\end{equation}
+Using this we obtain for all $q_h\in Q_h$
+\begin{align}
+    \sup_{\vc v_h\in V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
+    \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div (\pi^{RT}_h \vc v_h)}{\norm{\pi^{RT}_h \vc v}_V} \geq
+    \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W}
+    \nonumber\\ \geq \frac{\tilde{k}_0}{C_\pi}\norm{q_h}_Q
+\end{align}
+
+
+
+
+\section{Coupled 1d-2d model (Mixed Hybrid model)}
+
+In ambient 3d space, induces point sources (0d-2d problem).
+  
+  Mixed form:
+  \begin{eqnarray}
+\vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,2  \\
+\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2\\
+\nabla \cdot \vc u_1 &=& f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\color{blue}\avg{\vc u_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
+p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
+\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
+  \end{eqnarray}
+  
+  
+  We shall use the following FE discrete spaces:
+  $\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf singular enrichment}\\
+  $p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
+  $\lambda_d$ (pressure head traces) - piecewise constant, $P_0$ on edges \\
+  \textcolor{blue}{$\lambda_w$ (pressure head traces) - piecewise constant, $P_0$ on $\Gamma_w$}
+  
+  
+  Mixed-Hybrid form (saddle point problem): 
+\begin{align}
+        \label{Saddle1}
+ a(\vc{u},\vc \psi) + b(\vc\psi, p) &= \langle G, \vc \psi\rangle &&\forall 
+\vc\psi\in V,\\
+        \label{Saddle2}
+ b(\vc{u}, \phi) - c(p,\phi) &= \langle F, \phi \rangle &&\forall \phi \in Q,
+\end{align}
+where bilinear forms on the left-hand side are
+\begin{align*}
+ a(\vc u, \vc \psi)=&\sum_{d=1,2}\sum_{i\in \mathcal T_d} \int_{T_d^i}
+   \frac{1}{\delta_d} \vc u_d \vc K_d^{-1} \vc \psi_d,\\
+%
+ b(\vc \psi, p)=&\sum_{d=1,2}\sum_{i\in \mathcal T_d} 
+        \left(
+        \int_{T_d^i} -p_d\div\,\vc \psi_d
+        +\int_{\prtl T_d^i\setminus \prtl\Omega}
+                 \lambda_d (\vc \psi_d \cdot \vc n)
+        \right) \\
+%         &\color{blue}{
+%                  + \lambda_w \avg{\vc \psi_2 \cdot \vc n}_w \abs{\Gamma_w}},\\
+        &\color{blue}{
+            + \int_{\Gamma_w} \lambda_w \avg{\vc \psi_2 \cdot \vc n}_w},\\
+%
+\color{blue}
+ c(p,\phi) =& \color{blue}
+          \int_{\Gamma_w}
+               \sigma_w(p_{1}-\lambda_w)(\phi_{1}-\mu_w),\\
+ \langle G, \vc \psi\rangle =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
+        \int_{\prtl T_d^i\cap \prtl\Omega}
+                 - g_{dD} (\vc \psi_d \cdot \vc n),\\
+ \langle F, \vc \phi\rangle =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
+        \int_{T_d^i} - f_d \phi_d,
+\end{align*}
+where $p=(p_d,\lambda_d, \lambda_w)$, $\phi=(\phi_d,\mu_d, \mu_w)$.
+
+In the Dirichlet problem (setting constant pressure $P_w$ in 1d and supposing only 2d mesh) we replace
+\begin{align*}
+\color{blue}
+c(p,\phi) =& \color{blue} \sigma_w\lambda_w\mu_w\abs{\Gamma_w} \\
+\langle F, \vc \phi\rangle =& \sum_{i\in \mathcal T_2}
+        \left(\int_{T_2^i} - f_2 \phi_2\right) \color{blue} -{\int_{\Gamma_w}\sigma_w P_w \mu_w}
+\end{align*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% \begin{equation}
+%   \begin{pmatrix}
+%      u_1 & u_2 & u_3 & b_w & p & \lambda & \lambda_w
+%   \end{pmatrix}
+% \end{equation}
+
+% \section{Branch PE xfem innovations}
+% 
+% \subsection{Output Mesh and quadrature refinement}
+% The refinement of elements for the output mesh is done using edge splitting technique (so called red refinement).
+% Since we use this only for better output visualization of non-polynomial solutions, we do not
+% care for existence of hanging nodes.
+% 
+% In 2D case, it is straightforward process: find the midpoints of all sides, connect them and generate 4 triangles.
+% These triangles are congruent and have equal surface areas.
+% 
+% On the other hand, the 3D case is more complicated. After splitting the edges, we obtain 4 tetrahedra at the vertices
+% of the original one. The octahedron that remains in the middle can be subdivided according to one of its three diagonals.
+% Only the choice of the shortest octahedron diagonal leads to a regular tetrahedra decomposition.
+% This algorithm originally comes from Bey~\cite{}.
+
+% Bey's algorithm (red refinement of tetrahedron):
+%p.29 https://www5.in.tum.de/pub/Joshi2016_Thesis.pdf
+%p.108 http://www.bcamath.org/documentos_public/archivos/publicaciones/sergey_book.pdf
+%https://www.math.uci.edu/~chenlong/iFEM/doc/html/uniformrefine3doc.html#1
+%J. Bey. Simplicial grid refinement: on Freudenthal's algorithm and the optimal number of congruence classes. Numer. Math. 85(1):1--29, 2000. p11 Algorithm: RedRefinement3D.
+%p.4 http://www.vis.uni-stuttgart.de/uploads/tx_vispublications/vis97-grosso.pdf
+
+
+\subsection{Coupled 1d-3d model}
+Mixed form:
+  \begin{eqnarray*}
+\vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,3  \\
+\nabla \cdot \vc u_3 &=& f_3 \qquad \textrm{in } \Omega_3\\
+\nabla \cdot \vc u_1 &=& f_1 + {\color{blue}\sigma_w(\avg{p_3}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\color{blue}\avg{\vc u_3 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_3}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
+p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,3 \\
+\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,3
+  \end{eqnarray*}
+  
+% \subsection{SGFEM enrichment (single enrichment)}
+% We use SGFEM like approach to enrich velocity.
+% The enriched velocity has the form:
+% \[\sum \limits_{w\in\mathcal{W}} b_w \vc L_w, \]
+% where every well $w$ is enriched exactly by one DoF $b_w$.
+% % \[
+% %   \vc L_w(\vc x) = \textcolor{red}{\vc s_w(\vc x)} - \sum \limits_{j=1}^3 \textcolor{ForestGreen}{z_j} \vc\psi_j(\vc x),
+% %   \quad \textcolor{ForestGreen}{z_j=\int_{E_j} \vc s_w(\vc x)\cdot \vc n_j},
+% %   \quad \textcolor{red}{\vc s_w(\vc x) = -\frac{1}{2\pi} \frac{\vc r_w}{r_w^2}}
+% % \]
+% 
+% % Accurate integration on sides is needed to compute for coefficients $\color{ForestGreen}z_j$ of the $RT_0$ interpolation of $s_w$.
+% 
+% The SGFEM enriched shape function on an element $T$ has the form
+% \[
+%   \vc L_w(\vc x) = \textcolor{red}{\vc s_w(\vc x)} - \sum \limits_{j=1}^{n_E} \textcolor{ForestGreen}{z_j} \vc\psi_j(\vc x),
+%   \quad \textcolor{ForestGreen}{z_j=\int_{E_j} \vc s_w(\vc x)\cdot \vc n_j},
+%   \quad \textcolor{red}{\vc s_w(\vc x) = -\frac{1}{S_e} \frac{\vc r_w}{r_w^2}},
+% \]
+% where $n_E$ is the number of sides in 2D, or faces in 3D, $z_j$ is the flux of the global enrichment function $\vc s_w$ over side or face $E_j$ of $T$
+% and $S_e$ is the so called effective surface
+% %$S_e$ is a portion of the surface of the singularity that communicates with the element $T$
+% \[
+% S_e = \begin{cases}2\pi\rho_w, \qquad \textrm{in 2d (circle)}, \\ 2\pi\rho_w v \qquad \textrm{in 3d (cylinder of length }v).\end{cases}
+% \]
+% 
+% The flux $z_j$ is computed using adaptive quadrature on sides and faces. The quadrature rules are analogical to the rules
+% for adaptive quadrature in elements. These values are computed only once and saved in a vector for further usage (assembly, error computation, output).
+% 
+% 
+% Such local velocity enrichment function has the following important properties:
+%   \begin{enumerate}[label=\alph*)]
+% %     \setlength{\itemsep}{5pt}
+%     \item
+%       $\displaystyle \int_T \div\, \vc L_w = \begin{cases}
+%         0 & \forall T, T \cap \Gamma_w = \emptyset \\
+%         -\sum \limits_{j=1}^3 z_j, & \forall T, T \cap \Gamma_w \neq \emptyset
+%     \end{cases}$
+%     \item $\displaystyle \int_{E_i} \vc L_w \cdot \vc n_i = 0$
+%     \item $\displaystyle \int_{\Gamma_w} \vc L_w \cdot \vc n_w = 1$
+%     \item $\displaystyle \int_{\Gamma_w} \vc \psi \cdot \vc n_w = 0, T \cap \Gamma_w = \Gamma_w$\\
+%         Not so important. (integral of flux of RT functions over the well edge is zero,
+%         if the well edge is included in a single element)
+%   \end{enumerate}
+% 
+% \subsection{Computation of the distance function $\vc r$ in 3d}
+% % https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+% Let us have the direction vector $\vc u = \vc b - \vc a$ of an 1d element and a point $\vc x$.
+% We want to compute the shortest distance $r$ between $\vc x$ and $\vc u$.
+% %
+% \begin{figure}[!htb]
+%   \centering
+%   \def\svgwidth{0.5\textwidth}
+%   \input{distance_function_3d.pdf_tex}
+%   \caption{Distance function $\vc r$ in 3d.}
+%   \label{fig:logo_flow123d}
+% \end{figure}
+% %
+% The angle $\alpha$ between $(\vc x - \vc a)$ and $\vc u$ is 
+% \[
+% \cos(\alpha) = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc x - \vc a}\abs{\vc u}} = \frac{\abs{\vc u_p}}{\abs{\vc x - \vc a}}
+% \]
+% % and also from the right % (US), right-angled triangle (GB)
+% % triangle we have
+% % \[
+% % \cos(\alpha) = \frac{\abs{\vc u_p}}{\abs{\vc x - \vc a}}
+% % \]
+% which gives us projection of $(\vc x-\vc a)$ onto $\vc u$
+% \[
+% \vc u_p = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u.
+% \]
+% So we obtain the distance vector
+% \[
+%   \vc r(\vc x) = (\vc x - \vc a) - \vc u_p = (\vc x - \vc a) - \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u
+% \]
