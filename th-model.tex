@@ -2,17 +2,25 @@
 % \include{snippet_preamble}
 % \usepackage{enumitem}
 
+In this chapter we develope mathematical background for our model.
+The model formulation is built from simple 2d Dirichlet problem to fully coupled 1d-2d and 1d-3d problem.
 
 \section{Mixed Dirichlet Problem}
 
-Mixed form:
+At the beginning we consider a steady 2d problem with a single singularity present in the domain.
+The flow in the domain $\Omega$ is governed by the Darcy's law, the continuity equation and
+boundary conditions, gathered in the following definition
+\thmproblem{ \label{thm:prob_mixed_simple}
 \begin{eqnarray}
     \vc K^{-1} \vc u + \nabla p &=& 0 \qquad \textrm{in } \Omega, \label{eqn:mixed_form_1}\\
     \nabla \cdot \vc u &=& f \qquad \textrm{in } \Omega, \label{eqn:mixed_form_2}\\
     \avg{\vc u \cdot \vc n}_w &=& \sigma_w (\avg{p}_w - P) \qquad \textrm{on } \Gamma_w, \label{eqn:mixed_form_3}\\
     p &=& g_{D} \qquad \textrm{on } \Gamma_{D} \label{eqn:mixed_form_4}.
 \end{eqnarray}
-  
+}
+
+\ref{thm:prob_mixed_simple}
+
 The boundary consists of $\prtl\Omega=\Gamma_D \cup \Gamma_w$. The derivation of the weak form follows
 \begin{align}
     \int_\Omega \vc u \vc K^{-1} \vc v
@@ -288,15 +296,17 @@ In ambient 3d space, induces point sources (0d-2d problem).
   
   Mixed form:
   \begin{eqnarray}
-\vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,2  \\
-\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2\\
-\nabla \cdot \vc u_1 &=& f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\frac{1}{\delta_d} \vc K_d^{-1}\vc u_d + \nabla p_d &=& 0 \qquad \textrm{in } \Omega_d,\; d=1,2  \\
+\nabla \cdot \vc u_2 &=& \delta_2 f_2 \qquad \textrm{in } \Omega_2\\
+\nabla \cdot \vc u_1 &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
 \color{blue}\avg{\vc u_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
 p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
 \vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
   \end{eqnarray}
   
-  
+where $\delta_d$ is the cross section coefficient in respective dimension (thickness
+of a fracture in 2d,cross-section of a channel in 1d). The total flux boundary condition $g_{dN}$ is considered outward.
+
   We shall use the following FE discrete spaces:
   $\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf singular enrichment}\\
   $p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
@@ -333,14 +343,17 @@ where bilinear forms on the left-hand side are
           \int_{\Gamma_w}
                \sigma_w(p_{1}-\lambda_w)(\phi_{1}-\mu_w),\\
  \langle G, \vc \psi\rangle =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
-        \int_{\prtl T_d^i\cap \prtl\Omega}
+        \int_{\prtl T_d^i\cap \Gamma_{dD}}
                  - g_{dD} (\vc \psi_d \cdot \vc n),\\
- \langle F, \vc \phi\rangle =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
-        \int_{T_d^i} - f_d \phi_d,
+ \langle F, \vc \phi\rangle =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}\left(
+        \int_{T_d^i} - \delta_d f_d \phi_d
+        - %\sum_{d=1,2}\sum_{i\in \mathcal T_d}
+        \int_{\prtl T_d^i\cap \Gamma_{dN}}
+                 g_{dN} \mu_d\right),
 \end{align*}
 where $p=(p_d,\lambda_d, \lambda_w)$, $\phi=(\phi_d,\mu_d, \mu_w)$.
 
-In the Dirichlet problem (setting constant pressure $P_w$ in 1d and supposing only 2d mesh) we replace
+In the Dirichlet problem (setting constant pressure $P_w$ in 1d and supposing only 2d mesh, Dirichlet boundary condition, the thickness $\delta_2=1$) we replace
 \begin{align*}
 \color{blue}
 c(p,\phi) =& \color{blue} \sigma_w\lambda_w\mu_w\abs{\Gamma_w} \\
