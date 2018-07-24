@@ -4,13 +4,16 @@
 \usepackage{amsthm}
 \usepackage{esint}
 %
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{thmproblem}{Problem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}
+\newtheorem{thmproblem}{Problem}[section]
+
+\newtheorem{theorem}{Theorem}[definition]
+\newtheorem{proposition}{Proposition}[theorem]
+\newtheorem{remark}{Remark}[theorem]
+\newtheorem{lemma}{Lemma}[theorem]
+\newtheorem{corollary}{Corollary}[theorem]
 %\newtheorem{exercise}[theorem]{Cvičení}
 
 %\numberwithin{equation}{document}
