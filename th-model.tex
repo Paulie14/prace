@@ -2,14 +2,14 @@
 % \include{snippet_preamble}
 % \usepackage{enumitem}
 
-In this chapter we develope mathematical background for our model.
+In this chapter we develop mathematical background for our model.
 The model formulation is built from simple 2d Dirichlet problem to fully coupled 1d-2d and 1d-3d problem.
 
 \section{Mixed Dirichlet Problem}
 
 At the beginning we consider a steady 2d problem with a single singularity present in the domain.
 The flow in the domain $\Omega$ is governed by the Darcy's law, the continuity equation and
-boundary conditions, gathered in the following definition
+boundary conditions, gathered in the following problem definition
 \thmproblem{ \label{thm:prob_mixed_simple}
 \begin{eqnarray}
     \vc K^{-1} \vc u + \nabla p &=& 0 \qquad \textrm{in } \Omega, \label{eqn:mixed_form_1}\\
@@ -301,19 +301,13 @@ In ambient 3d space, induces point sources (0d-2d problem).
 \nabla \cdot \vc u_1 &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
 \color{blue}\avg{\vc u_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
 p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
-\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
+-\vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
   \end{eqnarray}
   
 where $\delta_d$ is the cross section coefficient in respective dimension (thickness
-of a fracture in 2d,cross-section of a channel in 1d). The total flux boundary condition $g_{dN}$ is considered outward.
+of a~fracture in 2d,cross-section of a~channel in 1d). The total flux boundary condition $g_{dN}$ is considered as an inflow.
 
-  We shall use the following FE discrete spaces:
-  $\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf singular enrichment}\\
-  $p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
-  $\lambda_d$ (pressure head traces) - piecewise constant, $P_0$ on edges \\
-  \textcolor{blue}{$\lambda_w$ (pressure head traces) - piecewise constant, $P_0$ on $\Gamma_w$}
-  
-  
+
   Mixed-Hybrid form (saddle point problem): 
 \begin{align}
         \label{Saddle1}
@@ -362,16 +356,68 @@ c(p,\phi) =& \color{blue} \sigma_w\lambda_w\mu_w\abs{\Gamma_w} \\
 \end{align*}
 
 
+We shall use the following FE discrete spaces:
+$\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf singular enrichment}\\
+$p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
+$\lambda_d$ (pressure head traces) - piecewise constant, $P_0$ on edges \\
+\textcolor{blue}{$\lambda_w$ (pressure head traces) - piecewise constant, $P_0$ on $\Gamma_w$}
 
 
 
+\section{Coupled 1d-2d model (Primary weak form)}
+
+\begin{eqnarray}
+\grad \cdot \left( -\delta_2 \vc K_2 \grad p_2 \right) &=& \delta_2 f_2 \qquad \textrm{in } \Omega_2,\;  \\
+\grad \cdot \left( -\delta_1 \vc K_1 \grad p_1 \right) &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)} \qquad \textrm{in } \Omega_1,\;  \\
+%\nabla \cdot \vc u_2 &=& \delta_2 f_2 \qquad \textrm{in } \Omega_2\\
+%\nabla \cdot \vc u_1 &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
+\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
+p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
+\delta_d \vc K_d \grad p_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
+  \end{eqnarray}
 
 
+We define the trial space $V$ and the test space $V_0$:
+\begin{eqnarray} \label{eqn:spaces}
+  V &=& H^1(\Omega_1)\times H^1(\Omega_2), \\
+  V_0 &=& H^1_0(\Omega_1)\times H^1_0(\Omega_2),
+\end{eqnarray}
+where $H^1(\Omega_d)$, $d=1,2$, is the standard Sobolev space and 
+\[ H^1_0(\Omega_d)=\{\varphi\in H^1(\Omega_d); \varphi|_{\Gamma_{dD}}=0\}. \]
+We can now introduce the weak solution $p=(p_1,p_2)\in V$ and the test function $\phi=(\phi_1,\phi_2)\in V_0$.
+% \begin{eqnarray} \label{eqn:solution}
+%    u &=& (h^1,\ldots, h^M, H^1_1,\ldots,H^{M+1}_W)\in V, \\
+%    v &=& (\varphi^1,\ldots, \varphi^M, \Phi^1_1,\ldots,\Phi^M_W)\in V_0.
+% \end{eqnarray}
+%We understand $V_0$ as a~subspace of $V$.
 
+To obtain the weak form, we apply the standard Galerkin method. We multiply the equation \eqref{eqn:poisson} 
+by a~test function $\phi_d$ and integrate by parts over $\Omega_d$, to get
+\begin{multline} \label{eqn:weak_form1}
+  \int_{\Omega_2} \delta_2 \vc K_2 \grad p_2 \cdot \grad \phi_2 \dd\bx
+  + \int_{\Omega_1} \delta_1 \vc K_1 \grad p_1 \cdot \grad \phi_1 \dd\bx \\
+  + \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{p_2} - p_1) (\avg{\phi_2} - p_1) \dd\bx \\
+  = \int_{\Omega_2} \delta_2 f_2 \phi_2 \dd\bx + \int_{\Omega_1} \delta_1 f_1 \phi_1 \dd\bx.
+\end{multline}
 
+We say that $u\in V$ is a~weak solution if it satisfies \eqref{eqn:weak_form} for all $v\in V_0$.
+Denote the bilinear form on the left hand side $a(p,\phi)$.
+The first two terms of $a$ are elliptic in the whole test space $V_0$
+due to the Dirichlet boundary condition on a part of the boundary and Friedrich's inequality,
+the last term of $a$ is evidently non-negative:
 
+\begin{eqnarray}
+    a(\phi,\phi) &\geq&
+          \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\grad\phi_2}^2_{L_2(\Omega_2)}
+        + \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\grad\phi_1}^2_{L_2(\Omega_1)}\\
+        &&+ \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{\phi_2} - p_1)^2 \dd\bx \\
+        &\geq&
+          C_{F2} \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\phi_2}^2_{L_2(\Omega_2)}
+        + C_{F1} \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\phi_1}^2_{L_2(\Omega_1)}.
+\end{eqnarray}
 
-
+The existence and uniqueness of the solution can be shown 
+via the Lax-Milgram lemma due to the ellipticity of the bilinear form $a$ and the boundedness of the problem.
 
 
 
