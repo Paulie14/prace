@@ -263,6 +263,13 @@ Finally, a~reasonable output post-processing should be developed, so that the XF
 can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Extended Finite Element Method} \label{chap:results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input th-xfem.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -349,87 +356,6 @@ In \cite{brezina_2012} a~mortar-like method is used to deal with the discrete co
 of different dimensions. The drawback of this approach is that it uses continuous approximation of velocity, so
 it cannot approximate the discontinuity of the velocity over the fractures accurately enough.
 
-
-\section{eXtended Finite Element Method (XFEM)} \label{sec:soa_xfem}
-
-The main feature of this method is the extension of a~space of basis polynomial shape functions of the finite element
-method with a~special function, that enables to better approximate some local effects. This is called \emph{enrichment}.
-The special function (enrichment function) is often non-polynomial and describes discontinuity or singularity,
-where polynomials leak accuracy. We can meet two terms: \emph{extrinsic enrichment}, which adds the enrichment
-functions to a~basis and \emph{intrinsic enrichment}, which replaces some basis functions with the enrichment ones.
-We are interested in mesh-based methods with extrinsic enrichment and we shall not discuss any mesh-free alternatives.
-
-An overview article by Fries and Belytschko~\cite{fries_xfem_overview_2010} concludes the history and early development
-of the XFEM. The origins from the Partition of Unity Method (Babu{\v s}ka and Melenk e.g. in~\cite{babuska_partition_1997}) and
-the Generalized Finite Element Method (e.g. by Strouboulis in~\cite{strouboulis_generalized_2000}) 
-and the early XFEM (e.g. by Belytschko and Mo{\"e}s in \cite{moes_finite_1999}) are commented in details there.
-
-The most frequent application of the XFEM is in mechanics, where discontinuous functions (Heaviside function, signum)
-are used to capture the jump in stress or strain at the crack. They take advantage of the XFEM especially when 
-modelling crack growth where the computational mesh does not require remeshing in time.
-
-The XFEM is mainly perceived as method for local enriching, which means that the enrichment is applied only
-in a~small subdomain but it has of course a~large-scale impact.
-The XFEM solution with a~single enrichment is sought in the form
-\begin{equation} \label{eqn:soa_xfem_standard_form}
-  u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha N_\alpha(x)
-    + \sum_{\alpha\in\mathcal{I}^e} b_{\alpha} \phi_{\alpha}(\bx),
-\end{equation}
-where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
-the enrichment. $N_\alpha(x)$ are the standard FE basis shape functions. The index set $\mathcal{I}^e$ includes 
-all enriched nodes, i.e. the nodes that are in the vicinity of the effect, due to which we need enrichment.
-The \emph{local enrichment functions} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} are defined
-using the partition of unity
-\begin{equation} \label{eqn:soa_xfem_enrich}
-    \phi_{\alpha} = N_\alpha(x)L(x), \quad \alpha\in\mathcal{I}^e,
-\end{equation}
-where $L(x)$ is the \emph{global enrichment function}.
-
-There are several types of enrichment, depending on the choice and form of $L_{\alpha}(x)$. We shall later
-discuss so called Corrected XFEM~\cite{fries_corrected_2008} and Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}.
-The details on the enrichment application and actual formulation of the methods will be described in detail in Section
-\ref{sec:discretization}. There, a~model for a~quasi-3D aquifers-wells problem according to Gracie and Craig~\cite{gracie_modelling_2010,craig_using_2011}
-is developed and the XFEM is used to deal with the singularity in pressure at the wells (0D-2D coupling).
-
-Usage of the XFEM is not of course hassle free and gratis. The presence of mostly non-polynomial enrichment functions
-has a~huge impact on the system matrix assembly, where these functions must be integrated accurately enough.
-Adaptive integration strategies are being developed for a~given class of enrichment functions (e.g. \cite{ventura_fast_2009}), 
-but no general, robust and accurate solution is available. We will discuss the integration in detail in Section \ref{sec:integration}.
-Another effect on the system matrix is the increase of its condition number because the local enrichment functions can
-become nearly linearly dependent. 
-% It was thought that the SGFEM is the answer to that problem but it has been
-% reported that it is still not a~general solution.
-
-Another problem is the stability of the discretization. In contrast to mechanics, the PDEs describing flow
-need to satisfy a~strict discrete inf-sup condition (inequation 3.14, p. 75 in \cite{brezzi_mixed_1991} for mixed formulation).
-This inequation is of course affected by the enrichment, however it is discussed in the literature minimally.
-
-
-\section{XFEM on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
-There is much less to be found on the usage of the XFEM in the field of flow modelling, especially regarding the dimensions coupling,
-than in mechanics.
-% Many researchers are using some kind of the extended finite element method, but the applications are mainly aimed
-% at problems in mechanics. 
-% One of the reasons is that the stability of the discrete mixed form is more sensitive 
-% on the choice of the finite elements used in flow problems. 
-Apart from the references on various types of the XFEM in previous paragraph, we can name some works regarding flow and the XFEM.
-Extensive work has been done in the area of modelling 1D-2D fractured domains with mixed finite 
-elements by D'Angelo, Fumagalli and Scotti~\cite{fumagalli_numerical_2012, dangelo_mixed_2012, fumagalli_efficient_2014}. 
-In there, the XFEM is used to incorporate additional degrees of freedom of zero order Raviart-Thomas basis 
-functions on the intersected elements to allow the discontinuity in velocity. The trick is, that the same
-basis functions are used but with different support. The model is formulated in 1D-2D at the moment.
-
-Another work regarding 1D-2D fractures is by Schwenck~\cite{schwenck_xfem-based_2015} (also in \cite{schwenck_2015}), 
-where the primary formulation is used and among others, the fracture tip and fractures intersection is dealt with.
-
-Next, there are several publications on multi-phase fluid flow governed by Navier-Stokes equations using the XFEM for
-approximation on the interfaces in 2D (\cite{diez_stable_2013,sauerland_stable_2013}). However, these are
-little bit further from our application.
-
-A 1D-3D model for investigation of the transport of substances in a~human body has been developed by D'Angelo 
-and Zunino et al. (e.g in~\cite{dangelo_coupling_2008,cattaneo_numerical_2015}), without usage of the XFEM.
-Further, 1D-3D coupling for blood flow and mass transport in vascularized human tissue is
-investigated by K{\" o}ppl in\cite{koppl_tum_2015}.
 
 
 \section{Flow123d} \label{sec:soa_flow123d}
