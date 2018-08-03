@@ -384,7 +384,7 @@ We define the trial space $V$ and the test space $V_0$:
 \end{eqnarray}
 where $H^1(\Omega_d)$, $d=1,2$, is the standard Sobolev space and 
 \[ H^1_0(\Omega_d)=\{\varphi\in H^1(\Omega_d); \varphi|_{\Gamma_{dD}}=0\}. \]
-We can now introduce the weak solution $p=(p_1,p_2)\in V$ and the test function $\phi=(\phi_1,\phi_2)\in V_0$.
+We can now introduce the weak solution $p=(p_1,p_2)\in V$ and the test function $q=(q_1,q_2)\in V_0$.
 % \begin{eqnarray} \label{eqn:solution}
 %    u &=& (h^1,\ldots, h^M, H^1_1,\ldots,H^{M+1}_W)\in V, \\
 %    v &=& (\varphi^1,\ldots, \varphi^M, \Phi^1_1,\ldots,\Phi^M_W)\in V_0.
@@ -392,28 +392,28 @@ We can now introduce the weak solution $p=(p_1,p_2)\in V$ and the test function 
 %We understand $V_0$ as a~subspace of $V$.
 
 To obtain the weak form, we apply the standard Galerkin method. We multiply the equation \eqref{eqn:poisson} 
-by a~test function $\phi_d$ and integrate by parts over $\Omega_d$, to get
+by a~test function $q_d$ and integrate by parts over $\Omega_d$, to get
 \begin{multline} \label{eqn:weak_form1}
-  \int_{\Omega_2} \delta_2 \vc K_2 \grad p_2 \cdot \grad \phi_2 \dd\bx
-  + \int_{\Omega_1} \delta_1 \vc K_1 \grad p_1 \cdot \grad \phi_1 \dd\bx \\
-  + \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{p_2} - p_1) (\avg{\phi_2} - p_1) \dd\bx \\
-  = \int_{\Omega_2} \delta_2 f_2 \phi_2 \dd\bx + \int_{\Omega_1} \delta_1 f_1 \phi_1 \dd\bx.
+  \int_{\Omega_2} \delta_2 \vc K_2 \grad p_2 \cdot \grad q_2 \dd\bx
+  + \int_{\Omega_1} \delta_1 \vc K_1 \grad p_1 \cdot \grad q_1 \dd\bx \\
+  + \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{p_2} - p_1) (\avg{q_2} - p_1) \dd\bx \\
+  = \int_{\Omega_2} \delta_2 f_2 q_2 \dd\bx + \int_{\Omega_1} \delta_1 f_1 q_1 \dd\bx.
 \end{multline}
 
 We say that $u\in V$ is a~weak solution if it satisfies \eqref{eqn:weak_form} for all $v\in V_0$.
-Denote the bilinear form on the left hand side $a(p,\phi)$.
+Denote the bilinear form on the left hand side $a(p,q)$.
 The first two terms of $a$ are elliptic in the whole test space $V_0$
 due to the Dirichlet boundary condition on a part of the boundary and Friedrich's inequality,
 the last term of $a$ is evidently non-negative:
 
 \begin{eqnarray}
-    a(\phi,\phi) &\geq&
-          \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\grad\phi_2}^2_{L_2(\Omega_2)}
-        + \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\grad\phi_1}^2_{L_2(\Omega_1)}\\
-        &&+ \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{\phi_2} - p_1)^2 \dd\bx \\
+    a(q,q) &\geq&
+          \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\grad q_2}^2_{L_2(\Omega_2)}
+        + \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\grad q_1}^2_{L_2(\Omega_1)}\\
+        &&+ \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{q_2} - p_1)^2 \dd\bx \\
         &\geq&
-          C_{F2} \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\phi_2}^2_{L_2(\Omega_2)}
-        + C_{F1} \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\phi_1}^2_{L_2(\Omega_1)}.
+          C_{F2} \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{q_2}^2_{L_2(\Omega_2)}
+        + C_{F1} \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{q_1}^2_{L_2(\Omega_1)}.
 \end{eqnarray}
 
 The existence and uniqueness of the solution can be shown 

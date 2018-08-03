@@ -13,29 +13,65 @@ of the XFEM. The origins from the Partition of Unity Method (Babu{\v s}ka and Me
 the Generalized Finite Element Method (e.g. by Strouboulis in~\cite{strouboulis_generalized_2000}) 
 and the early XFEM (e.g. by Belytschko and Mo{\"e}s in \cite{moes_finite_1999}) are commented in details there.
 
-The most frequent application of the XFEM is in mechanics, where discontinuous functions (Heaviside function, signum)
-are used to capture the jump in stress or strain at the crack. They take advantage of the XFEM especially when 
-modelling crack growth where the computational mesh does not require remeshing in time.
+The most frequent application of the XFEM is in mechanics, where people take advantage of the XFEM especially in
+modelling cracks growth without requiring remeshing the computational mesh in time. 
+Discontinuous functions (Heaviside function, signum) are used to capture the jump in stress or strain at the crack,
+singular functions are applied in the vicinity of the crack tips. The exact function for the selected enrichment
+comes either directly from the nature of the phenomenon, or can be obtained as the solution of a local auxiliary
+problem. This function is most often reffered as the \emph{global enrichment function}.
 
-The XFEM is mainly perceived as method for local enriching, which means that the enrichment is applied only
-in a~small subdomain but it has of course a~large-scale impact.
+The XFEM is mainly perceived as a method for local enrichment, which means that the enrichment is applied only
+in a~small subdomain -- several elements of the computational mesh close to the local phenomenon.
 The XFEM solution with a~single enrichment is sought in the form
 \begin{equation} \label{eqn:soa_xfem_standard_form}
-  u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha N_\alpha(x)
-    + \sum_{\alpha\in\mathcal{I}^e} b_{\alpha} \phi_{\alpha}(\bx),
+  u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
+    + \sum_{\alpha\in\mathcal{I}^e} b_{\alpha} \phi_{\alpha}(x),
 \end{equation}
 where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
-the enrichment. $N_\alpha(x)$ are the standard FE basis shape functions. The index set $\mathcal{I}^e$ includes 
-all enriched nodes, i.e. the nodes that are in the vicinity of the effect, due to which we need enrichment.
-The \emph{local enrichment functions} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} are defined
-using the partition of unity
+the enrichment. $v_\alpha(x)$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
+$\mathcal{I}^e$ that contain all indices of the standard and enriched degrees of freedom, respectively.
+The \emph{local enrichment function} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} is typically defined as
 \begin{equation} \label{eqn:soa_xfem_enrich}
     \phi_{\alpha} = N_\alpha(x)L(x), \quad \alpha\in\mathcal{I}^e,
 \end{equation}
-where $L(x)$ is the \emph{global enrichment function}.
+where $L$ is the actual enrichment function and $N_\alpha$ is a function of the partition of unity
+$\sum_\alpha N_\alpha(x) = 1$, creating the localised degrees of freedom for the enrichment.
+Typically, $N_\alpha$ are linear FE basis functions, having support points at the mesh nodes, $N_\alpha(x_\alpha)=1$,
+so one is often talking about enriching nodes and calling these \emph{enriched nodes}.
+Different functions which make the partition of unity might be used, but linear functions are the most common.
 
-There are several types of enrichment, depending on the choice and form of $L_{\alpha}(x)$. We shall later
-discuss so called Corrected XFEM~\cite{fries_corrected_2008} and Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}.
+% The index set $\mathcal{I}^e$ includes 
+% all enriched nodes, i.e. the nodes that are in the vicinity of the effect, due to which we are applying the enrichment.
+
+The most straightforward choice of $L(x)$ is the global enrichment function itself but it is not optimal. It can suffer with a lack of convergence, a large approximation error at some elements or an ill-conditioning of the linear system.
+All these problems were intensively studied and lead to different XFEM methods:
+the so called Corrected XFEM~\cite{fries_corrected_2008}
+and the Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}, which 
+both became standard for XFEM in general. These are discussed in more details later on.
+
+% sgfem - scaled condition number
+% orthogonalization processes
+
+Considering more than one enrichment is straightforward. The approximation will then change into the following form
+\begin{equation} \label{eqn:soa_xfem_standard_form_mult1}
+    u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
+        + \sum_{e\in\mathcal{E}}\sum_{\alpha\in\mathcal{I}^e} b_{e\alpha} \phi_{e\alpha}(x)
+\end{equation}
+\begin{equation} \label{eqn:soa_xfem_standard_form_mult2}
+    \phi_{e\alpha}(x) = N_\alpha(x)L_e(x), \quad e\in\mathcal{E},\; \alpha\in\mathcal{I}^e
+\end{equation}
+The enrichment $e$ is enriching all the nodes in the index set $\mathcal I^e$ with degrees of freedom $b_{e\alpha}$
+corresponding to the local enrichment functions $\phi_{e\alpha}$. Note that there can be multiple functions $\phi_{e\alpha}$ with support on the same element. If these functions are close to each other in some measure in the approximation space, then the respective degrees of freedom can become linearly dependent which results in ill-conditioning of the linear system (SGFEM is mainly addressed to this issue).
+
+
+% There are several types of enrichment, depending on the choice and form of $L_{\alpha}(x)$. We shall later
+% discuss so called Corrected XFEM~\cite{fries_corrected_2008} and Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}.
+% The approximation can suffer large errors on the interface between enriched and unenriched
+% elements (the enriched element on the interface are called blending elements), the linear system.
+
+
+\par\noindent\rule{\textwidth}{1pt}
+
 The details on the enrichment application and actual formulation of the methods will be described in detail in Section
 \ref{sec:discretization}. There, a~model for a~quasi-3D aquifers-wells problem according to Gracie and Craig~\cite{gracie_modelling_2010,craig_using_2011}
 is developed and the XFEM is used to deal with the singularity in pressure at the wells (0D-2D coupling).
