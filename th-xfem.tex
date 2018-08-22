@@ -1,4 +1,6 @@
 
+
+
 \section{eXtended Finite Element Method (XFEM)} \label{sec:soa_xfem}
 
 The main feature of this method is the extension of a~space of basis polynomial shape functions of the finite element
@@ -49,8 +51,11 @@ the so called Corrected XFEM~\cite{fries_corrected_2008}
 and the Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}, which 
 both became standard for XFEM in general. These are discussed in more details later on.
 
+% TODO:
+% Kronecker delta property $N_i(x_j) = \delta_{ij}$ (imposing BC, interpretation of results)
 % sgfem - scaled condition number
 % orthogonalization processes
+% level set methods
 
 Considering more than one enrichment is straightforward. The approximation will then change into the following form
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult1}
@@ -62,13 +67,153 @@ Considering more than one enrichment is straightforward. The approximation will 
 \end{equation}
 The enrichment $e$ is enriching all the nodes in the index set $\mathcal I^e$ with degrees of freedom $b_{e\alpha}$
 corresponding to the local enrichment functions $\phi_{e\alpha}$. Note that there can be multiple functions $\phi_{e\alpha}$ with support on the same element. If these functions are close to each other in some measure in the approximation space, then the respective degrees of freedom can become linearly dependent which results in ill-conditioning of the linear system (SGFEM is mainly addressed to this issue).
+% TODO: add some reference - e.g. something from Loehnert about orthogonalization (studies position of crack near the nodes)
+
+\subsection{Global Enrichment Functions}
+\label{sec:global_enrichment}
+To fix the idea of an enrichment, we list the most common global enrichment functions that one meets in applications.
+
+\subsubsection{Discontinuity}
+% TODO: BC/interface approximation using XFEM (Nitsche's method, Hansbo and Hansbo)
+
+A discontinuity at a crack or an interface is one of the phenomena where XFEM is applied.
+We talk about a \emph{strong} discontinuity, if the quantity of interest is discontinuous (pressure in fluid mechanics, stress in mechanics, potential in electrostatics etc.).
+The term \emph{weak} discontinuity is then used when the derivative of the quantity of interest is discontinuous (fluid velocity, strain or damage, electric current etc.).
+
+The discontinuity is commonly described by a \emph{levelset} function -- a signed function,
+that assings positive values to one part of the domain $\Omega$, negative values to the other part and is zero at the discontinuity/interface $\Gamma_{disc}$, for example
+% cite TP Fries
+\[
+    \gamma(x) = \pm \min \norm{x-x_{disc}} \quad \forall x_{disc} \in \Gamma_{disc},\; \forall x \in \Omega.
+\]
+The global enrichment function then takes the form of a signum or a Heaviside function
+\begin{eqnarray}
+    s(x) &=& \textrm{sign}(\gamma(x)),\\
+    s(x) &=& \textrm{H}(\gamma(x)).
+\end{eqnarray}
+for strong discontinuity, or
+\begin{equation}
+    s(x) = \abs{\gamma(x)}.
+\end{equation}
+for weak discontinuity, respectively.
+
+The discontinuity location $\Gamma_{disc}(t)$ does not always have to be known explicitly and/or it can be time dependent.
+In that situation the signed distance function $\gamma(x,t)$ can be obtained as a solution of auxiliary problem, or be a part of
+the searched solution (e.g. in the article \cite{sauerland_stable_2013}
+where the moving interface of two-phase flow is a solution of a transport equation).
 
 
-% There are several types of enrichment, depending on the choice and form of $L_{\alpha}(x)$. We shall later
-% discuss so called Corrected XFEM~\cite{fries_corrected_2008} and Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}.
-% The approximation can suffer large errors on the interface between enriched and unenriched
-% elements (the enriched element on the interface are called blending elements), the linear system.
+\subsubsection{Singularity}
+Another problematic phenomenon that damages the finite element approximation is singular or high gradient behaviour often present in the solution.
+This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d.
+The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions.
 
+A function with its singularity concentrated in a single point has a symmetric radial character.
+Therefore the polar coordinates in 2d are commonly used and the global enrichment function $s(r,\theta)$ is defined in this coordinate system.
+In three dimensional space the spheric or cylindric coordinate systems can be applied when the singularity is concentrated in a point or on a line, respectively.
+The actual form of $s(r,\theta)$ is based on the solution of a local auxiliary problems, e.g. the solution of a simple 2d Laplace problem with a single point source 
+is $\log(r)$ dependent. Other found singular enrichment functions are $r^\alpha,\;\alpha\in\R$ dependent,
+e.g. $\sqrt{r},\;1/r,\; 1/r^2$ in fracture mechanics collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, table 2.3-2.5.
+% e.g. $\sqrt{r},\;\frac{1}{r},\; \frac{1}{r^2}$ in fracture mechanics collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, table 2.3-2.5.
+
+
+Typical is that these effects reach not only to the element where the singularity is located but also in its surroundings.
+
+
+% polar, cylindric, sphere coordinates
+% crack tip, point sing. in 2d, line sing. in 3d
+% r^\alpha form of the global enrichment function
+% abbas_alizada_fries_highgradient_2010
+
+
+
+
+% In the \textbf{standard XFEM}, we write the solution in the form
+% \begin{equation} \label{eqn:xfem_standard_form}
+%   h(\bx) = \sum_{\alpha\in\mathcal{I}}a_\alpha N_\alpha(\bx)
+%     + \sum_{w\in\mathcal{W}} \sum_{\alpha\in\mathcal{I}^e_w} b_{\alpha w} \phi_{\alpha w}(\bx),
+% \end{equation}
+% where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha w}$ are the degrees of freedom coming from
+% the enrichment of the well $w$. The index set $\mathcal{I}^e_w$ includes all nodes enriched by the well $w$; on the other hand, 
+% at one node one can have several enrichment functions originating from different wells.
+% The local enrichment functions $\phi_{\alpha w}$ in \eqref{eqn:xfem_standard_form} are defined
+% in the following way
+% \begin{equation} \label{eqn:xfem_enrich}
+%     \phi_{\alpha w} = N_\alpha(\bx)L_{\alpha w}(\bx), \quad \alpha\in\mathcal{I}^e_w, w\in\mathcal{W},
+% \end{equation}
+% where the enrichment function is simply $L_{\alpha w}(\bx) = s_w(\bx)$.
+
+ 
+\subsection{Local Enrichment Functions}
+We now discuss different choices of the local enrichment functions $L(x)$ and their particular aspects and properties.
+All the presented XFEM methods considered below are using the standard linear finite element shape 
+functions $N_\alpha(x)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
+as the partition of unity.
+
+\subsubsection{Corrected XFEM}
+The corrected XFEM was introduced by T. P. Fries in \cite{fries_corrected_2008}.
+He recognizes the \emph{reproducing} and \emph{blending} elements.
+The former are the elements where all the nodes are enriched, therefore the complete partition of unity is present
+and the enrichment function can be reproduced exactly. The later are the elements which have only some of its nodes enriched.
+
+In the article, it is shown that the blending elements suffer from two drawbacks -- lack of a partition of unity fails to reproduce enrichment function exactly;
+unwanted terms show up in assembly on these elements which can significantly increase the approximation error.
+% blending elements
+% - lack of a partition of unity, cannot reproduce enrichment function exactly
+% - adds unwanted terms in these elements, can significantly increase approximation error
+ 
+The corrected XFEM introduces the \textbf{ramp function}
+\begin{eqnarray} \label{eqn:ramp_function}
+  G_w(\bx) &=& \sum_{\alpha\in\mathcal{I}_w^e} N_\alpha(\bx)    \\
+  &=& 
+  \begin{cases}
+    0 & \textrm{ on unenriched elements,}    \\
+    1 & \textrm{ on elements where all nodes are enriched,}    \\
+    ramp & \textrm{ on elements where some of the nodes are enriched.}    \\
+  \end{cases} \nonumber
+\end{eqnarray}
+It also extends the set of the enriched nodes of the well $w$, denoted by $\mathcal{J}^e_w$, by enriching also (previously unenriched) nodes 
+of the blending elements of the well $w$. Thus $\mathcal{I}^e_w\subset\mathcal{J}^e_w$.
+The enrichment function changes into the form
+\begin{equation} \label{eqn:xfem_ramp}
+    L_{\alpha w} = G_w(\bx) s_{w}(\bx), \quad \alpha\in\mathcal{J}^e, w\in\mathcal{W}.
+\end{equation}
+
+
+In the same work, i.e. \cite{fries_corrected_2008}, authors further suggest the \textbf{shifted} enrichment functions in order 
+to preserve the property of the standard 
+FE approximation at nodes $h(\bx_\alpha)=a_\alpha$: the value at the node is equal to the corresponding degree
+of freedom. The enrichment functions must be then zero at the nodes which is satisfied in the form
+\begin{equation} \label{eqn:xfem_shift}
+    L_{\alpha w} = G_w(\bx) \left[s_w(\bx) - s_w(\bx_\alpha)\right],
+    \quad \alpha\in\mathcal{J}^e, w\in\mathcal{W}.
+\end{equation} 
+The property of the shifted formulation enables us to prescribe Dirichlet boundary condition such that
+$a_\alpha = h_D(\bx_\alpha)$.
+
+It has been also shown in many cases that both ramp function and shifting are needed to obtain optimal convergence rate.
+In \cite{ventura_fast_2009}, authors analyse a~more general form of a~ramp function (calling the method a~weighted XFEM)
+and compare different alternatives of shifting on crack and dislocation problems. The methods described above can be then seen
+as special types of the weighted XFEM. Let us call them the \textbf{ramp function XFEM}  
+and the \textbf{shifted XFEM} for the purpose of this article, as we shall reference to them later.
+
+
+% \subsubsection{SGFEM}
+% Finally, we present the \textbf{SGFEM}, according to \cite{babuska_stable_2012,gupta_stable_2013}. 
+% The enrichment function is defined as the subtraction of the global enrichment function and its interpolation 
+% \begin{equation} \label{eqn:sgfem_enrich}
+%     L_{\alpha w}|_{\tau} = \left[s_w(\bx) - \pi_\tau (s_w)(\bx)\right],
+%     \quad \alpha\in\mathcal{I}^e_w, w\in\mathcal{W}.
+% \end{equation} 
+% for any element $\tau$ of the mesh that have at least one enriched node.
+% The interpolation $\pi_\tau$ is built using the finite element shape functions
+% associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
+% \begin{equation} \label{eqn:sgfem_interpolation}
+%     \pi_\tau (s_w)(\bx) = \sum_{\beta\in\mathcal{I}(\tau)} s_w(\bx_\beta) N_\beta(\bx).
+%     %\quad \textrm{ on } \tau,\; \alpha\in\mathcal{I}^e, w\in\mathcal{W}.
+% \end{equation}
+% Notice that there are no additional enriched nodes on blending elements, like in $\mathcal{J}^e$ in 
+% \eqref{eqn:xfem_ramp} and \eqref{eqn:xfem_shift}, and no ramp function is involved.
 
 \par\noindent\rule{\textwidth}{1pt}
 
@@ -90,7 +235,12 @@ need to satisfy a~strict discrete inf-sup condition (inequation 3.14, p. 75 in \
 This inequation is of course affected by the enrichment, however it is discussed in the literature minimally.
 
 
-\section{XFEM on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
+\section{XFEM in Flow Problems on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
+
+% reduced dimension concept
+% energy correction method - solving reentrant corners
+% dirac delta sources
+
 There is much less to be found on the usage of the XFEM in the field of flow modelling, especially regarding the dimensions coupling,
 than in mechanics.
 % Many researchers are using some kind of the extended finite element method, but the applications are mainly aimed
