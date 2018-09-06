@@ -1,4 +1,11 @@
 
+% TODO:
+% enrichment area - topological vs geometrical enrichment, particular for singular enrichment
+%   (On the enrichment zone size for optimal convergence rate of the Generalized/Extended Finite Element Method: Varun Gupta a , C. Armando Duarte)
+% Kronecker delta property $N_i(x_j) = \delta_{ij}$ (imposing BC, interpretation of results)
+% orthogonalization processes (Loehnert, or Babuska et al. LOT)
+% level set methods
+
 
 
 \section{eXtended Finite Element Method (XFEM)} \label{sec:soa_xfem}
@@ -50,12 +57,6 @@ All these problems were intensively studied and lead to different XFEM methods:
 the so called Corrected XFEM~\cite{fries_corrected_2008}
 and the Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}, which 
 both became standard for XFEM in general. These are discussed in more details later on.
-
-% TODO:
-% Kronecker delta property $N_i(x_j) = \delta_{ij}$ (imposing BC, interpretation of results)
-% sgfem - scaled condition number
-% orthogonalization processes
-% level set methods
 
 Considering more than one enrichment is straightforward. The approximation will then change into the following form
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult1}
@@ -148,7 +149,7 @@ functions $N_\alpha(x)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldot
 as the partition of unity.
 
 \subsubsection{Corrected XFEM}
-The corrected XFEM was introduced by T. P. Fries in \cite{fries_corrected_2008} and put in context of different XFEM in the detailed overview \cite{fries_xfem_overview_2010}.
+The Corrected XFEM was introduced by T. P. Fries in \cite{fries_corrected_2008} and put in broad context of different XFEMs in the detailed overview \cite{fries_xfem_overview_2010}.
 He recognizes the \emph{reproducing} and \emph{blending} elements.
 The former are the elements where all the nodes are enriched, therefore the complete partition of unity is present
 and the enrichment function can be reproduced exactly. The later are the elements which have only some of its nodes enriched.
@@ -198,15 +199,37 @@ as special types of the weighted XFEM.
 % and the \textbf{shifted XFEM} for the purpose of this article, as we shall reference to them later.
 
 
-\subsubsection{SGFEM}
-Finally, we present the \textbf{SGFEM}, according to \cite{babuska_stable_2012,gupta_stable_2013}. 
+\subsubsection{Stable Generalized FEM}
+
+% TODO:
+% sgfem - scaled condition number
+% patch definition- might be useful elsewhere
+
+Babuška and Banerjee developed a different enrichment strategy based on GFEM,
+for which they created a theoretical framework in \cite{babuska_stable_2012} and
+called it the Stable Generalized Finite Element Method.
+In \cite{gupta_stable_2013}, the authors elaborate the problem in 2d and show the application of the SGFEM on elastic fracture model.
+The proposed method is supposed to overcome the common problem of the ill-conditioning of the stiffness matrix coming out of enrichment methods.
+
+Particulary the ill-conditioning is observed when using the linear shape functions as the PU which results in some cases in almost linearly dependent degrees of freedom.
+We also often see that the ill-conditioning is sensitively dependent on the underlying mesh, i.e. the position of a~discontinuity or a~singularity with respect to 
+element nodes or edges.
+This can then lead to much worse conditioned stiffness matrix than the one of the FEM
+and consequently to the loss of accuracy of the solution of the associated linear system.
+An example is given in \cite{babuska_stable_2012} where the condition number is increasing with $h^{-4}$ in case of GFEM,
+compared with the growth with $h^{-2}$ in case of standard FEM for the second order problem.
+
+The target property of the SGFEM is to retain the convergence rate of the XFEM while keeping the conditioning of the associated linear system
+close to the FEM. Beside that, a good approximation of the enrichment function on blending elements comes naturally without any special treatment.
+The approximation also holds the property of standard FE approximation at nodes $h(\bx_\alpha)=a_\alpha$ (same as in case of shifting in Corrected XFEM).
+
 The enrichment function is defined as the subtraction of the global enrichment function and its interpolation 
 \begin{equation} \label{eqn:sgfem_enrich}
     L_{\alpha}|_{\tau}(\bx) = s(\bx) - \pi_\tau (s)(\bx),
     \quad \alpha\in\mathcal{I}^e.
 \end{equation} 
 for any element $\tau$ of the mesh that have at least one enriched node.
-The interpolation $\pi_\tau$ is built using the finite element shape functions
+The interpolation $\pi_\tau$ is built using the linear shape functions
 associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
 \begin{equation} \label{eqn:sgfem_interpolation}
     \pi_\tau (s)(\bx) = \sum_{\beta\in\mathcal{I}(\tau)} N_\beta(\bx) s(\bx_\beta).
@@ -214,6 +237,10 @@ associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
 \end{equation}
 Notice that there are no additional enriched nodes on blending elements, like in $\mathcal{J}^e$ in 
 \eqref{eqn:xfem_ramp} and \eqref{eqn:xfem_shift}, and no ramp function is involved.
+
+
+
+
 
 \par\noindent\rule{\textwidth}{1pt}
 
