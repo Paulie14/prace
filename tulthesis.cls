@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{tulthesis}[2015/11/12 TUL thesis class version 1.2]
+\ProvidesClass{tulthesis}[2018/06/18 TUL thesis class version 1.6]
 % Licence: CC BY
 
 \newcommand{\TUL@levelCZ}{Bakal\'{a}\v{r}sk\'{a} pr\'{a}ce}
@@ -16,6 +16,10 @@
     \renewcommand{\TUL@levelCZ}{Diserta\v cn\'\i\ pr\'{a}ce}
     \renewcommand{\TUL@levelEN}{Dissertation}
     \renewcommand{\TUL@kat}{Dis}}
+\DeclareOption{Teze}{
+    \renewcommand{\TUL@levelCZ}{Teze diserta\v cn\'\i\ pr\'{a}ce}
+    \renewcommand{\TUL@levelEN}{Dissertation thesis draft}
+    \renewcommand{\TUL@kat}{Teze}}
 \DeclareOption{RP}{
     \renewcommand{\TUL@levelCZ}{Ro\v cn\'\i kov\'y projekt}
     \renewcommand{\TUL@levelEN}{Project report}
@@ -30,11 +34,15 @@
 \DeclareOption{EF}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{FA}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{FM}{\PassOptionsToPackage{\CurrentOption}{tul}}
+\DeclareOption{FZS}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{UZS}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{CXI}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{bwtitles}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{bw}{\PassOptionsToPackage{\CurrentOption}{tul}}
 \DeclareOption{fonts}{\PassOptionsToPackage{\CurrentOption}{tul}}
+\newif\ifTUL@pdf
+\TUL@pdftrue
+\DeclareOption{nopdf}{\TUL@pdffalse}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions\relax
 
@@ -45,6 +53,12 @@
 
 \RequirePackage{ifthen}
 \RequirePackage{tabularx}
+\RequirePackage{pdfpages}
+
+\ifTUL@pdf
+ \RequirePackage{hyperref}
+ \hypersetup{colorlinks=true, linkcolor=tul, urlcolor=tul, citecolor=tul}
+\fi
 
 \newcommand{\TULthesisType}[2]{\renewcommand{\TUL@levelCZ}{#1}%
 \renewcommand{\TUL@levelEN}{#2}}
@@ -52,13 +66,24 @@
 \newcommand{\TUL@nazevCZ}{Chyb\'\i\ \textbackslash TULtitle\{\v{c}esky\}\{anglicky\}}
 \newcommand{\TUL@nazevEN}{English title}
 \newcommand{\TULtitle}[2]{\renewcommand{\TUL@nazevCZ}{#1}%
-\renewcommand{\TUL@nazevEN}{#2}}
+\renewcommand{\TUL@nazevEN}{#2}%
+\ifTUL@pdf
+ \ifthenelse{\equal{\TUL@nguage}{EN}}{\hypersetup{pdftitle={#2}}}{\hypersetup{pdftitle={#1}}}
+\fi}
 
 \newcommand{\TUL@autor}{Chyb\'\i\ \textbackslash TULauthor\{jm\'eno\}}
-\newcommand{\TULauthor}[1]{\renewcommand{\TUL@autor}{#1}}
+\newcommand{\TULauthor}[1]{\renewcommand{\TUL@autor}{#1}
+\ifTUL@pdf
+ \hypersetup{pdfauthor={#1}}
+\fi}
 
 \newcommand{\TUL@vedouci}{Chyb\'\i\ \textbackslash TULsupervisor\{jm\'eno\}}
 \newcommand{\TULsupervisor}[1]{\renewcommand{\TUL@vedouci}{#1}}
+
+\newcounter{TULk@nzult}
+\setcounter{TULk@nzult}{0}
+%\newcommand{\TULconsultant}[1]{\newcommand{\TUL@konzultant}{#1}}
+\newcommand{\TULconsultant}[1]{\stepcounter{TULk@nzult}\@namedef{\roman{TULk@nzult}@TULkonzultant}{#1}}
 
 \newcommand{\TUL@programCZ}{Chyb\'\i\ \textbackslash TULprogramme\{k\'od\}\{\v{c}esky\}\{anglicky\}}
 \newcommand{\TUL@programEN}{Study Programme}
@@ -128,26 +153,40 @@
 
 \vfill
 
-\newcommand{\t@nd}{&}%
+\newcommand{\t@nd}{&}
+\newcommand{\n@dpis}{\small\itshape\color{tulgray}}
 \noindent\begin{tabularx}{\linewidth}{@{}lX@{}}
-\small\itshape\color{tulgray}%
-\ifthenelse{\equal{#1}{EN}}{Study programme}{Studijn\'\i\ program}: &
+\n@dpis \ifthenelse{\equal{#1}{EN}}{Study programme}{Studijn\'\i\ program}: &
 \ifthenelse{\equal{#1}{EN}}{\TUL@programEN}{\TUL@programCZ} \\
-\small\itshape\color{tulgray}%
-\ifthenelse{\equal{#1}{EN}}{Study branch\ifnum\theTUL@bor>1\relax es\fi}%
-{Studijn\'\i\ obor\ifnum\theTUL@bor>1\relax y\fi}:
- & \ifthenelse{\equal{#1}{EN}}{\raggedright\arraybackslash\i@TULoborEN}{\raggedright\arraybackslash\i@TULoborCZ}\\
+\n@dpis
+\ifthenelse{\equal{#1}{EN}}
+    {Study branch\ifnum\theTUL@bor>1\relax es\fi}%
+    {Studijn\'\i\ obor\ifnum\theTUL@bor>1\relax y\fi}:
+ & \ifthenelse{\equal{#1}{EN}}{\i@TULoborEN}{\i@TULoborCZ}
+\\
 \setcounter{TULc@unter}{1}%
-\whiledo{\value{TULc@unter} < \value{TUL@bor}}%
-{\stepcounter{TULc@unter}\t@nd % zamaskovaný "&"
-\ifthenelse{\equal{#1}{EN}}{\raggedright\arraybackslash\@nameuse{\roman{TULc@unter}@TULoborEN}}%
-{\raggedright\arraybackslash\@nameuse{\roman{TULc@unter}@TULoborCZ}}\\} \\[-\medskipamount]
-\small\itshape\color{tulgray}%
+\whiledo{\value{TULc@unter} < \value{TUL@bor}}{
+    \stepcounter{TULc@unter}\t@nd % zamaskovaný "&"
+    \ifthenelse{\equal{#1}{EN}}
+        {\@nameuse{\roman{TULc@unter}@TULoborEN}}%
+        {\@nameuse{\roman{TULc@unter}@TULoborCZ}}\\
+} \\[-\medskipamount]
+\n@dpis
 \ifthenelse{\equal{#1}{EN}}{Author}{Autor pr\'ace}: &
 \bfseries\TUL@autor \\
-\small\itshape\color{tulgray}%
+\n@dpis
 \ifthenelse{\equal{#1}{EN}}{Supervisor}{Vedouc\'\i\ pr\'ace}: &
 \TUL@vedouci \\
+\@ifundefined{i@TULkonzultant}{}{\n@dpis
+    \ifthenelse{\equal{#1}{EN}}
+        {Consultant\@ifundefined{ii@TULkonzultant}{}{s}}
+        {Konzultant\@ifundefined{ii@TULkonzultant}{}{i}}:
+    & \i@TULkonzultant \\}
+\setcounter{TULc@unter}{1}%
+\whiledo{\value{TULc@unter} < \value{TULk@nzult}}{
+    \stepcounter{TULc@unter}\t@nd % zamaskovaný "&"
+    \@nameuse{\roman{TULc@unter}@TULkonzultant}\\
+}
 \end{tabularx}
 
 \vfill
@@ -186,8 +225,9 @@ s~t\'{\i}m, \v ze na
 \ifthenelse{\equal{\TUL@kat}{BP}}{mou bakal\'a\v rskou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{mou diplomovou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{mou diserta\v cn\'{\i} pr\'aci}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{teze m\'e diserta\v cn\'{\i} pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{m\r uj ro\v cn\'{\i}kov\'y projekt}{%
-m\r uj magistersk\'y projekt}}}} se pln\v e vztahuje
+m\r uj magistersk\'y projekt}}}}} se pln\v e vztahuje
 z\'akon \v c.~121/2000 Sb., o~pr\'avu autorsk\'em, zejm\'ena
 \S~60~-- \v skoln\'{\i} d\'{\i}lo.
 
@@ -196,18 +236,21 @@ do m\'ych autorsk\'ych pr\'av u\v zit\'{\i}m
 \ifthenelse{\equal{\TUL@kat}{BP}}{m\'e bakal\'a\v rsk\'e pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{m\'e diplomov\'e pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{m\'e diserta\v cn\'{\i} pr\'ace}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{tez\'\i\ m\'e diserta\v cn\'{\i} pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{m\'eho ro\v cn\'{\i}kov\'eho projektu}{%
-m\'eho magistersk\'eho projektu}}}}
+m\'eho magistersk\'eho projektu}}}}}
 pro vnit\v rn\'{\i} pot\v rebu TUL.
 
 U\v ziji-li
 \ifthenelse{\equal{\TUL@kat}{BP}}{bakal\'a\v rskou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{diplomovou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{diserta\v cn\'{\i} pr\'aci}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{teze diserta\v cn\'{\i} pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{ro\v cn\'{\i}kov\'y projekt}{%
-magistersk\'y projekt}}}}
+magistersk\'y projekt}}}}}
 nebo poskytnu-li licenci
-k~\ifthenelse{\equal{\TUL@kat}{RP} \or \equal{\TUL@kat}{MP}}{jeho}{jej\'{\i}mu}
+k~\ifthenelse{\equal{\TUL@kat}{RP} \or \equal{\TUL@kat}{MP}}{jeho}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{jejich}{jej\'{\i}mu}}
 vyu\v zit\'{\i}, jsem si
 v\v edom\ifthenelse{\equal{#1}{female}}{a}{} povinnosti informovat
 o~t\'eto skute\v cnosti TUL; v~tomto p\v r\'{\i}pad\v e m\'a TUL pr\'avo ode mne
@@ -217,16 +260,18 @@ a\v z do jejich skute\v cn\'e v\'y\v se.
 \ifthenelse{\equal{\TUL@kat}{BP}}{Bakal\'a\v rskou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{Diplomovou pr\'aci}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{Diserta\v cn\'{\i} pr\'aci}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{Teze diserta\v cn\'{\i} pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{Ro\v cn\'{\i}kov\'y projekt}{%
-Magistersk\'y projekt}}}}
+Magistersk\'y projekt}}}}}
 jsem vypracoval\ifthenelse{\equal{#1}{female}}{a}{}
 samostatn\v e s~pou\v zit\'{\i}m uveden\'e literatury a
 na z\'aklad\v e konzultac\'{\i} s~vedouc\'{\i}m
 \ifthenelse{\equal{\TUL@kat}{BP}}{m\'e bakal\'a\v rsk\'e pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{m\'e diplomov\'e pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{m\'e diserta\v cn\'{\i} pr\'ace}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{m\'e diserta\v cn\'{\i} pr\'ace}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{m\'eho ro\v cn\'{\i}kov\'eho projektu}{%
-m\'eho magistersk\'eho projektu}}}}
+m\'eho magistersk\'eho projektu}}}}}
 a konzultantem.
 
 Sou\v casn\v e \v cestn\v e prohla\v suji, \v ze ti\v st\v en\'a verze pr\'ace se
@@ -243,12 +288,9 @@ shoduje s~elektronickou verz\'{\i}, vlo\v zenou do IS STAG.
 \ifthenelse{\equal{\TUL@kat}{BP}}{bachelor thesis}{%
 \ifthenelse{\equal{\TUL@kat}{DP}}{master thesis}{%
 \ifthenelse{\equal{\TUL@kat}{Dis}}{dissertation}{%
+\ifthenelse{\equal{\TUL@kat}{Teze}}{dissertation thesis draft}{%
 \ifthenelse{\equal{\TUL@kat}{RP}}{bachelor project}{%
-master project}}}}}
-
-%\newcommand{\ThesisType@EN}{%
-%\ifthenelse{\equal{\TUL@kat}{BP}}{bachelor thesis}{jina}}
-
+master project}}}}}}
 
 \newcommand{\DeclarationEN}{
 \section*{Declaration}
@@ -288,20 +330,33 @@ with its electronic form as saved at the IS STAG portal.
 
 \newcommand{\ThesisStart}[1]{
 \ifthenelse{\equal{\TUL@nguage}{EN}}{\ThesisTitle{EN} \ThesisTitle{CZ}}{\ThesisTitle{CZ} \ThesisTitle{EN}}
-\Assignment
-\Declaration{#1}
+\ifthenelse{\equal{#1}{female} \OR \equal{#1}{male}}{\Assignment
+\Declaration{#1}}{\includepdf[pages=-]{#1}\if@twoside \else\setcounter{page}{5}\fi}
 }
 
 
 \newenvironment{abstractCZ}[1][narrow]{\ifthenelse{\equal{#1}{wide}}%
-{\renewcommand{\endabstractCZ}{\par}}% široký abstrakt na konci nedělá nic
-{\begin{uzky@text}\renewcommand{\endabstractCZ}{\end{uzky@text}}}% úzký abstrakt
+{\renewcommand{\endabstractCZ}{\par}}% široká verze na konci nedělá nic
+{\begin{uzky@text}\renewcommand{\endabstractCZ}{\end{uzky@text}}}% úzká verze
 \section*{Abstrakt}}{}
 
 \newenvironment{abstractEN}[1][narrow]{\ifthenelse{\equal{#1}{wide}}%
-{\renewcommand{\endabstractEN}{\par}}% široký abstrakt na konci nedělá nic
-{\begin{uzky@text}\renewcommand{\endabstractEN}{\end{uzky@text}}}% úzký abstrakt
+{\renewcommand{\endabstractEN}{\par}}% široká verze na konci nedělá nic
+{\begin{uzky@text}\renewcommand{\endabstractEN}{\end{uzky@text}}}% úzká verze
 \section*{Abstract}}{}
+
+\newenvironment{keywordsCZ}[1][narrow]{\ifthenelse{\equal{#1}{wide}}%
+{\renewcommand{\endkeywordsCZ}{\par}}% široká verze na konci nedělá nic
+{\begin{uzky@text}\renewcommand{\endkeywordsCZ}{\end{uzky@text}}}% úzká verze
+\paragraph*{Kl\'\i\v{c}ov\'a slova:}}{}
+
+\newenvironment{keywordsEN}[1][narrow]{\ifthenelse{\equal{#1}{wide}}%
+{\renewcommand{\endkeywordsEN}{\par}}% široká verze na konci nedělá nic
+{\begin{uzky@text}\renewcommand{\endkeywordsEN}{\end{uzky@text}}}% úzká verze
+\paragraph*{Keywords:}}{}
+
+%\newcommand{\keywordsCZ}[2][]{\ifthenelse{\equal{#1}{wide}}{}{\begin{uzky@text}}\noindent
+%\textbf{Kl\'\i\v{c}ov\'a slova:} #2\ifthenelse{\equal{#1}{wide}}{}{\end{uzky@text}}}
 
 \newenvironment{acknowledgement}[1][narrow]{\ifthenelse{\equal{#1}{wide}}%
 {\renewcommand{\endacknowledgement}{\clearpage}}% široké poděkování na konci jen odstránkuje
