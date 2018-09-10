@@ -13,7 +13,7 @@
 The main feature of this method is the extension of a~space of basis polynomial shape functions of the finite element
 method with a~special function, that enables to better approximate some local effects. This is called \emph{enrichment}.
 The special function (enrichment function) is often non-polynomial and describes discontinuity or singularity,
-where polynomials leak accuracy. We can meet two terms: \emph{extrinsic enrichment}, which adds the enrichment
+where polynomials leak accuracy. We can meet these two terms: \emph{extrinsic enrichment}, which adds the enrichment
 functions to a~basis and \emph{intrinsic enrichment}, which replaces some basis functions with the enrichment ones.
 We are interested in mesh-based methods with extrinsic enrichment and we shall not discuss any mesh-free alternatives.
 
@@ -23,7 +23,7 @@ the Generalized Finite Element Method (e.g. by Strouboulis in~\cite{strouboulis_
 and the early XFEM (e.g. by Belytschko and Mo{\"e}s in \cite{moes_finite_1999}) are commented in details there.
 
 The most frequent application of the XFEM is in mechanics, where people take advantage of the XFEM especially in
-modelling cracks growth without requiring remeshing the computational mesh in time. 
+modelling cracks growth without requiring remeshing the computational mesh in every time step. 
 Discontinuous functions (Heaviside function, signum) are used to capture the jump in stress or strain at the crack,
 singular functions are applied in the vicinity of the crack tips. The exact function for the selected enrichment
 comes either directly from the nature of the phenomenon, or can be obtained as the solution of a~local auxiliary
@@ -37,7 +37,7 @@ The XFEM solution with a~single enrichment is sought in the form
     + \sum_{\alpha\in\mathcal{I}^e} b_{\alpha} \phi_{\alpha}(x),
 \end{equation}
 where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
-the enrichment. $v_\alpha(x)$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
+the enrichment, $v_\alpha(x)$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
 $\mathcal{I}^e$ that contain all indices of the standard and enriched degrees of freedom, respectively.
 The \emph{local enrichment function} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} is typically defined as
 \begin{equation} \label{eqn:soa_xfem_enrich}
@@ -107,21 +107,77 @@ where the moving interface of two-phase flow is a~solution of a~transport equati
 \subsubsection{Singularity}
 Another problematic phenomenon that damages the finite element approximation is singular or high gradient behaviour often present in the solution.
 This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d.
-The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions.
+The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions;
+these are of our main interest.
 
 A function with its singularity concentrated in a~single point has a~symmetric radial character.
 Therefore the polar coordinates in 2d are commonly used and the global enrichment function $s(r,\theta)$ is defined in this coordinate system.
-In three dimensional space the spheric or cylindric coordinate systems can be applied when the singularity is concentrated in a~point or on a~line, respectively.
 The actual form of $s(r,\theta)$ is based on the solution of a~local auxiliary problems, e.g. the solution of a~simple 2d Laplace problem with a~single point source 
-is $\log(r)$ dependent. Other found singular enrichment functions are $r^\alpha,\;\alpha\in\R$ dependent,
-e.g. $\sqrt{r},\;1/r,\; 1/r^2$ in fracture mechanics collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, table 2.3-2.5.
-% e.g. $\sqrt{r},\;\frac{1}{r},\; \frac{1}{r^2}$ in fracture mechanics collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, table 2.3-2.5.
+is $\log(r)$ dependent. Other singular enrichment functions are typically $r^\alpha,\;\alpha\in\R$ dependent.
+More examples not only in mechanics, namely
+\[ r^{3/2},\;r^{1/2},\;r^{-1/2},\;r^{-1},\;r^{-3/2},\; r^{-2}, \]
+are collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, in the overview table 2.3-2.5.
+
+In three dimensional space the spheric or cylindric coordinate systems can be applied when the singularity is concentrated in a~point or on a~line, respectively.
+For example a~crack front or a~line source in 3d has the same strength of the singularity as in 2d, thus there is no need for an enrichment in the lenght axis
+of the cylindric coordinates.
 
 High gradient in the solution occurs also in the vicinity of discontinuities. A~demonstrative examples are boundary (or interior) layers
 in some convection dominated transport models. Abbas et al. in the article \cite{abbas_alizada_fries_highgradient_2010} described an XFEM with
 a set of regularized (smooth) step functions that can capture arbitrary gradients and applied that method on linear advection-diffusion equation.
+%TODO can be viewed as an complement or alternatives to some stabilisation methods, like SUPG
 
-Typical is that these effects reach not only to the element where the singularity is located but also in its surroundings.
+\subsubsection{Enrichment area}
+% In case of discontinuity 
+Typically the singular effects reach not only to the element where the singularity is located but also in its surroundings,
+where steep gradients are present.
+%TODO in contrast to energy correction method (reentrant corners), where the optimal convergence is gained
+% by editing the local contribution of the bilinear form on the elements adjacent to the reentrant corner (at a node of the mesh)
+A proper enrichment area in the vicinity of the singularity must be chosen so the method converges optimally
+and/or gives satisfying approximation error. If it is too
+small, the method can loose its approximation properties and its convergence rate might decrease. If the enrichment area is too large,
+a high amount of degrees of freedom can be added unnecessarily and the method can become too computationally expensive.
+In some cases, the additional degrees of freedom can become almost linearly dependent which then causes ill-conditioning of the linear system.
+Since the singularities of our interest have radial character, we shall specify the size of the enrichment area by so called \emph{enrichment radius} $R_e$.
+
+%TODO topologic x geometric + citation
+\cite{laborde_highorder_2005,bechet_improved_2005}
+
+We think this aspect of singular enrichments does not receive appropriate attention in XFEM literature, since the size of the enrichment area
+can influence the solution significantly and is often given fixed and without any explanation.
+There is no general recipe available, up to our best knowledge, except the two following hints.
+
+Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an apriori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a 2d linear elasticity crack problem,
+where $h$ is the mesh parameter and $p$ is the FE polynomial order.
+The estimate derivation is dependent on the problem specific bilinear form and enrichment function $\vc s(r,\theta) = \sqrt{r} \vc f(\theta)$.
+The main idea behind is the following: to achieve the optimal convergence of order $p$, choose $R_e$ such that the restriction of the solution to
+a narrow band of unenriched elements adjacent to the enrichment area belongs to the Hilbert space of order $p+1$.
+According to the estimate, the minimum size of the enrichment zone is not fixed and it decreases with mesh refinement.
+Therefore, if a fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved with mesh refinement regardless of the value of the constant $C$.
+On the other hand, the constant $C$ is not specified precisely, so for a pratical application (with a given mesh), the estimate does not answer the proper value of $R_e$.
+The authors further state in their conclusion that the geometrical enrichment zone is necessary to obtain optimal convergence rate in this type of problems
+and that large enrichment zones can lead to ill-conditioning of the underlying linear system, which is in agreement with our experience in our models.
+
+The other reference of choosing the enrichment zone is by us in~\cite{exner_2016}.
+There we suggest an a~posteori analyses of the enrichment radius for the Poisson equation.
+We consider splitting the solution onto a~regular and a~singular part and we measure the approximation error of the singular part
+in the unenriched part of the domain. This error should be then balanced with the approximation error of the regular part of the solution.
+This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
+
+
+
+
+% On the other hand, in \cite{gupta_enr_zone_2016} the authors provide an apriori estimate for the radius
+% 2016_On the enrichment zone size for optimal convergence rate of the GFEM.pdf
+%     linear elastic crack problem, with singular enrichment sqrt(r)
+%     estimate for enrichment radius d, assumption on d<1
+%     d is estimated up to a constant C: d>Ch^(-2p)
+% that means one knows how to change d when refining the mesh,
+% but gives no clue on the minimal d when the method still converges
+% another meaning: for given d>0, we always find h_N,
+% such that we obtain optimal convergence for h < h_N
+%
+% cite our article with aposteori estimate
 
 
 
