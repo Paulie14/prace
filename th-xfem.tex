@@ -138,22 +138,28 @@ and/or gives satisfying approximation error. If it is too
 small, the method can loose its approximation properties and its convergence rate might decrease. If the enrichment area is too large,
 a high amount of degrees of freedom can be added unnecessarily and the method can become too computationally expensive.
 In some cases, the additional degrees of freedom can become almost linearly dependent which then causes ill-conditioning of the linear system.
-Since the singularities of our interest have radial character, we shall specify the size of the enrichment area by so called \emph{enrichment radius} $R_e$.
 
-%TODO topologic x geometric + citation
-\cite{laborde_highorder_2005,bechet_improved_2005}
+%TODO use systematically enrichment zone instead of enrichment area
+This problematics is originally addressed in \cite{laborde_highorder_2005}, where the fixed enrichment zone size is suggested for standard XFEM,
+including some ideas for integral quadrature improvements and decreasing the ill-conditioning. In the same time, authors of \cite{bechet_improved_2005}
+have the same aim and introduce the terms \emph{topological} and \emph{geometrical} enrichment. The former one is a kind of enrichment where only the element
+that includes the singularity is enriched. The later one defines a fixed enrichment zone in the same manner as it is in the reference above.
+In \cite{fries_corrected_2008}, the geometrical enrichment is also viewed as necessary to reach the optimal convergence, on the other hand
+it is mentioned that for a crack branching or multiple cracks, the enrichment zone is preffered as small as possible, i.e. topological enrichment is applied
+while sacrifising the optimal convergence rate.
 
+Since the singularities of our interest have a~radial character, we shall specify the size of the geometrical enrichment area by so called \emph{enrichment radius} $R_e$.
 We think this aspect of singular enrichments does not receive appropriate attention in XFEM literature, since the size of the enrichment area
 can influence the solution significantly and is often given fixed and without any explanation.
 There is no general recipe available, up to our best knowledge, except the two following hints.
 
 Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an apriori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a 2d linear elasticity crack problem,
 where $h$ is the mesh parameter and $p$ is the FE polynomial order.
-The estimate derivation is dependent on the problem specific bilinear form and enrichment function $\vc s(r,\theta) = \sqrt{r} \vc f(\theta)$.
+The estimate derivation is dependent on the problem specific bilinear form and the enrichment function $\vc s(r,\theta) = \sqrt{r} \vc f(\theta)$.
 The main idea behind is the following: to achieve the optimal convergence of order $p$, choose $R_e$ such that the restriction of the solution to
-a narrow band of unenriched elements adjacent to the enrichment area belongs to the Hilbert space of order $p+1$.
-According to the estimate, the minimum size of the enrichment zone is not fixed and it decreases with mesh refinement.
-Therefore, if a fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved with mesh refinement regardless of the value of the constant $C$.
+a narrow band of unenriched elements adjacent to the enrichment zone belongs to the Hilbert space of order $p+1$.
+According to the estimate, the minimum size of the enrichment zone is not fixed and it decreases with the mesh refinement.
+Therefore, if a fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved regardless of the value of the constant $C$.
 On the other hand, the constant $C$ is not specified precisely, so for a pratical application (with a given mesh), the estimate does not answer the proper value of $R_e$.
 The authors further state in their conclusion that the geometrical enrichment zone is necessary to obtain optimal convergence rate in this type of problems
 and that large enrichment zones can lead to ill-conditioning of the underlying linear system, which is in agreement with our experience in our models.
@@ -163,39 +169,6 @@ There we suggest an a~posteori analyses of the enrichment radius for the Poisson
 We consider splitting the solution onto a~regular and a~singular part and we measure the approximation error of the singular part
 in the unenriched part of the domain. This error should be then balanced with the approximation error of the regular part of the solution.
 This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
-
-
-
-
-% On the other hand, in \cite{gupta_enr_zone_2016} the authors provide an apriori estimate for the radius
-% 2016_On the enrichment zone size for optimal convergence rate of the GFEM.pdf
-%     linear elastic crack problem, with singular enrichment sqrt(r)
-%     estimate for enrichment radius d, assumption on d<1
-%     d is estimated up to a constant C: d>Ch^(-2p)
-% that means one knows how to change d when refining the mesh,
-% but gives no clue on the minimal d when the method still converges
-% another meaning: for given d>0, we always find h_N,
-% such that we obtain optimal convergence for h < h_N
-%
-% cite our article with aposteori estimate
-
-
-
-
-% In the \textbf{standard XFEM}, we write the solution in the form
-% \begin{equation} \label{eqn:xfem_standard_form}
-%   h(\bx) = \sum_{\alpha\in\mathcal{I}}a_\alpha N_\alpha(\bx)
-%     + \sum_{w\in\mathcal{W}} \sum_{\alpha\in\mathcal{I}^e_w} b_{\alpha w} \phi_{\alpha w}(\bx),
-% \end{equation}
-% where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha w}$ are the degrees of freedom coming from
-% the enrichment of the well $w$. The index set $\mathcal{I}^e_w$ includes all nodes enriched by the well $w$; on the other hand, 
-% at one node one can have several enrichment functions originating from different wells.
-% The local enrichment functions $\phi_{\alpha w}$ in \eqref{eqn:xfem_standard_form} are defined
-% in the following way
-% \begin{equation} \label{eqn:xfem_enrich}
-%     \phi_{\alpha w} = N_\alpha(\bx)L_{\alpha w}(\bx), \quad \alpha\in\mathcal{I}^e_w, w\in\mathcal{W},
-% \end{equation}
-% where the enrichment function is simply $L_{\alpha w}(\bx) = s_w(\bx)$.
 
  
 \subsection{Local Enrichment Functions}
@@ -277,7 +250,7 @@ compared with the growth with $h^{-2}$ in case of standard FEM for the second or
 
 The target property of the SGFEM is to retain the convergence rate of the XFEM while keeping the conditioning of the associated linear system
 close to the FEM. Beside that, a good approximation of the enrichment function on blending elements comes naturally without any special treatment.
-The approximation also holds the property of standard FE approximation at nodes $h(\bx_\alpha)=a_\alpha$ (same as in case of shifting in Corrected XFEM).
+The approximation also holds the property of standard FE approximation at nodes $h(\bx_\alpha)=a_\alpha$ (same as in case of shifting in the Corrected XFEM).
 
 The enrichment function is defined as the subtraction of the global enrichment function and its interpolation 
 \begin{equation} \label{eqn:sgfem_enrich}
