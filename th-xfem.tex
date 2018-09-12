@@ -1,7 +1,5 @@
 
 % TODO:
-% enrichment area - topological vs geometrical enrichment, particular for singular enrichment
-%   (On the enrichment zone size for optimal convergence rate of the Generalized/Extended Finite Element Method: Varun Gupta a , C. Armando Duarte)
 % Kronecker delta property $N_i(x_j) = \delta_{ij}$ (imposing BC, interpretation of results)
 % orthogonalization processes (Loehnert, or Babuska et al. LOT)
 % level set methods
@@ -70,11 +68,10 @@ The enrichment $e$ is enriching all the nodes in the index set $\mathcal I^e$ wi
 corresponding to the local enrichment functions $\phi_{e\alpha}$. Note that there can be multiple functions $\phi_{e\alpha}$ with support on the same element. If these functions are close to each other in some measure in the approximation space, then the respective degrees of freedom can become linearly dependent which results in ill-conditioning of the linear system (SGFEM is mainly addressed to this issue).
 % TODO: add some reference - e.g. something from Loehnert about orthogonalization (studies position of crack near the nodes)
 
-\subsection{Global Enrichment Functions}
-\label{sec:global_enrichment}
+\subsection{Global Enrichment Functions} \label{sec:global_enrichment}
 To fix the idea of an enrichment, we list the most common global enrichment functions that one meets in applications.
 
-\subsubsection{Discontinuity}
+\subsubsection{Discontinuity} \label{sec:glob_enr_discontinuity}
 % TODO: BC/interface approximation using XFEM (Nitsche's method, Hansbo and Hansbo)
 
 A discontinuity at a~crack or an interface is one of the phenomena where XFEM is applied.
@@ -104,7 +101,7 @@ the searched solution (e.g. in the article \cite{sauerland_stable_2013}
 where the moving interface of two-phase flow is a~solution of a~transport equation).
 
 
-\subsubsection{Singularity}
+\subsubsection{Singularity} \label{sec:glob_enr_singularity}
 Another problematic phenomenon that damages the finite element approximation is singular or high gradient behaviour often present in the solution.
 This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d.
 The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions;
@@ -127,7 +124,7 @@ in some convection dominated transport models. Abbas et al. in the article \cite
 a set of regularized (smooth) step functions that can capture arbitrary gradients and applied that method on linear advection-diffusion equation.
 %TODO can be viewed as an complement or alternatives to some stabilisation methods, like SUPG
 
-\subsubsection{Enrichment area}
+\subsubsection{Enrichment zone} \label{sec:glob_enr_zone}
 % In case of discontinuity 
 Typically the singular effects reach not only to the element where the singularity is located but also in its surroundings,
 where steep gradients are present.
@@ -171,13 +168,13 @@ in the unenriched part of the domain. This error should be then balanced with th
 This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
 
  
-\subsection{Local Enrichment Functions}
+\subsection{Local Enrichment Functions} \label{sec:local_enrichment}
 We now discuss different choices of the local enrichment functions $L(x)$ and their particular aspects and properties.
 All the presented XFEM methods considered below are using the standard linear finite element shape 
 functions $N_\alpha(x)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
 as the partition of unity.
 
-\subsubsection{Corrected XFEM}
+\subsubsection{Corrected XFEM} \label{sec:corrected_xfem}
 The Corrected XFEM was introduced by T. P. Fries in \cite{fries_corrected_2008} and put in broad context of different XFEMs in the detailed overview \cite{fries_xfem_overview_2010}.
 He recognizes the \emph{reproducing} and \emph{blending} elements.
 The former are the elements where all the nodes are enriched, therefore the complete partition of unity is present
@@ -228,7 +225,7 @@ as special types of the weighted XFEM.
 % and the \textbf{shifted XFEM} for the purpose of this article, as we shall reference to them later.
 
 
-\subsubsection{Stable Generalized FEM}
+\subsubsection{Stable Generalized FEM} \label{sec:stable_gfem}
 
 % TODO:
 % sgfem - scaled condition number

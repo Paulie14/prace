@@ -1,0 +1,175 @@
+\section{Elements Intersections}
+\label{sec:elements_intersections}
+The initial problem that occurs when working with incompatible meshes of combined dimensions is the efficient 
+computation of intersections of the mesh subdomains, in particular 1D-2D, 1D-3D, 2D-3D.
+There is a~piece of code in Flow123d at the moment which uses means of analytic geometry. In particular, it computes 
+an intersection of a~line and a~plane in 3D by solving Gaussian elimination. However it is not efficient
+and it does not provide barycentric coordinates explicitly.
+In this section, we present our latest work on this problematic.
+
+The topic is studied in the bachelor and master thesis of Viktor Fri{\v s} ~\cite{fris_dp_2015} (supervised by 
+Jan B{\v r}ezina). He provided an experimental implementation of the new algorithm, which needs to be completed,
+debugged, optimized and tested before it is applicable in Flow123d code. 
+This task is being finalized at the moment by myself.
+
+The new approach is based on \cite{yuan_efficient_2003} for the two aspects of the problem: 
+\begin{enumerate}[label=\alph*), itemsep=-3pt]
+\item an efficient identification of the intersecting pairs of elements,
+\item an efficient computation of the actual intersection for the single element pair.
+\end{enumerate}
+The algorithm takes advantage of the methods used in the computer graphics, in particular for the task (b) Pl\"{u}cker
+coordinates are employed to efficiently compute 1D-2D intersection in three-dimensional space.
+
+\begin{figure}[!htb]
+  \centering
+  \setcounter{subfigure}{0}
+  \subfloat[1D-3D]{
+    \includegraphics[width=0.3\textwidth]{\figpath intersection_13.pdf} }
+  \hspace{10pt}
+  \subfloat[2D-3D]{
+    \includegraphics[width=0.3\textwidth]{\figpath intersection_23.pdf} }
+\end{figure}
+      
+For the 1D-3D and 2D-3D cases, the basic algorithm is applied on sides and edges of the simplices and 
+all the topological information coming from the performed Pl\"{u}cker products is carefully collected
+to obtain final intersecting object.
+Further in 2D-3D case, an optimized tracing algorithm is suggested to directly obtain the correct order and 
+orientation of the edges of the intersection polygon.
+
+\subsection{Pl\"{u}cker coordinates}
+The Pl\"{u}cker coordinates represent a~line in 3D by a~6-dimensional vector.
+Considering a~line $p$, given by a~point $A$ and its directional vector $\vc{u}$, 
+the Pl\"{u}cker coordinates of $p$ are defined
+\[ \pi_p = (\vc{u}_p, \vc{v}_p) = (\vc{u}_p, \vc{u}_p\times A), \]
+where $\vc{v}_p$ is a~cross product of the directional vector of the line $p$ 
+and the coordinates of the point $A$.
+The Pl\"{u}cker product for two lines $p$ and $q$ is defined as follows 
+\[\pi_p \odot \pi_q = \vc{u}_p\cdot \vc{v}_q + \vc{u}_q \cdot \vc{v}_p \]
+
+The sign of the Pl\"{u}cker product gives us the orientation of the two lines, 
+see \fig{fig:plucker_products}.
+
+\begin{figure}[!htb]
+  \begin{center}        
+    \def\svgwidth{0.7\textwidth}
+    \input{\figpath plucker_products.pdf_tex}
+  \end{center}
+  \caption{Sign of the Pl\"{u}cker product (from \cite{fris_dp_2015}). Dashed line symbolizes that the line 
+           is in the back. In the case (c), product is zero which means the lines intersect.}
+  \label{fig:plucker_products}
+\end{figure}
+
+The product has a~very important property. Considering a~line $p$ and triangle with sides 
+$s_0$, $s_1$ and $s_2$ (which are oriented in a~common direction -- clockwise or counter-clockwise), 
+the Pl\"{u}cker products $\pi_p \odot \pi_{si},\, i=0,1,2$ have the same sign only when there
+is an intersection point inside the triangle.
+If one of the Pl\"{u}cker products is closing to zero (keeping the rounding error in mind), 
+then there might be an intersection on the side 
+or at the vertex of the triangle. We shall call the later case \emph{pathologic}.
+
+Notice the condition on the orientation of the triangle sides. To always satisfy it, we use a
+reference simplex, in which the numbering of nodes and sides and also the orientation is fixed.
+The barycentric coordinates of the intersection point can be computed directly from the Pl\"{u}cker products
+and then we can easily obtain its real coordinates (see \cite{fris_dp_2015} for derivations and details).
+
+\subsection{Fundamental intersections}
+\paragraph{1D-2D (abscissa-triangle)}
+Starting with 1D-2D intersecting simplices, all the Pl\"{u}cker coordinates and products must be computed at first.
+In case that all Pl\"{u}cker products are non-zero and the intersection point exists, its barycentric coordinates 
+can be obtained directly. Otherwise one of the pathologic cases occurs
+%
+\begin{itemize}[itemsep=-3pt]
+\item 1 zero product: line intersects triangle side,
+\item 2 zero products: line intersects triangle at its vertex,
+\item 3 zero products: line intersects triangle at its vertex and:
+  \begin{enumerate}[label=\alph*), itemsep=-3pt]
+    \item intersects also the opposite side,
+    \item is parallel to the opposite side,
+    \item intersects also another triangle vertex.
+  \end{enumerate}
+\end{itemize}
+%
+Anyway, in the pathologic case, the intersection of a~line and triangle side is solved analytically which leads
+to a~system of two equations with three unknowns. This is then solved using Crammer's rule.
+
+So far, we considered the line and the triangle sides as bisectors. If the 1D-2D intersection is the final object,
+we check that the found intersection point lies on the abscissas. Otherwise all the computed data are used for 
+further computation. Apart from the coordinates of the intersection points, we also save temporarily its topology
+information (vertex, side or edge index).
+
+\paragraph{1D-3D (abscissa-tetrahedron)}
+Tetrahedron has six edges, so six Pl\"{u}cker coordinates and products are computed at most. These data are
+passed to 1D-2D algorithm described above, which is then run for each pair line -- tetrahedron side. 
+There might be two intersection points maximally, which are finally checked that they belong o abscissas.
+If the line has its boundary point inside the tetrahedron, the intersection line must be cut
+and coordinates of intersection point are interpolated.
+Pathologic cases are again carefully processed so we obtain the most extensive topology information we can.
+See \cite{fris_dp_2015} for detailed description of all possible cases.
+
+\paragraph{2D-3D (abscissa-tetrahedron)}
+The intersection of a~triangle and a~tetrahedron is a~polygon with 7 vertices at maximum. The vertices
+are found as intersection points of either triangle side and tetrahedron or tetrahedron edge and triangle.
+Therefore we use both algorithms above for 1D-3D and 1D-2D, respectively. Data are again efficiently passed
+to lower dimensional problems, so 9 Pl\"{u}cker coordinates and 18 Pl\"{u}cker products are computed. 
+
+The array of intersection points is generally not sorted. We use two so called \emph{tracing} algorithms and we
+intend to orient the edges of the polygon in the same direction as the triangle is oriented.
+If one of the intersection point is pathologic, a~general convex hull method is applied using the Monotone 
+chain\footnote{Wikibooks, [online 2016-03-01], 
+      \url{http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain}} 
+algorithm. The points are sorted using only their barycentric coordinates.
+
+An optimized algorithm has been suggested for non-pathologic cases. At this moment all the collected topology 
+data come into play. The algorithm is simpler (more specialized) and takes advantage of the data already computed.
+
+
+
+\subsection{Prolongation algorithm}
+Consider now a~complex mesh of combined dimensions consisting of \emph{components}, which are sets of connected
+elements of the same dimension (1D, 2D), in the space of 3D elements (tetrahedrons). 
+Obtaining of all the 1D-3D and 2D-3D intersections is based on finding the first two elements intersecting each other.
+Then we can prolongate the intersection by investigating neighbouring elements of the component.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=\textwidth]{\figpath prolongation_scheme.pdf}
+  \caption{Prolongation algorithm for 1D-2D and 2D-3D intersections. }
+  \label{fig:prolongation}
+\end{figure}
+
+The prolongation algorithm is the same for both 1D and 2D components, see \fig{fig:prolongation}. 
+It can be seen as a~\emph{breadth-first search}
+\footnote{Wiki, [online 2016-03-01], \url{https://en.wikipedia.org/wiki/Breadth-first_search}}
+algorithm on the graph of 1D and 2D elements, respectively.
+
+After finding the first pair of elements (line or triangle vs tetrahedron) as candidates for intersection, 
+we compute the first intersection. Then we iterate over the edges of intersection and possibly fill two queues 
+with element pairs as next candidates for further intersection. We check whether the intersection of the element pair
+has not been computed yet.
+
+If the intersection edge (point of line in 1D, edge of polygon in 2D) is inside the tetrahedron, not on its surface, we
+get a~component element neighbouring the current one and push it back together with the current tetrahedron into 
+\emph{component queue}. If the intersection edge is inside the component element 
+(line or triangle), i.e. it lies on the surface of tetrahedron, we get a~neighbouring element of the tetrahedron
+and push it back together with the current component element into \emph{tetrahedron queue}.
+
+Then we empty the prolongation queues -- the tetrahedron queue at first, then the component queue.
+When both queues are empty, all intersections of a~component have been found and we continue to look for
+another component.
+
+The algorithm is now unified for 1D and 2D in contrast to \cite{fris_dp_2015}, where the component
+queue is emptied at first.
+
+\subsection{Summary}
+Due to ongoing work, the results presented in \cite{fris_dp_2015} need to be updated and we shall not discuss
+it in detail here. To briefly summarize the preliminary measurements, the intersection computation
+on a~pair of elements using Pl\"{u}cker coordinates, is more then 50\% faster then the original algorithm 
+implemented in Flow123d.
+
+We did not discuss the initialization algorithms, which are used in Flow123d to find the first intersection 
+for a~component. Disregarding that, we can say the prolongation breadth-first search algorithm is always faster
+than the original code, sometimes even over 90\%.
+
+We plan to present our approach and results at the ESCO '16 conference in Pilsen (by Jan B{\v r}ezina) and
+we intend to conclude the work in a~new article.
