@@ -1,12 +1,23 @@
-\documentclass[dvipsnames,FM,Dis]{tulthesis}
+\documentclass[bibliography=totocnumbered,dvipsnames,FM,Dis]{tulthesis}
 
 \usepackage[czech, english]{babel}
 \usepackage[utf8]{inputenc}
+
+% Adds bibliography to tocbibind
+% options:
+% none - switch off everything
+% numbib - adds number to bibliography
+% https://ctan.org/pkg/tocbibind
+\usepackage[nottoc]{tocbibind}
 
 \DeclareUnicodeCharacter{00A0}{~}
 
 \include{math_defs}
 
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
 
 % grahpics
 \usepackage{graphicx}
@@ -29,12 +40,27 @@
 
 \usepackage{url}
 
+% intersections chapter
+% algorithms
+\usepackage[vlined, linesnumbered, ruled]{algorithm2e}
+%\usepackage{float}
+%\newfloat{algorithm}{t}{lop}
+\usepackage{array}
+\newcommand{\plucker}{Pl\"{u}cker }
+\newcommand{\nface}{$n$-face }
+\newcommand{\nfaces}{$n$-faces }
+\newcommand{\ngh}{NGH }
+\newcommand{\algo}[1]{\hyperref[#1]{Algorithm \ref{#1}}}
+\newcommand{\figpathins}{figures/intersections/}
+
+\pdfsuppresswarningpagegroup=1
+
 % deklarace pro titulní stránku
 \TULthesisType{Disertační práce}{Thesis}
 \TULtitle{Rozšířené metody konečných prvků na sítích kombinovaných dimenzích}{Extended Finite Element Methods on Meshes of Combined Dimensions}
 % Extended finite elements for mixed-hybrid model of Darcy flow
-\TULprogramme{P3901}{Aplikované vědy v inženýrství}{Applied Sciences in Engineering}
-\TULbranch{3901V055}{Aplikované vědy v inženýrství}{Scientific Engineering (Mathematical Modelling)}
+\TULprogramme{P3901}{Aplikované vědy v~inženýrství}{Applied Sciences in Engineering}
+\TULbranch{3901V055}{Aplikované vědy v~inženýrství}{Scientific Engineering (Mathematical Modelling)}
 \TULauthor{Ing. Pavel Exner}
 \TULsupervisor{Mgr. Jan B{\v r}ezina, Ph.D.}
 \TULyear{}
@@ -94,6 +120,8 @@ coupling between incompatible meshes of combined dimensions.
 \tableofcontents
 
 \clearpage
+
+%% \linenumbers
 
 % \begin{abbrList}
 % \textbf{TUL} & Technická univerzita v~Liberci \\
@@ -176,7 +204,7 @@ Chapter \ref{chap:aims} summarizes the aims of the thesis.
 
 The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
 covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
-Section \ref{sec:elements_intersections} introduces a~new approach for inspecting simplicial elements intersections
+Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
 of different dimensions using Pl{\"u}cker coordinates.
 
 Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
@@ -238,7 +266,7 @@ A class that handles the degrees of freedom must be then updated to include the 
 and the structure of the linear system must be reorganized accordingly.
 
 The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
-of different dimensions is now being finished (see Section \ref{sec:elements_intersections}). The enrichment will propagate from the intersected 3D elements.
+of different dimensions is now being finished (see Chapter \ref{chap:intersections}). The enrichment will propagate from the intersected 3D elements.
 The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
 near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
 the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
@@ -376,7 +404,7 @@ Section \ref{chap:aims}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Model Formulation} \label{chap:results}
+\chapter{Model Formulation} \label{chap:model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -389,10 +417,10 @@ Section \ref{chap:aims}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this chapter, we shall describe the work that has already been done. First part (Section \ref{sec:model_aquifer}) 
-is regarding a~model of a~well-aquifer system where the XFEM is applied to resolve a~point singularity in 2D domain. 
-The second part (Section \ref{sec:elements_intersections}) is aimed at a~geometrical problem of finding 
-intersections of incompatible meshes of different dimensions.
+% In this chapter, we shall describe the work that has already been done. First part (Section \ref{sec:model_aquifer}) 
+% is regarding a~model of a~well-aquifer system where the XFEM is applied to resolve a~point singularity in 2D domain. 
+% The second part (Section \ref{sec:elements_intersections}) is aimed at a~geometrical problem of finding 
+% intersections of incompatible meshes of different dimensions.
 
 \input th-result-pressure.tex
 
@@ -474,7 +502,7 @@ which puts us in a pioneer position at least in the Czech scientific environment
 
 The aims of the thesis are stated in the Chapter \ref{chap:aims} and these are both of theoretic and practical nature.
 There is a lot work to do in the code implementation part but some of the work has been done already 
-(Section \ref{sec:elements_intersections}). The rest will be done, possibly with some support of the Flow123d development team. 
+(Chapter \ref{chap:intersections}). The rest will be done, possibly with some support of the Flow123d development team. 
 
 So far, we studied the well-aquifer model (Section \ref{sec:model_aquifer}). We compared several different XFEM methods, 
 dealt with the integration accuracy and investigated some other aspects of the XFEM usage. The results
@@ -492,8 +520,8 @@ work together both on the theory and implementation of the XFEM in 0D-2D and 1D-
 %   \nocite{gracie_modelling_2010, fries_corrected_2008, babuska_stable_2012, bangerth_deal.ii_2007, 
 %           arnold_lecture_2009, craig_using_2011, sistek_bddc_2015, brezzi_mixed_1991, schwenck_xfem-based_2015,
 %           fumagalli_efficient_2014, cattaneo_numerical_2015, koppl_tum_2015, maryska_mixed-hybrid_1995}
-\bibliographystyle{mybibtex} 
+\bibliographystyle{mybibtex}
 % \bibliographystyle{csplainnat}
-\bibliography{citace,citace_xfem,citace_sgfem,citace_flow_my}
+\bibliography{citace,citace_xfem,citace_sgfem,citace_flow_my,citace_intersections}
 
 \end{document}
