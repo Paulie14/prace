@@ -76,7 +76,7 @@ ENTRY
 INTEGERS { output.state before.all mid.sentence after.sentence after.block }
 
 STRINGS { urlintro eprinturl eprintprefix doiprefix doiurl openinlinelink closeinlinelink } % urlbst...
-INTEGERS { hrefform inlinelinks makeinlinelink addeprints adddoiresolver }
+INTEGERS { hrefform inlinelinks makeinlinelink addeprints adddoiresolver printurl}
 FUNCTION {init.urlbst.variables}
 {
   "Available from: " 'urlintro := % prefix before URL
@@ -88,6 +88,7 @@ FUNCTION {init.urlbst.variables}
   #1 'adddoiresolver :=     % 0=no DOI resolver; 1=include it
   #2 'hrefform :=           % 0=no crossrefs; 1=hypertex xrefs; 2=hyperref refs
   #1 'inlinelinks :=        % 0=URLs explicit; 1=URLs attached to titles
+  #0 'printurl :=            % 0=URLs NO; 1=URLs YES
   % the following are internal state variables, not config constants
   #0 'makeinlinelink :=     % state variable managed by setup.inlinelink
   "" 'openinlinelink :=     % ditto
@@ -499,7 +500,8 @@ MACRO {toplas} {"ACM Trans. Prog. Lang. Syst."}
 MACRO {tcs} {"Theoretical Comput. Sci."}
 
 FUNCTION {write.url}
-{ url empty$
+{ 
+  url empty$
     { skip$ }
     { "\newline\urlprefix\url{" url * "}" * write$ newline$ }
   if$
@@ -1218,7 +1220,7 @@ FUNCTION {article}
   format.issn output
   format.note output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {book}
@@ -1236,7 +1238,8 @@ FUNCTION {book}
   title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
   format.btitle "title" output.check
   crossref missing$
-    { format.bvolume output
+    { format.edition output
+      format.bvolume output
       format.number.series output
       format.publisher.address output
     }
@@ -1244,11 +1247,10 @@ FUNCTION {book}
       format.book.crossref output.nonnull
     }
   if$
-  format.edition output
   format.note output
   format.isbn output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {booklet}
@@ -1261,7 +1263,7 @@ FUNCTION {booklet}
   format.note output
   format.date output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {inbook}
@@ -1294,7 +1296,7 @@ FUNCTION {inbook}
   format.pages "pages" output.check
   format.note output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {incollection}
@@ -1318,7 +1320,7 @@ FUNCTION {incollection}
   format.note output
   format.isbn output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {inproceedings}
@@ -1345,7 +1347,7 @@ FUNCTION {inproceedings}
   format.note output
   format.isbn output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {conference} { inproceedings }
@@ -1395,7 +1397,7 @@ FUNCTION {mastersthesis}
   format.note output
   format.date "year" output.check
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {misc}
@@ -1422,7 +1424,7 @@ FUNCTION {phdthesis}
   format.note output
   format.date "year" output.check
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {proceedings}
@@ -1455,7 +1457,7 @@ FUNCTION {proceedings}
   if$
   format.note output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {techreport}
@@ -1469,7 +1471,7 @@ FUNCTION {techreport}
   format.note output
   format.date "year" output.check
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {unpublished}
@@ -1523,7 +1525,7 @@ FUNCTION {begin.bib}
   write$ newline$
   "  \def\url#1{\texttt{#1}}\fi"
   write$ newline$
-  "\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi"
+  "\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL: }\fi"
   write$ newline$
   "\expandafter\ifx\csname href\endcsname\relax"
   write$ newline$
