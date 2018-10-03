@@ -284,6 +284,21 @@ can be visualized properly. A~kind of adaptive refinement of the output mesh wou
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\chapter{Reduced Dimensional Models in Flow Problems} \label{chap:soa}
+
+% Mesh of Combined Dimensions
+% Mixed-hybrid formulation
+% Dirac sources models - 1d-2d, 1d-3d (Schwenk, Koeppl, Zunino, D'Andelo)
+% xfem concept of Fumagalli, Scotti, D'Angelo ...
+% Flow123d concept
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input th-reduced_dim.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{XFEM -- State of the Art} \label{chap:soa}
 
 % current research on the problematics
@@ -295,111 +310,6 @@ can be visualized properly. A~kind of adaptive refinement of the output mesh wou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input th-xfem.tex
-
-\section{Model of Flow on Mesh of Combined Dimensions} \label{sec:soa_model_combined}
-
-We are interested in the model of groundwater flow (Darcy flow considered) in fractured porous 
-media with a mesh of combined dimensions, therefore we shall often use the related terminology.
-We shall refer to the approach that has been developed at the Technical
-University in Liberec. 
-
-\subsection{Mesh of Combined Dimensions}
-% define terms, problematics, some solutions, refer further to State of the Art
-Development of FE models that cover phenomena of different scales led to an idea of combining meshes of
-different dimensions to simplify the computation on a~resulting complex computational mesh.
-
-From the general point of view the problem can be seen as a~strongly coupled model where the coupling is not
-among physical fields but among domains of different dimensions. The coupling is then performed via boundary
-conditions and source terms of the fields equations. The term strongly coupled is used because the coupling 
-is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=10cm]{\figpath ground_fractures}
-\caption{
-    \label{fig:multi-dim}
-    Scheme of a~problem with domains of multiple dimensions, (used from Flow123d documentation~\cite{flow123d_doc_2015}).
-}
-\end{figure}
-
-An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of porous and fractured medium.
-Similarly, we consider a~set of 2D manifolds $\Omega_2\subset\overline\Omega_3$, representing the 2D fractures and a~set of 1D manifolds $\Omega_1\subset \overline\Omega_2$ 
-representing the 1D channels (see Fig \ref{fig:multi-dim}).
-The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
-For every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
-is introduced that consists of finite elements $T_{d}^{i},$\ $i = 1,\dots,N_{E}^{d}$.
-The elements are simplices in our case, i.e. lines, triangles and tetrahedra, respectively 
-(based on the documentation of Flow123d \cite{flow123d_doc_2015}).
-
-The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
-\begin{equation}
-        T_{d-1}^i \cap T_d \subset \mathcal{F}_d,   \qquad \text{where } \mathcal{F}_d = \bigcup_{k} \partial T_{d}^{k}
-\end{equation}
-and
-\begin{equation}
-        T_{d-1}^i \cap \mathcal{F}_d    \text{ is either $T_{d-1}^i$ or $\emptyset$}    
-\end{equation}
-for every $i\in\{1,\dots, N_{E}^{d-1}\}$, $j\in\{1,\dots,N_{E}^{d}\}$,  and $d=2,3$. 
-That is, the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
-match their sides or they poke out of $\Omega_d$. 
-
-A creation of a~compatible mesh can be challenging, due to the compatibility conditions and also the
-element quality requirement. Therefore the aim is to avoid these meshes.
-
-\emph{An incompatible mesh} does not have to satisfy the compatibility equations above. 
-General intersections of elements can be considered but these must be then carefully taken care of in the model.
-
-
-\subsection{Mixed-hybrid formulation}
-The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
-Brezzi and Fortin~\cite{brezzi_mixed_1991}. 
-The formulation, its stability and error estimates are studied there in abstract forms.
-
-The actual application of the mixed-hybrid method in the model of flow in fractured porous 
-media with combined mesh dimensions is studied in several articles.
-In \cite{brezina_mixed-hybrid_2010} the weak formulation and its discretization using the lowest-order Raviart-Thomas finite 
-elements is written. The linear system is then reduced using the Schur complement (original idea in~\cite{maryska_mixed-hybrid_1995})
-and solved efficiently with preconditioned conjugate gradients method.
-In \cite{sistek_bddc_2015} the theoretic part includes the weak and the discrete formulation and also shows
-the uniqueness of the discrete solution. Further, the authors discuss application and results of BDDC 
-(Balancing Domain Decomposition by Constraints) method used for solution of the linear system.
-
-In \cite{brezina_2012} a~mortar-like method is used to deal with the discrete coupling between equations on incompatible 1D-2D meshes 
-of different dimensions. The drawback of this approach is that it uses continuous approximation of velocity, so
-it cannot approximate the discontinuity of the velocity over the fractures accurately enough.
-
-
-
-\section{Flow123d} \label{sec:soa_flow123d}
-
-The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
-is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
-developed as an open source code under the versioning system Git where the eponymous project can be found, or 
-one can find it on the web page
-\begin{center}
-\url{http://flow123d.github.io/}
-\end{center}
-It has been developed at the Technical University of Liberec approximately since 2007.
-The main feature of the software is a computation on complex compatible meshes of combined dimensions, described in
-previous section. Therefore, the continuum models and discrete fracture network models can be combined.
-%
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
-  \caption{Flow balance in the well.}
-  \label{fig:logo_flow123d}
-\end{figure}
-%
-Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
-and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
-Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
-and simple reactions.
-
-
-Development of the software is an important practical part of the thesis. The aim is to implement support 
-of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
-Section \ref{chap:aims}.
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -520,8 +430,10 @@ work together both on the theory and implementation of the XFEM in 0D-2D and 1D-
 %   \nocite{gracie_modelling_2010, fries_corrected_2008, babuska_stable_2012, bangerth_deal.ii_2007, 
 %           arnold_lecture_2009, craig_using_2011, sistek_bddc_2015, brezzi_mixed_1991, schwenck_xfem-based_2015,
 %           fumagalli_efficient_2014, cattaneo_numerical_2015, koppl_tum_2015, maryska_mixed-hybrid_1995}
+{\small
 \bibliographystyle{mybibtex}
 % \bibliographystyle{csplainnat}
 \bibliography{citace,citace_xfem,citace_sgfem,citace_flow_my,citace_intersections}
+}
 
 \end{document}

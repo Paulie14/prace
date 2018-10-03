@@ -1,0 +1,155 @@
+% TODO: unification:
+% fracture X fault X interference X disruption X crack
+% well X channel X borehole
+
+The realistic models of underground processes, namely the groundwater flow and transport, geomechanics and thermal processes, have to deal with 
+a complex of geological formations containing various small scale features such as fractures and wells. Although the scale of these features
+can differ from the size of the computational domain by several orders, they influence significantly the global behavior of the system.
+In the past years, two different approaches for incorporating these features into numerical models have been developed.
+
+% Equivalent continuum
+% - simple, computationaly cheaper
+% - lack of detailed data (underground hydrogeological properties, neglect microscopic effects), allows the user to simplify the model
+% - smooths out the discontinuities; instead of modelling 3d domain with fractures, a 3d domain with equivalent properties (in the means of global behaviour) is applied
+
+The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modelled volume
+(increased/dicreased hydraulic conductivity, porosity, diffusivity or other rock properties).
+This approach smears the local effects of the disruptions but the model can still provide a valid approximation for an initial global view.
+For example, instead of having a bulk rock with a complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
+and the domain can be simply disctretised without taking the fractures into account any further.
+The concept is also suitable due to the lack of detailed data which we suffer from in our applications nearly always.
+%TODO FVM, FDM, FEM abbreviations
+The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM)
+but also larger effects (fractures) can be modelled by equivalent continuum.
+Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationaly cheap,
+but they cannot capture the local effects properly.
+
+
+
+% Discrete approach (reduced dimensions)
+% - more computationaly costly - representation of discrete fractures
+% - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, on the meshing level.
+% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk inbetween fractures)
+% - leads to reduced dimensional models (fracture in 3d is a plane -- averaging in the thickness axis, channel is a line -- averaging in circular cross-section )
+% 
+% - discrete fracture network (DFN) - only fracture network vs coupling with 3d
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{\figpath ground_fractures}
+\caption{
+    \label{fig:multi-dim}
+    Scheme of a~problem with domains of multiple dimensions, (used from Flow123d documentation~\cite{flow123d_doc_2015}).
+}
+\end{figure}
+
+In this chapter we focus on the reduced dimensional concept which is being used in different fields
+for many years. Most attention to this concept is given 
+We are mainly interested in underground processes and large scale models, in particular 
+the hydrogeological models of fractured porous media.
+
+% We shall refer to the approach that has been developed at the Technical University in Liberec. 
+
+\cite{martin_modeling_2005}
+\cite{fumagalli_numerical_2011}
+\cite{dangelo_mixed_2012}
+zunino 1d-3d (dirac delta models)
+DFNE (some reference)
+
+% The realistic models of groundwater processes including the transport processes and geomechanics have to deal with 
+% a complex nature of geological formations containing various small scale features as fractures (or fractured zones) and wells. 
+% Although of small scale, these features may have significant impact 
+% on the global behavior of the system and their representation in the numerical model is imperative. For example the fractures may form preferential 
+% paths which allow much faster transport that cannot be fully captured by equivalent continuum.
+% One possible approach is to model fractures and wells as lower dimensional objects and introduce their coupling with the surrounding continuum. 
+% The discretization then leads to the meshes of mixed dimensions, i.e. composed of elements of different dimension. This approach 
+% called mixed-dimensional analysis in the mechanics \cite{bournival_mesh-geometry_2008} is also studied in the groundwater context, see e.g. 
+% \cite{martin_modeling_2005}, \cite{fumagalli_numerical_2011}, \cite{brezina_analysis_2015} and 
+% already adopted by some groundwater simulation software, e.g FeFlow \cite{trefry_feflow_2007} and Flow123d \cite{flow123d}.
+
+\section{Mesh of Combined Dimensions}
+Development of FE models that cover phenomena of different scales led to an idea of combining meshes of
+different dimensions to simplify the computation on a~resulting complex computational mesh.
+
+From the general point of view the problem can be seen as a~strongly coupled model where the coupling is not
+among physical fields but among domains of different dimensions. The coupling is then performed via boundary
+conditions and source terms of the fields equations. The term strongly coupled is used because the coupling 
+is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
+
+An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of porous and fractured medium.
+Similarly, we consider a~set of 2D manifolds $\Omega_2\subset\overline\Omega_3$, representing the 2D fractures and a~set of 1D manifolds $\Omega_1\subset \overline\Omega_2$ 
+representing the 1D channels (see Fig \ref{fig:multi-dim}).
+The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
+For every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
+is introduced that consists of finite elements $T_{d}^{i},$\ $i = 1,\dots,N_{E}^{d}$.
+The elements are simplices in our case, i.e. lines, triangles and tetrahedra, respectively 
+(based on the documentation of Flow123d \cite{flow123d_doc_2015}).
+
+The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
+\begin{equation}
+        T_{d-1}^i \cap T_d \subset \mathcal{F}_d,   \qquad \text{where } \mathcal{F}_d = \bigcup_{k} \partial T_{d}^{k}
+\end{equation}
+and
+\begin{equation}
+        T_{d-1}^i \cap \mathcal{F}_d    \text{ is either $T_{d-1}^i$ or $\emptyset$}    
+\end{equation}
+for every $i\in\{1,\dots, N_{E}^{d-1}\}$, $j\in\{1,\dots,N_{E}^{d}\}$,  and $d=2,3$. 
+That is, the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
+match their sides or they poke out of $\Omega_d$. 
+
+A creation of a~compatible mesh can be challenging, due to the compatibility conditions and also the
+element quality requirement. Therefore the aim is to avoid these meshes.
+
+\emph{An incompatible mesh} does not have to satisfy the compatibility equations above. 
+General intersections of elements can be considered but these must be then carefully taken care of in the model.
+
+
+\section{Mixed-hybrid formulation}
+The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
+Brezzi and Fortin~\cite{brezzi_mixed_1991}. 
+The formulation, its stability and error estimates are studied there in abstract forms.
+
+The actual application of the mixed-hybrid method in the model of flow in fractured porous 
+media with combined mesh dimensions is studied in several articles.
+In \cite{brezina_mixed-hybrid_2010} the weak formulation and its discretization using the lowest-order Raviart-Thomas finite 
+elements is written. The linear system is then reduced using the Schur complement (original idea in~\cite{maryska_mixed-hybrid_1995})
+and solved efficiently with preconditioned conjugate gradients method.
+In \cite{sistek_bddc_2015} the theoretic part includes the weak and the discrete formulation and also shows
+the uniqueness of the discrete solution. Further, the authors discuss application and results of BDDC 
+(Balancing Domain Decomposition by Constraints) method used for solution of the linear system.
+
+In \cite{brezina_2012} a~mortar-like method is used to deal with the discrete coupling between equations on incompatible 1D-2D meshes 
+of different dimensions. The drawback of this approach is that it uses continuous approximation of velocity, so
+it cannot approximate the discontinuity of the velocity over the fractures accurately enough.
+
+
+
+\section{Flow123d} \label{sec:soa_flow123d}
+
+The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
+is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
+developed as an open source code under the versioning system Git where the eponymous project can be found, or 
+one can find it on the web page
+\begin{center}
+\url{http://flow123d.github.io/}
+\end{center}
+It has been developed at the Technical University of Liberec approximately since 2007.
+The main feature of the software is a computation on complex compatible meshes of combined dimensions, described in
+previous section. Therefore, the continuum models and discrete fracture network models can be combined.
+%
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
+  \caption{Flow balance in the well.}
+  \label{fig:logo_flow123d}
+\end{figure}
+%
+Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
+and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
+Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
+and simple reactions.
+
+
+Development of the software is an important practical part of the thesis. The aim is to implement support 
+of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
+Section \ref{chap:aims}.
