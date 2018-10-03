@@ -1,5 +1,6 @@
 
 % TODO:
+% define enriched FE space S_{enr} = \span{L_i}
 % Kronecker delta property $N_i(x_j) = \delta_{ij}$ (imposing BC, interpretation of results)
 % orthogonalization processes (Loehnert, or Babuska et al. LOT)
 % level set methods
@@ -124,7 +125,7 @@ in some convection dominated transport models. Abbas et al. in the article \cite
 a set of regularized (smooth) step functions that can capture arbitrary gradients and applied that method on linear advection-diffusion equation.
 %TODO can be viewed as an complement or alternatives to some stabilisation methods, like SUPG
 
-\subsubsection{Enrichment zone} \label{sec:glob_enr_zone}
+\subsection{Enrichment zone} \label{sec:glob_enr_zone}
 % In case of discontinuity 
 Typically the singular effects reach not only to the element where the singularity is located but also in its surroundings,
 where steep gradients are present.
@@ -139,10 +140,10 @@ In some cases, the additional degrees of freedom can become almost linearly depe
 %TODO use systematically enrichment zone instead of enrichment area
 This problematics is originally addressed in \cite{laborde_highorder_2005}, where the fixed enrichment zone size is suggested for standard XFEM,
 including some ideas for integral quadrature improvements and decreasing the ill-conditioning. In the same time, authors of \cite{bechet_improved_2005}
-have the same aim and introduce the terms \emph{topological} and \emph{geometrical} enrichment. The former one is a kind of enrichment where only the element
-that includes the singularity is enriched. The later one defines a fixed enrichment zone in the same manner as it is in the reference above.
+have the same aim and introduce the terms \emph{topological} and \emph{geometrical} enrichment. The former one is a~kind of enrichment where only the element
+that includes the singularity is enriched. The later one defines a~fixed enrichment zone in the same manner as it is in the reference above.
 In \cite{fries_corrected_2008}, the geometrical enrichment is also viewed as necessary to reach the optimal convergence, on the other hand
-it is mentioned that for a crack branching or multiple cracks, the enrichment zone is preffered as small as possible, i.e. topological enrichment is applied
+it is mentioned that for a~crack branching or multiple cracks, the enrichment zone is preffered as small as possible, i.e., topological enrichment is applied
 while sacrifising the optimal convergence rate.
 
 Since the singularities of our interest have a~radial character, we shall specify the size of the geometrical enrichment area by so called \emph{enrichment radius} $R_e$.
@@ -150,14 +151,14 @@ We think this aspect of singular enrichments does not receive appropriate attent
 can influence the solution significantly and is often given fixed and without any explanation.
 There is no general recipe available, up to our best knowledge, except the two following hints.
 
-Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an apriori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a 2d linear elasticity crack problem,
+Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an apriori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a~2d linear elasticity crack problem,
 where $h$ is the mesh parameter and $p$ is the FE polynomial order.
 The estimate derivation is dependent on the problem specific bilinear form and the enrichment function $\vc s(r,\theta) = \sqrt{r} \vc f(\theta)$.
 The main idea behind is the following: to achieve the optimal convergence of order $p$, choose $R_e$ such that the restriction of the solution to
 a narrow band of unenriched elements adjacent to the enrichment zone belongs to the Hilbert space of order $p+1$.
 According to the estimate, the minimum size of the enrichment zone is not fixed and it decreases with the mesh refinement.
-Therefore, if a fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved regardless of the value of the constant $C$.
-On the other hand, the constant $C$ is not specified precisely, so for a pratical application (with a given mesh), the estimate does not answer the proper value of $R_e$.
+Therefore, if a~fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved regardless of the value of the constant $C$.
+On the other hand, the constant $C$ is not specified precisely, so for a~pratical application (with a~given mesh), the estimate does not answer the proper value of $R_e$.
 The authors further state in their conclusion that the geometrical enrichment zone is necessary to obtain optimal convergence rate in this type of problems
 and that large enrichment zones can lead to ill-conditioning of the underlying linear system, which is in agreement with our experience in our models.
 
@@ -168,7 +169,7 @@ in the unenriched part of the domain. This error should be then balanced with th
 This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
 
  
-\subsection{Local Enrichment Functions} \label{sec:local_enrichment}
+\subsection{Enrichment Methods} \label{sec:enrichment_methods}
 We now discuss different choices of the local enrichment functions $L(x)$ and their particular aspects and properties.
 All the presented XFEM methods considered below are using the standard linear finite element shape 
 functions $N_\alpha(x)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
@@ -231,14 +232,14 @@ as special types of the weighted XFEM.
 % sgfem - scaled condition number
 % patch definition- might be useful elsewhere
 
-Babuška and Banerjee developed a different enrichment strategy based on GFEM,
-for which they created a theoretical framework in \cite{babuska_stable_2012} and
+Babuška and Banerjee developed a~different enrichment strategy based on GFEM,
+for which they created a~theoretical framework in \cite{babuska_stable_2012} and
 called it the Stable Generalized Finite Element Method.
 In \cite{gupta_stable_2013}, the authors elaborate the problem in 2d and show the application of the SGFEM on elastic fracture model.
 The proposed method is supposed to overcome the common problem of the ill-conditioning of the stiffness matrix coming out of enrichment methods.
 
 Particulary the ill-conditioning is observed when using the linear shape functions as the PU which results in some cases in almost linearly dependent degrees of freedom.
-We also often see that the ill-conditioning is sensitively dependent on the underlying mesh, i.e. the position of a~discontinuity or a~singularity with respect to 
+We also often see that the ill-conditioning is sensitively dependent on the underlying mesh, i.e., the position of a~discontinuity or a~singularity with respect to 
 element nodes or edges.
 This can then lead to much worse conditioned stiffness matrix than the one of the FEM
 and consequently to the loss of accuracy of the solution of the associated linear system.
@@ -246,7 +247,7 @@ An example is given in \cite{babuska_stable_2012} where the condition number is 
 compared with the growth with $h^{-2}$ in case of standard FEM for the second order problem.
 
 The target property of the SGFEM is to retain the convergence rate of the XFEM while keeping the conditioning of the associated linear system
-close to the FEM. Beside that, a good approximation of the enrichment function on blending elements comes naturally without any special treatment.
+close to the FEM. Beside that, a~good approximation of the enrichment function on blending elements comes naturally without any special treatment.
 The approximation also holds the property of standard FE approximation at nodes $h(\bx_\alpha)=a_\alpha$ (same as in case of shifting in the Corrected XFEM).
 
 The enrichment function is defined as the subtraction of the global enrichment function and its interpolation 
@@ -263,29 +264,36 @@ associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
 \end{equation}
 Notice that there are no additional enriched nodes on blending elements, like in $\mathcal{J}^e$ in 
 \eqref{eqn:xfem_ramp} and \eqref{eqn:xfem_shift}, and no ramp function is involved.
+Since the interpolant is built using the regular FE shape functions, the additional computational costs lie in the evaluation of $s(\bx_\beta)$, $\beta\in\mathcal{I}^e$,
+i.e., the enrichment function value at all enriched nodes.
+
+Later in \cite{zhang_robust_2016}, the robustness of SGFEM regarding the relative position of a~fracture and a~mesh is addressed.
+It is stated that GFEM or XFEM is stable (SGFEM) when the following 3 conditions hold:
+\begin{enumerate}[label=(\alph*)]
+        \item \label{enum:sgfem_conditions_a} it yields the optimal order of convergence $O(h)$,
+        \item \label{enum:sgfem_conditions_b} its conditioning is not worse than that of the FEM, i.e., the order of condition number of the stiffness matrix of the
+        GFEM is not worse than $O(h^2)$, and
+        \item \label{enum:sgfem_conditions_c} its conditioning is robust with respect to the position of the mesh relative to the features of the problem.
+\end{enumerate}
+It is shown in \cite{zhang_robust_2016} that the method as defined in \cite{babuska_stable_2012,gupta_stable_2013}, %with specialized enrichment functions for the elastic fracture problem,
+does not satisfy all the conditions. %, especially the last one. 
+To regain the optimal convergence, the enrichment spaces is enlarged by so-called linear Heaviside functions and linear singular functions,
+which resolve the approximation error of discontinuities in particular.
+To meet the last condition, a~local orthogonalization technique (LOT) is introduced.
+This technique orthogonalizes the local basis of the enrichment spaces with respect to the problem specific inner product,
+and keeps its approximation properties. Although LOT is applied on the specific problem,
+it is a~general idea and might be also suitable for cases, where more than a~single enrichment are present on an element.
+
+The same group of authors in \cite{gupta_3d_fracture_2015} study the SGFEM application to a~3d fracture mechanics problem.
+The transition from 2d to 3d is demonstrated not to be trivial. Two different enrichment basis for displacement are tested -- vectorial and scalar.
+Also the topological versus the geometrical enrichment in 3d is compared in the sense of conditiong and convergence.
+Finally, they show that only one of their proposed methods has at least the first two properties listed above,
+regarding the specific 3d problem.
 
 
-
-
-
-\par\noindent\rule{\textwidth}{1pt}
-
-The details on the enrichment application and actual formulation of the methods will be described in detail in Section
-\ref{sec:discretization}. There, a~model for a~quasi-3D aquifers-wells problem according to Gracie and Craig~\cite{gracie_modelling_2010,craig_using_2011}
-is developed and the XFEM is used to deal with the singularity in pressure at the wells (0D-2D coupling).
-
-Usage of the XFEM is not of course hassle free and gratis. The presence of mostly non-polynomial enrichment functions
-has a~huge impact on the system matrix assembly, where these functions must be integrated accurately enough.
-Adaptive integration strategies are being developed for a~given class of enrichment functions (e.g. \cite{ventura_fast_2009}), 
-but no general, robust and accurate solution is available. We will discuss the integration in detail in Section \ref{sec:integration}.
-Another effect on the system matrix is the increase of its condition number because the local enrichment functions can
-become nearly linearly dependent. 
-% It was thought that the SGFEM is the answer to that problem but it has been
-% reported that it is still not a~general solution.
-
-Another problem is the stability of the discretization. In contrast to mechanics, the PDEs describing flow
-need to satisfy a~strict discrete inf-sup condition (inequation 3.14, p. 75 in \cite{brezzi_mixed_1991} for mixed formulation).
-This inequation is of course affected by the enrichment, however it is discussed in the literature minimally.
+% Another problem is the stability of the discretization. In contrast to mechanics, the PDEs describing flow
+% need to satisfy a~strict discrete inf-sup condition (inequation 3.14, p. 75 in \cite{brezzi_mixed_1991} for mixed formulation).
+% This inequation is of course affected by the enrichment, however it is discussed in the literature minimally.
 
 
 \section{XFEM in Flow Problems on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
