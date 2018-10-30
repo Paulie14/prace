@@ -5,11 +5,45 @@
 In this chapter we develop mathematical background for our model.
 The model formulation is built from simple 2d Dirichlet problem to fully coupled 1d-2d and 1d-3d problem.
 
+% We start with some general notation and considerations. 
+
+% \cite{koppl_vidotto_2018}
+% \notePE{(according to MOX-Report No. 36/2017
+% Mathematical modelling, analysis and numerical approximation of second order elliptic problems with inclusions,
+% Koeppl, T.; Vodotto, E.; Wohlmuth, B.; Zunino, P.)}
+% \begin{equation}
+%     \vc v\cdot\vc n = \avg{\vc v\cdot \vc n}_w + \{\vc v\cdot \vc n\}_w \quad \textrm{on } \Gamma_w,
+% \end{equation}
+% where
+% \begin{eqnarray}
+%     \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
+%     \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
+% \end{eqnarray}
+
 \section{Mixed Dirichlet Problem}
 
-At the beginning we consider a steady 2d problem with a single singularity present in the domain.
+At the beginning we consider a steady 2d problem with a single singularity present in the domain $\Omega\subset\R^2$.
+The boundary of the domain $\prtl\Omega=\Gamma_D \cup \Gamma_w$ consists of two parts: the exterior boundary $\Gamma_D$
+and the interior boundary $\Gamma_w$. On $\Gamma_D$ we later prescribe the Dirichlet boundary condition, for simplicity.
+The $\Gamma_w$ is created by the (circular) cross-section of the domain $\Omega$ and the well which causes the singularity
+in the vicinity of the well.
+
+On $\Gamma_w$, we define the following decomposition of an arbitrary function $g$ on average and fluctuation parts, 
+in the same manner as it can be found in \cite{koppl_vidotto_2018},
+\begin{equation}\label{eqn:average_definition}
+    w = \avg{g}_w + \{g\}_w \quad \textrm{on } \Gamma_w,
+\end{equation}
+where
+\begin{equation}
+    \avg{g}_w = \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} g \dd s.
+\end{equation}
+From the definition \eqref{eqn:average_definition}, we have immediately the zero mean property of the fluctuation term
+\begin{equation}
+\int_{\Gamma_w} \{g\}_w \dd s = \int_{\Gamma_w} g - \avg{g}_w \dd s = 0.
+\end{equation}
+
 The flow in the domain $\Omega$ is governed by the Darcy's law, the continuity equation and
-boundary conditions, gathered in the following problem definition
+boundary conditions, gathered in the following definition
 \thmproblem{ \label{thm:prob_mixed_simple}
 \begin{eqnarray}
     \vc K^{-1} \vc u + \nabla p &=& 0 \qquad \textrm{in } \Omega, \label{eqn:mixed_form_1}\\
@@ -18,48 +52,68 @@ boundary conditions, gathered in the following problem definition
     p &=& g_{D} \qquad \textrm{on } \Gamma_{D} \label{eqn:mixed_form_4}.
 \end{eqnarray}
 }
+We consider $f\in L_2(\Omega)$ to be the source term and the hydraulic conductivity tensor $\vc K$ to be an invertible 2x2 matrix,
+for which we denote
+\begin{eqnarray}
+    \underline{k} &=& \inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1}),\\
+    \overbar{k} &=& \sup\limits_{x\in\Omega}\lambda_{\max}(\vc K^{-1})
+\end{eqnarray}
+the minimum and maximum eigenvalues of the inverse matrix.
+The constant $P\in\R$ is the fixed pressure inside the well, $\sigma_w\in\R$, $\sigma_w>0$ is the
+permeability coefficient between the well and 2d domain. Function $g_D\in L_2(\Gamma_D)$ is the 
+prescribed Dirichlet boundary condition for pressure on the exterior boundary.
+The condition \eqref{eqn:mixed_form_3} relates the average of the normal flux over $\Gamma_w$ in the outward direction
+to the pressure difference. We consider the pressure average on the interior side of $\Gamma_w$.
 
-\ref{thm:prob_mixed_simple}
+We define the following weak spaces for velocity and pressure,
+so we can derive the weak form of the problem \eqref{thm:prob_mixed_simple}
+\begin{eqnarray}    
+    V &=& \{\vc v\in H(\div,\Omega);\; \fluct{\vc v\cdot\vc n} = 0\}, \label{eqn:space_V}\\
+    Q &=& \{q \in L_2(\Omega) %;\; \fluct{q} = 0
+          \}. \label{eqn:space_Q}
+\end{eqnarray}
+In the space $V$, notice the assumption on the normal trace where the fluctuation part is neglected: $\{\vc v\cdot \vc n\}_w \approx 0$.
+This comes with the idea of a real situation where the well radius is considered very small and the pressure, and so the flux,
+is considered nearly constant along the well edge.
 
-The boundary consists of $\prtl\Omega=\Gamma_D \cup \Gamma_w$. The derivation of the weak form follows
+The derivation of the weak form follows
 \begin{align}
     \int_\Omega \vc u \vc K^{-1} \vc v
     + \int_{\prtl\Omega} p \,(\vc v \cdot \vc n)
     - \int_\Omega p\,\div\, \vc v &= 0 && \forall \vc v\in V, \label{eqn:mixed_weak_1}\\
-    - \int_\Omega q\,\div\, \vc u &= - \int_\Omega fq &&  \forall q\in Q, \label{eqn:mixed_weak_2}
+    - \int_\Omega q\,\div\, \vc u &= - \int_\Omega fq &&  \forall q\in Q. \label{eqn:mixed_weak_2}
 \end{align}
-with spaces $V,Q$ defined below.
-To apply the given boundary condition on $\Gamma_w$ we define
-the following decomposition of the normal flux into average and fluctuating parts
-\notePE{(according to MOX-Report No. 36/2017
-Mathematical modelling, analysis and numerical approximation of second order elliptic problems with inclusions,
-Koeppl, T.; Vodotto, E.; Wohlmuth, B.; Zunino, P.)}
-\begin{equation}
-    \vc v\cdot\vc n = \avg{\vc v\cdot \vc n}_w + \{\vc v\cdot \vc n\}_w \quad \textrm{on } \Gamma_w,
-\end{equation}
-where
-\begin{eqnarray}
-    \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
-    \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
-\end{eqnarray}
-Next we suppose the fluctuation part to be negligible $\{\vc v\cdot \vc n\}_w \approx 0$
-(in the real situation the well radius is considered very small and the pressure, and so the flux,
-is considered nearly constant around the well edge).
-We then have
+% To apply the given boundary condition on $\Gamma_w$ we define
+% the following decomposition of the normal flux into average and fluctuating parts
+% \notePE{(according to MOX-Report No. 36/2017
+% Mathematical modelling, analysis and numerical approximation of second order elliptic problems with inclusions,
+% Koeppl, T.; Vodotto, E.; Wohlmuth, B.; Zunino, P.)}
+% \begin{equation}
+%     \vc v\cdot\vc n = \avg{\vc v\cdot \vc n}_w + \{\vc v\cdot \vc n\}_w \quad \textrm{on } \Gamma_w,
+% \end{equation}
+% where
+% \begin{eqnarray}
+%     \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
+%     \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
+% \end{eqnarray}
+% Next we suppose the fluctuation part to be negligible $\{\vc v\cdot \vc n\}_w \approx 0$
+% (in the real situation the well radius is considered very small and the pressure, and so the flux,
+% is considered nearly constant around the well edge).
+Using the property of the space $V$ we get
 \begin{equation}
     \int_{\Gamma_w} p \,(\vc v \cdot \vc n) = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n} 
     = \avg{p}_w \avg{\vc v \cdot \vc n}_w \abs{\Gamma_w}
 \end{equation}
-Using
+where we can substitute from the boundary condition \eqref{eqn:mixed_form_3}
 \begin{equation}
-    \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P
+    \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P.
 \end{equation}
-from \eqref{eqn:mixed_form_3} and substituing for the boundary integral in \eqref{eqn:mixed_weak_1},
+Next, splitting the boundary integral in \eqref{eqn:mixed_weak_1} and using the above,
 we obtain the saddle point weak form
 \begin{align}
     a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle &&
-        \forall \vc v\in V = H(\div,\Omega), \label{eqn:mixed_saddle1}\\
-    b(\vc{u}, q) &= \langle F, q \rangle &&\forall q \in Q=L^2(\Omega)
+        \forall \vc v\in V, \label{eqn:mixed_saddle1}\\
+    b(\vc{u}, q) &= \langle F, q \rangle &&\forall q \in Q
         \label{eqn:mixed_saddle2},
 \end{align}
 with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
@@ -73,37 +127,69 @@ with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow
         -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P\avg{\vc v\cdot\vc n} \abs{\Gamma_w},\\
  \langle F, q\rangle =& - \int_{\Omega} f q.
 \end{align*}
-The bilinear form $a,b$ are continuous
+The bilinear forms $a,b$ are continuous. To bound the average terms in the form $a$,
+we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ with boundary values
+\begin{equation*}
+  \psi(\bx) =
+  \begin{cases}
+    1 & \textrm{ on } \Gamma_w, \\
+    0 & \textrm{ on } \Gamma_D.
+  \end{cases} \nonumber
+\end{equation*}
+Then for $\vc v\in V$ we have
+\begin{align*}
+  \avg{\vc v \cdot\vc n} = \int_{\Gamma_w} \vc v \cdot\vc n \psi = 
+    \int_{\partial\Omega} \left( \psi \vc v \right) \cdot\vc n \dd s & \\
+    = \int_{\Omega} \div\left( \psi \vc v \right) \dd\bx
+    = \int_{\Omega} \psi\, &\div \vc v \dd\bx + \int_{\Omega} \vc v \cdot \grad\psi \dd\bx \\
+    \leq \norm{\psi}_{L_2(\Omega)} \norm{\div&\,\vc v}_{L_2(\Omega)} + \norm{\grad\psi}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+    \leq C_w \norm{\vc v}_{H(\div,\Omega)}
+\end{align*}
+with a constant $C_w(\partial\Omega)$. Then we obtain the following bound
 \begin{multline}
-    a(\vc u,\vc v) \leq \norm{\vc K^{-1}}_{L_\infty(\Omega)} \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+    \abs{a(\vc u,\vc v)} \leq \norm{\vc K^{-1}}_{L_\infty(\Omega)} \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
         + \abs{\sigma_w} \abs{\Gamma_w} \avg{\vc u\cdot\vc n} \avg{\vc v\cdot\vc n}\\
         \leq \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,
 \end{multline}
-\notePE{I don't understand the last step of Theorem 90 proof, p.103, 'numpde.pdf' to bound the average terms.}
+with a constant $\alpha_2 \left(\norm{\vc K^{-1}}_{L_\infty(\Omega)}, \abs{\sigma_w}, \partial\Omega\right)$.
+%\notePE{I don't understand the last step of Theorem 90 proof, p.103, 'numpde.pdf' to bound the average terms.
+% easy: the phi terms must be <= 1 and for the result we use  (a+b)^2 <= 2(a^2+b^2)
+%}
+The continuity of $b$ is straightforward
 \begin{multline}
-    b(\vc v,p) \leq \norm{p}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}
-        \leq \norm{p}_{L_2(\Omega)} \norm{v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V. \\
+    \abs{b(\vc v,p)} \leq \norm{p}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}
+        \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V. \\
 \end{multline}
 
-The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v: b(v,q)=0\;\forall q\in Q\}$
+The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v\in V: b(\vc v,q)=0\;\forall q\in Q\}$, i.e.
+a subspace of $V$ where $\div\,\vc v=0$,
 \begin{multline}
-    a(\vc v,\vc v) \geq \inf_{x\in\Omega}\lambda_{\min}(\vc K^{-1}) \norm{\vc v}^2_{L_2(\Omega)}
+    a(\vc v,\vc v) \geq \underline{k} \norm{\vc v}^2_{L_2(\Omega)}
                 + \sigma_w^{-1}\abs{\Gamma_w}\avg{\vc v\cdot\vc n}^2 \\
         \geq  \alpha_1 \norm{\vc v}^2_{L_2(\Omega)} = \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
 \end{multline}
-with $\alpha_1=\inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1})$ and having the average term greater than zero.
+with $\alpha_1=\underline{k}$ and having the average term greater than zero.
 
 The LBB condition holds
 \begin{equation}
     \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
 \end{equation}
 To proove it, we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
-We solve the artificial Poisson problem $-\Delta\varphi = q$ with Dirichlet boundary condition $\varphi = 0$ on $\prtl\Omega$. We have from the ellipticity of the artificial problem
+We solve the artificial Poisson problem
+\begin{eqnarray*}    
+    -\Delta\varphi &=& q\\
+    \varphi &=& 0 \textrm{ on } \Gamma_D \\
+    \grad\varphi\cdot\vc n &=& 0 \textrm{ on } \Gamma_w \\
+\end{eqnarray*}
+with homogenous Dirichlet b.c. on $\Gamma_D$ and homogenous Neumann b.c. on $\Gamma_w$.
+From the ellipticity of the artificial problem we get
 \begin{equation}
     \norm{\grad\varphi}_{L_2(\Omega)} \leq \norm{\varphi}_{H^1(\Omega)}
         \leq C_F^2 \norm{q}_{L_2(\Omega)},
 \end{equation}
-with $C_F(\Omega,\prtl\Omega)$ from Friedrich's inequality. Next we set $\vc v = -\grad \varphi$, and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
+with $C_F(\Omega,\Gamma_D)$ from Friedrich's inequality.
+Next we set $\vc v = -\grad \varphi$, holding $\fluct{\vc v\cdot\vc n}=0$ for this particular $\varphi$,
+and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
 \begin{equation}
     \norm{\vc v}^2_{H(\div,\Omega)} = \norm{\vc v}^2_{L_2(\Omega)} 
         + \norm{\div\,\vc v}^2_{L_2(\Omega)}
