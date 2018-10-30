@@ -1,6 +1,9 @@
 % TODO: unification:
 % fracture X fault X interference X disruption X crack
 % well X channel X borehole
+The main goal of this chapter is to introduce several concepts of combining models of different (geometric) dimension and 
+to put this work into the context of the so called \emph{reduced dimensional models}.
+Also the relationship to the long-term research at the Technical University in Liberec is described.%\\
 
 The realistic models of underground processes, namely the groundwater flow and transport, geomechanics and thermal processes, have to deal with 
 a complex of geological formations containing various small scale features such as fractures and wells. Although the scale of these features
@@ -10,29 +13,20 @@ In the past years, two different approaches for incorporating these features int
 % Equivalent continuum
 % - simple, computationaly cheaper
 % - lack of detailed data (underground hydrogeological properties, neglect microscopic effects), allows the user to simplify the model
-% - smooths out the discontinuities; instead of modelling 3d domain with fractures, a 3d domain with equivalent properties (in the means of global behaviour) is applied
+% - smooths out the discontinuities; instead of modelling 3d domain with fractures, a~3d domain with equivalent properties (in the means of global behaviour) is applied
 
 The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modelled volume
 (increased/dicreased hydraulic conductivity, porosity, diffusivity or other rock properties).
-This approach smears the local effects of the disruptions but the model can still provide a valid approximation for an initial global view.
-For example, instead of having a bulk rock with a complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
+This approach smears the local effects of the disruptions but the model can still provide a~valid approximation for an initial global view of the system.
+For example, instead of having a~bulk rock with a~complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
 and the domain can be simply disctretised without taking the fractures into account any further.
-The concept is also suitable due to the lack of detailed data which we suffer from in our applications nearly always.
+The concept is also suitable due to the lack of detailed data which we suffer from in our applications.
 %TODO FVM, FDM, FEM abbreviations
-The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM)
-but also larger effects (fractures) can be modelled by equivalent continuum.
+The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM),
+the macroscopic effects (larger fractures) can be modelled by equivalent continuum.
 Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationaly cheap,
-but they cannot capture the local effects properly.
+but they cannot capture the local effects accurately.
 
-
-
-% Discrete approach (reduced dimensions)
-% - more computationaly costly - representation of discrete fractures
-% - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, on the meshing level.
-% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk inbetween fractures)
-% - leads to reduced dimensional models (fracture in 3d is a plane -- averaging in the thickness axis, channel is a line -- averaging in circular cross-section )
-% 
-% - discrete fracture network (DFN) - only fracture network vs coupling with 3d
 
 \begin{figure}[h]
 \centering
@@ -43,47 +37,85 @@ but they cannot capture the local effects properly.
 }
 \end{figure}
 
-In this chapter we focus on the reduced dimensional concept which is being used in different fields
-for many years. Most attention to this concept is given 
-We are mainly interested in underground processes and large scale models, in particular 
-the hydrogeological models of fractured porous media.
+% Discrete approach (reduced dimensions)
+% - more computationaly costly - representation of discrete fractures
+% - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, on the meshing level.
+% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk inbetween fractures)
+% - leads to reduced dimensional models (fracture in 3d is a~plane -- averaging in the thickness axis, channel is a~line -- averaging in circular cross-section )
+% 
+% - discrete fracture network (DFN) - only fracture network vs coupling with 3d
 
-% We shall refer to the approach that has been developed at the Technical University in Liberec. 
+The other approach considers the disruptions in a~discrete sense, keeping its sizes and properties explicitly in the model.
+This brings more demanding work on the geometric level, where the disruptions have to be represented so that a~suitable computational mesh can be built.
+A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible,
+and represent these as lower dimensional objects. This means on the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
+neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
+This approach is reffered as \emph{reducing dimensions} or \emph{reduced dimensional model}.
 
+There is a~world-wide community around the DFN (Discrete Fracture Network) problematics. The people are solving a~wide range of topics on DFN,
+from the definition and measurement of the geological parameters, stochastic generation of DFN and its discretization for FVM/FEM methods,
+to solving multiphysic problems on such geometries. We may differentiate between two types of fracture network models. One is stricly considering only
+the fracture network itself, without considering the bulk domain inbetween fractures. Such model can predict for example the so called \emph{preferential paths}
+in concentration transport problems, assuming the transport through the bulk domain is negligible. The other model takes the processes running in the bulk domain
+into account, so it needs to solve the communication between the fracture and bulk domains in addition, which puts an extra effort on discretisation,
+coupling conditions and solution of the underlying linear system.
+Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN on the most refined level and only the most influential
+parts of the DFN on the coarsest level.
+\notePE{DFNE (some references)}
+
+In this work we build and expanse a reduced dimensional model on top of the existing one being developed at TUL.
+It combines both the equivalent continuum and DFN approach including the communication with bulk domains.
+Since the numerical solution is based on FEM, we are interested in how the fractures and bulk are geometricaly discretised.
+Therefore we describe the meshes of combined dimensions below.
+
+
+% - introduce concept of meshes of combined dimensions
+% - come to reduce dimensional models
+% - explain problematics of geometry discretisation for FEM (in general)
+% - introduce meshes of combined dimensions
+% - who uses these models:
 \cite{martin_modeling_2005}
 \cite{fumagalli_numerical_2011}
 \cite{dangelo_mixed_2012}
 zunino 1d-3d (dirac delta models)
-DFNE (some reference)
+% We shall refer to the approach that has been developed at the Technical University in Liberec.
+
 
 % The realistic models of groundwater processes including the transport processes and geomechanics have to deal with 
-% a complex nature of geological formations containing various small scale features as fractures (or fractured zones) and wells. 
+% a~complex nature of geological formations containing various small scale features as fractures (or fractured zones) and wells. 
 % Although of small scale, these features may have significant impact 
 % on the global behavior of the system and their representation in the numerical model is imperative. For example the fractures may form preferential 
 % paths which allow much faster transport that cannot be fully captured by equivalent continuum.
 % One possible approach is to model fractures and wells as lower dimensional objects and introduce their coupling with the surrounding continuum. 
+
 % The discretization then leads to the meshes of mixed dimensions, i.e. composed of elements of different dimension. This approach 
 % called mixed-dimensional analysis in the mechanics \cite{bournival_mesh-geometry_2008} is also studied in the groundwater context, see e.g. 
 % \cite{martin_modeling_2005}, \cite{fumagalli_numerical_2011}, \cite{brezina_analysis_2015} and 
 % already adopted by some groundwater simulation software, e.g FeFlow \cite{trefry_feflow_2007} and Flow123d \cite{flow123d}.
 
 \section{Mesh of Combined Dimensions}
-Development of FE models that cover phenomena of different scales led to an idea of combining meshes of
-different dimensions to simplify the computation on a~resulting complex computational mesh.
+The motivation to model the small scale disruptions in the bulk domain as lower dimensional objects has been
+stated in the introduction of the chapter. Now we fix the idea of a~mesh of combined dimensions and we give
+a~more precise description.
 
-From the general point of view the problem can be seen as a~strongly coupled model where the coupling is not
-among physical fields but among domains of different dimensions. The coupling is then performed via boundary
-conditions and source terms of the fields equations. The term strongly coupled is used because the coupling 
-is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
+An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of a~porous medium, i.e. the bulk domain.
+In the same manner, a~set of 2d manifolds $\Omega_2$ is considered, representing the 2d fractures
+and a~set of 1d manifolds $\Omega_1$ representing the 1d channels in an arbitrary 3d space.
+See the Figure \ref{fig:multi-dim}.
 
-An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of porous and fractured medium.
-Similarly, we consider a~set of 2D manifolds $\Omega_2\subset\overline\Omega_3$, representing the 2D fractures and a~set of 1D manifolds $\Omega_1\subset \overline\Omega_2$ 
-representing the 1D channels (see Fig \ref{fig:multi-dim}).
+
 The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
-For every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
+Following the documentation of Flow123d \cite{flow123d_doc_2015} and its notation,
+for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
 is introduced that consists of finite elements $T_{d}^{i},$\ $i = 1,\dots,N_{E}^{d}$.
-The elements are simplices in our case, i.e. lines, triangles and tetrahedra, respectively 
-(based on the documentation of Flow123d \cite{flow123d_doc_2015}).
+Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
+This is not the case in some results in Section \ref{sec:model_aquifer}, where quadrilateral elements are considered
+due to the use of a~specific FEM library code.
+
+
+
+$\Omega_2\subset\overline\Omega_3$
+$\Omega_1\subset \overline\Omega_2$
 
 The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
 \begin{equation}
@@ -103,6 +135,11 @@ element quality requirement. Therefore the aim is to avoid these meshes.
 \emph{An incompatible mesh} does not have to satisfy the compatibility equations above. 
 General intersections of elements can be considered but these must be then carefully taken care of in the model.
 
+
+% From the general point of view the problem can be seen as a~strongly coupled model where the coupling is not
+% among physical fields but among domains of different dimensions. The coupling is then performed via boundary
+% conditions and source terms of the fields equations. The term strongly coupled is used because the coupling 
+% is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
 
 \section{Mixed-hybrid formulation}
 The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
@@ -134,7 +171,7 @@ one can find it on the web page
 \url{http://flow123d.github.io/}
 \end{center}
 It has been developed at the Technical University of Liberec approximately since 2007.
-The main feature of the software is a computation on complex compatible meshes of combined dimensions, described in
+The main feature of the software is a~computation on complex compatible meshes of combined dimensions, described in
 previous section. Therefore, the continuum models and discrete fracture network models can be combined.
 %
 \begin{figure}[!htb]
