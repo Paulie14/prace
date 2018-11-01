@@ -201,33 +201,16 @@ construction of safe underground nuclear waste deposits; investigation of transp
 and more.
 
 
-\section{Document Structure} \label{sec:structure}
-
-Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of art
-on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
-survey on the XFEM is presented in Section \ref{sec:soa_xfem} and works regarding the usage of the XFEM on
-meshes of combined dimensions are commented in Section \ref{sec:soa_xfem_combined}. Then 
-the software Flow123d is described briefly in Section \ref{sec:soa_flow123d}.
-
-Chapter \ref{chap:aims} summarizes the aims of the thesis.
-
-The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
-covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
-Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
-of different dimensions using Pl{\"u}cker coordinates.
-
-Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
-The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the literature.
+%%
+% The actuality of these themes is demonstrated by the several conferences with attendants from all over the world.
+% We mention the X-DMS (eXtended Discretization Methods), are being held since 2013 including the preceding  XFEM conferences.
+% The main topics includes the state-of-art methods for discretization of complex problems on complex domains, with a stress
+% on XFEM methods.
+% The other conference if DFNE focused on everything concerning the discrete fracture network with main interest in geology.
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Aims of the Thesis}\label{chap:aims}
+\section{Aims of the Thesis}\label{chap:aims}
 % define aims, characterize and briefly explain solution
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The research aims of the thesis can be summarized in two major points
 \begin{itemize}
@@ -237,7 +220,7 @@ The research aims of the thesis can be summarized in two major points
   \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
 \end{itemize}
 
-\section{Research aims}
+\subsection{Research aims}
 
 The following types of enrichments can be considered: wells (point source in 2D, line source in 3D), 
 fractures (discontinuity in velocity), boundary of 1D and 2D fractures. 
@@ -266,7 +249,7 @@ Solving the final linear algebraic system will require an efficient numerical me
 Each of these sub-problems is not trivial and requires a new approach or at least extending the existing one.
 The steps of the realization are summarized below in Section \ref{sec:realization}.
 
-\section{Realization} \label{sec:realization}
+\subsection{Realization} \label{sec:realization}
 The suggested numerical model will be implemented and tested in the software Flow123d.
 The following upgrades and changes are to be considered.
 
@@ -289,6 +272,26 @@ might be suitable in this case.
 
 Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
 can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
+
+
+\section{Document Structure} \label{sec:structure}
+
+Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of art
+on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
+survey on the XFEM is presented in Section \ref{sec:soa_xfem} and works regarding the usage of the XFEM on
+meshes of combined dimensions are commented in Section \ref{sec:soa_xfem_combined}. Then 
+the software Flow123d is described briefly in Section \ref{sec:soa_flow123d}.
+
+Chapter \ref{chap:aims} summarizes the aims of the thesis.
+
+The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
+covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
+Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
+of different dimensions using Pl{\"u}cker coordinates.
+
+Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
+The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the literature.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,6 +346,8 @@ can be visualized properly. A~kind of adaptive refinement of the output mesh wou
 
 \input th-result-pressure.tex
 
+
+\input th-results-flow123d.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
