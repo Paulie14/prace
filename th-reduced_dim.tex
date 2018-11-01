@@ -15,16 +15,16 @@ In the past years, two different approaches for incorporating these features int
 % - lack of detailed data (underground hydrogeological properties, neglect microscopic effects), allows the user to simplify the model
 % - smooths out the discontinuities; instead of modelling 3d domain with fractures, a~3d domain with equivalent properties (in the means of global behaviour) is applied
 
-The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modelled volume
-(increased/dicreased hydraulic conductivity, porosity, diffusivity or other rock properties).
+The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modeled volume
+(increased/decreased hydraulic conductivity, porosity, diffusivity or other rock properties).
 This approach smears the local effects of the disruptions but the model can still provide a~valid approximation for an initial global view of the system.
 For example, instead of having a~bulk rock with a~complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
-and the domain can be simply disctretised without taking the fractures into account any further.
+and the domain can be simply discretized without taking the fractures into account any further.
 The concept is also suitable due to the lack of detailed data which we suffer from in our applications.
 %TODO FVM, FDM, FEM abbreviations
 The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM),
-the macroscopic effects (larger fractures) can be modelled by equivalent continuum.
-Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationaly cheap,
+the macroscopic effects (larger fractures) can be modeled by equivalent continuum.
+Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationally cheap,
 but they cannot capture the local effects accurately.
 
 
@@ -40,7 +40,7 @@ but they cannot capture the local effects accurately.
 % Discrete approach (reduced dimensions)
 % - more computationaly costly - representation of discrete fractures
 % - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, on the meshing level.
-% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk inbetween fractures)
+% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk between fractures)
 % - leads to reduced dimensional models (fracture in 3d is a~plane -- averaging in the thickness axis, channel is a~line -- averaging in circular cross-section )
 % 
 % - discrete fracture network (DFN) - only fracture network vs coupling with 3d
@@ -50,22 +50,24 @@ This brings more demanding work on the geometric level, where the disruptions ha
 A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible,
 and represent these as lower dimensional objects. This means on the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
-This approach is reffered as \emph{reducing dimensions} or \emph{reduced dimensional model}.
+This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
+
+
 
 There is a~world-wide community around the DFN (Discrete Fracture Network) problematics. The people are solving a~wide range of topics on DFN,
 from the definition and measurement of the geological parameters, stochastic generation of DFN and its discretization for FVM/FEM methods,
-to solving multiphysic problems on such geometries. We may differentiate between two types of fracture network models. One is stricly considering only
-the fracture network itself, without considering the bulk domain inbetween fractures. Such model can predict for example the so called \emph{preferential paths}
+to solving multi-physic problems on such geometries. We may differentiate between two types of fracture network models. One is strictly considering only
+the fracture network itself, without considering the bulk domain between fractures. Such model can predict for example the so called \emph{preferential paths}
 in concentration transport problems, assuming the transport through the bulk domain is negligible. The other model takes the processes running in the bulk domain
-into account, so it needs to solve the communication between the fracture and bulk domains in addition, which puts an extra effort on discretisation,
+into account, so it needs to solve the communication between the fracture and bulk domains in addition, which puts an extra effort on discretization,
 coupling conditions and solution of the underlying linear system.
 Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN on the most refined level and only the most influential
-parts of the DFN on the coarsest level.
+parts of the DFN (or none) on the coarsest level.
 \notePE{DFNE (some references)}
 
 In this work we build and expanse a reduced dimensional model on top of the existing one being developed at TUL.
 It combines both the equivalent continuum and DFN approach including the communication with bulk domains.
-Since the numerical solution is based on FEM, we are interested in how the fractures and bulk are geometricaly discretised.
+Since the numerical solution is based on FEM, we are interested in how the fractures and bulk are geometrically discretized.
 Therefore we describe the meshes of combined dimensions below.
 
 
@@ -99,8 +101,8 @@ stated in the introduction of the chapter. Now we fix the idea of a~mesh of comb
 a~more precise description.
 
 An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of a~porous medium, i.e. the bulk domain.
-In the same manner, a~set of 2d manifolds $\Omega_2$ is considered, representing the 2d fractures
-and a~set of 1d manifolds $\Omega_1$ representing the 1d channels in an arbitrary 3d space.
+In the same manner, a~set of 2d manifolds $\Omega_2 \subset \Real^2$ is considered, representing the 2d fractures
+and a~set of 1d manifolds $\Omega_1 \subset \Real$ representing the 1d channels in an arbitrary 3d space.
 See the Figure \ref{fig:multi-dim}.
 
 
@@ -112,10 +114,8 @@ Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
 This is not the case in some results in Section \ref{sec:model_aquifer}, where quadrilateral elements are considered
 due to the use of a~specific FEM library code.
 
-
-
-$\Omega_2\subset\overline\Omega_3$
-$\Omega_1\subset \overline\Omega_2$
+% $\Omega_2\subset\overline\Omega_3$
+% $\Omega_1\subset \overline\Omega_2$
 
 The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
 \begin{equation}
@@ -128,12 +128,23 @@ and
 for every $i\in\{1,\dots, N_{E}^{d-1}\}$, $j\in\{1,\dots,N_{E}^{d}\}$,  and $d=2,3$. 
 That is, the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
 match their sides or they poke out of $\Omega_d$. 
+We do not consider a compatible mesh in case of co-dimension 2, i.e. for 1d and 3d coupling.
+Under these conditions, a compatible 1d line in 3d is created only as an intersection of 
+two 2d planes.
 
-A creation of a~compatible mesh can be challenging, due to the compatibility conditions and also the
-element quality requirement. Therefore the aim is to avoid these meshes.
+A creation of a~compatible mesh can be challenging on the algorithms, due to the compatibility conditions.
+The requirements on element quality can be also limiting, since the intersection of domains can be very arbitrary.
+Therefore we look for models not requiring the compatible meshes.
 
-\emph{An incompatible mesh} does not have to satisfy the compatibility equations above. 
-General intersections of elements can be considered but these must be then carefully taken care of in the model.
+\emph{An incompatible mesh} does not have to satisfy the compatibility equations above.
+The creation of the mesh is much simpler when it can be done independently per domain.
+On the other hand, there are three main challenges on the next levels of the model solution.
+First, the intersections of the mesh elements must be computed efficiently and the intersection data
+must be represented in such a way that it can be used simply and cheaply in the FEM code.
+Second, an efficient numerical integration must be available on the intersecting polygons.
+Third, stable coupling conditions between dimensions must be provided.
+Part of this work, Chapter \ref{chap:intersections}, is dedicated to a~development of algorithms
+for computation of intersections of incompatible meshes.
 
 
 % From the general point of view the problem can be seen as a~strongly coupled model where the coupling is not
