@@ -22,11 +22,11 @@ The model formulation is built from simple 2d Dirichlet problem to fully coupled
 
 \section{Mixed Dirichlet Problem}
 
-At the beginning we consider a steady 2d problem with a single singularity present in the domain $\Omega\subset\R^2$.
+At the beginning, we consider a steady 2d problem with a single singularity present in a~domain $\Omega\subset\R^2$.
 The boundary of the domain $\prtl\Omega=\Gamma_D \cup \Gamma_w$ consists of two parts: the exterior boundary $\Gamma_D$
 and the interior boundary $\Gamma_w$. On $\Gamma_D$ we later prescribe the Dirichlet boundary condition, for simplicity.
-The $\Gamma_w$ is created by the (circular) cross-section of the domain $\Omega$ and the well which causes the singularity
-in the vicinity of the well.
+The $\Gamma_w$ is created by the (circular) cross-section of the domain $\Omega$ and a~well which causes the singularity
+in the solution in the vicinity of the well.
 
 On $\Gamma_w$, we define the following decomposition of an arbitrary function $g$ on average and fluctuation parts, 
 in the same manner as it can be found in \cite{koppl_vidotto_2018},
@@ -60,7 +60,7 @@ for which we denote
 \end{eqnarray}
 the minimum and maximum eigenvalues of the inverse matrix.
 The constant $P\in\R$ is the fixed pressure inside the well, $\sigma_w\in\R$, $\sigma_w>0$ is the
-permeability coefficient between the well and 2d domain. Function $g_D\in L_2(\Gamma_D)$ is the 
+permeability coefficient between the well and the 2d domain. Function $g_D\in L_2(\Gamma_D)$ is the 
 prescribed Dirichlet boundary condition for pressure on the exterior boundary.
 The condition \eqref{eqn:mixed_form_3} relates the average of the normal flux over $\Gamma_w$ in the outward direction
 to the pressure difference. We consider the pressure average on the interior side of $\Gamma_w$.
@@ -127,7 +127,36 @@ with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow
         -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P\avg{\vc v\cdot\vc n} \abs{\Gamma_w},\\
  \langle F, q\rangle =& - \int_{\Omega} f q.
 \end{align*}
-The bilinear forms $a,b$ are continuous. To bound the average terms in the form $a$,
+
+The necessary conditions for the existence of the unique solution of our problem are given in the Brezzi's theorem
+(based on \cite{brezzi_mixed_1991}, p. 42)
+\theorem{ \label{thm:brezzi_theorem}
+Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
+\begin{eqnarray}
+    \abs{a(\vc u,\vc v)} &\leq& \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,\\
+    \abs{b(\vc v,p)} &\leq& \beta_2 \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V.
+\end{eqnarray}
+Let us suppose that $a$ is coercive on the kernel $V_0$ of the space $V$, i.e. there holds
+\begin{equation}
+    a(\vc v,\vc v) \geq \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
+\end{equation}
+and that there holds the LBB (Ladyshenskaja-Babu{\v s}ka-Brezzi) condition
+\begin{equation}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
+\end{equation}
+Then there exists a \notePE{unique} solution to problem \eqref{thm:prob_mixed_simple} for any $F\in V'$ and $G\in Q'$
+\notePE{where velocity $u$ is unique and pressure $p$ is defined up to an element of $Ker B'$}
+such that the solution fullfills the stability estimate
+\begin{eqnarray}
+    \norm{\vc u}_{H(\div,\Omega)} &\leq& \frac{1}{\alpha_1} \norm{F}_{V'} + \left( \frac{\alpha_2}{\alpha_1} + 1\right)\frac{1}{\beta_1} \norm{G}_{Q'}\\
+    \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
+            + \frac{\alpha_2}{\beta_1^2} \left( 1+ \frac{\alpha_2}{\alpha_1}\right) \norm{G}_{Q'}.
+\end{eqnarray}
+}
+
+We will now show that the conditions in theorem \eqref{thm:brezzi_theorem} are fullfilled,
+beginning with the continuity of the bilinear forms.
+To bound the average terms in the form $a$,
 we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ with boundary values
 \begin{equation*}
   \psi(\bx) =
@@ -158,8 +187,9 @@ with a constant $\alpha_2 \left(\norm{\vc K^{-1}}_{L_\infty(\Omega)}, \abs{\sigm
 The continuity of $b$ is straightforward
 \begin{multline}
     \abs{b(\vc v,p)} \leq \norm{p}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}
-        \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V. \\
+        \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V, \\
 \end{multline}
+putting the constant $\beta_2=1$.
 
 The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v\in V: b(\vc v,q)=0\;\forall q\in Q\}$, i.e.
 a subspace of $V$ where $\div\,\vc v=0$,
@@ -170,11 +200,7 @@ a subspace of $V$ where $\div\,\vc v=0$,
 \end{multline}
 with $\alpha_1=\underline{k}$ and having the average term greater than zero.
 
-The LBB condition holds
-\begin{equation}
-    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
-\end{equation}
-To proove it, we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
+To proove the continous LBB condition, we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
 We solve the artificial Poisson problem
 \begin{eqnarray*}    
     -\Delta\varphi &=& q\\
@@ -199,21 +225,23 @@ Using it in the LBB condition, we obtain
 \begin{equation}
     \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} =
     \sup_{\vc v\in V} \frac{\norm{q}^2_{L_2(\Omega)}}{\norm{\vc v}_{H(\div,\Omega)}}
-    \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)}.
+    \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)},
 \end{equation}
-\notePE{There is also some lemma in Brezzi, which says: if B is surjective (and $\div$ is) then the LBB condition holds.}
+and having the constant $\beta_2 = (1+C_F^4)^{-1/2}$.
 
-The bilinear forms $a,b$ then define the operators
-\begin{eqnarray}
-A:& V \rightarrow V',\\ 
-B:& V \rightarrow Q',\\
-B^T:& Q \rightarrow V,'
-\end{eqnarray}
-and the problem can be rewritten in
-\begin{align}
- A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:saddle3} \\
- B\vc u &= F  \;\textrm{  in } Q'. \label{eqn:saddle4}
-\end{align}
+% \notePE{There is also some lemma in Brezzi, which says: if B is surjective (and $\div$ is) then the LBB condition holds.}
+% 
+% The bilinear forms $a,b$ then define the operators
+% \begin{eqnarray}
+% A:& V \rightarrow V',\\ 
+% B:& V \rightarrow Q',\\
+% B^T:& Q \rightarrow V,'
+% \end{eqnarray}
+% and the problem can be rewritten in
+% \begin{align}
+%  A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:saddle3} \\
+%  B\vc u &= F  \;\textrm{  in } Q'. \label{eqn:saddle4}
+% \end{align}
 
 
 \paragraph{Discretization.}
@@ -344,6 +372,9 @@ we need to check the coercivity
 }
 
 \paragraph{Discrete LBB condition.}
+
+%(inequation 3.14, p. 75 in \cite{brezzi_mixed_1991}
+
 According to Lemma 99 ('numpde.pdf'), if there exists an interpolation operator
 $\pi_h: V\rightarrow V_h$ which is continuous and satisfies
 \begin{equation}
@@ -551,6 +582,7 @@ Mixed form:
 p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,3 \\
 \vc u_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,3
   \end{eqnarray*}
+
   
 % \subsection{SGFEM enrichment (single enrichment)}
 % We use SGFEM like approach to enrich velocity.
@@ -596,34 +628,32 @@ p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,3 \\
 %         Not so important. (integral of flux of RT functions over the well edge is zero,
 %         if the well edge is included in a single element)
 %   \end{enumerate}
-% 
-% \subsection{Computation of the distance function $\vc r$ in 3d}
-% % https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-% Let us have the direction vector $\vc u = \vc b - \vc a$ of an 1d element and a point $\vc x$.
-% We want to compute the shortest distance $r$ between $\vc x$ and $\vc u$.
-% %
-% \begin{figure}[!htb]
-%   \centering
-%   \def\svgwidth{0.5\textwidth}
-%   \input{distance_function_3d.pdf_tex}
-%   \caption{Distance function $\vc r$ in 3d.}
-%   \label{fig:logo_flow123d}
-% \end{figure}
-% %
-% The angle $\alpha$ between $(\vc x - \vc a)$ and $\vc u$ is 
-% \[
-% \cos(\alpha) = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc x - \vc a}\abs{\vc u}} = \frac{\abs{\vc u_p}}{\abs{\vc x - \vc a}}
-% \]
-% % and also from the right % (US), right-angled triangle (GB)
-% % triangle we have
-% % \[
-% % \cos(\alpha) = \frac{\abs{\vc u_p}}{\abs{\vc x - \vc a}}
-% % \]
-% which gives us projection of $(\vc x-\vc a)$ onto $\vc u$
-% \[
-% \vc u_p = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u.
-% \]
-% So we obtain the distance vector
-% \[
-%   \vc r(\vc x) = (\vc x - \vc a) - \vc u_p = (\vc x - \vc a) - \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u
-% \]
+
+\subsubsection{Computation of the distance function $\vc r$ in 3d}
+% https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+The computation of the global enrichment function in 3d is little bit more involved than in 2d case
+due to the evaluation of the distance function from the line.
+%
+\begin{figure}[!htb]
+  \centering
+  \def\svgwidth{0.5\textwidth}
+  \input{\figpath distance_function_3d.pdf_tex}
+  \caption{Distance function $\vc r$ in 3d.}
+  \label{fig:distance_function_3d}
+\end{figure}
+
+Let us have the direction vector $\vc u = \vc b - \vc a$ of an 1d element (a singularity)
+and an arbitrary point $\vc x$.
+We need to compute the shortest distance $r$ between $\vc x$ and $\vc u$, see \fig{fig:distance_function_3d}.
+The angle $\alpha$ between $(\vc x - \vc a)$ and $\vc u$ is 
+\[
+\cos(\alpha) = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc x - \vc a}\abs{\vc u}} = \frac{\abs{\vc u_p}}{\abs{\vc x - \vc a}}.
+\]
+From there we use $\abs{\vc u_p}$ to obtain the projection of $(\vc x-\vc a)$ onto $\vc u$
+\[
+\vc u_p = \abs{\vc u_p}\frac{\vc u}{\abs{\vc u}} = \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u.
+\]
+Then the distance vector is
+\[
+  \vc r(\vc x) = (\vc x - \vc a) - \vc u_p = (\vc x - \vc a) - \frac{(\vc x - \vc a)\cdot\vc u}{\abs{\vc u}^2} \vc u.
+\]
