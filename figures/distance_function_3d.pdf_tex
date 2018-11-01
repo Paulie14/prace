@@ -1,0 +1,62 @@
+%% Creator: Inkscape inkscape 0.91, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'distance_function_3d.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{268.60879099bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.71817948)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{\figpath distance_function_3d.pdf}}%
+    \put(0.96282222,0.05627761){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\vc x$}}%
+    \put(0.73706267,0.55406102){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\vc b$}}%
+    \put(0.14695764,0.04146053){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\vc a$}}%
+    \put(0.25606576,0.15701147){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\alpha$}}%
+    \put(0.30875577,0.3745844){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\vc u_p$}}%
+    \put(0.48515729,0.04529882){\color[rgb]{0,0,0}\makebox(0,0)[lb]{$\vc x-\vc a$}}%
+    \put(0.7864207,0.33856919){\color[rgb]{1,0,0}\makebox(0,0)[lb]{$\vc r$}}%
+    %\put(0,0){\includegraphics[width=\unitlength,page=2]{distance_function_3d.pdf}}%
+  \end{picture}%
+\endgroup%
