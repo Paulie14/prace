@@ -95,7 +95,7 @@ zunino 1d-3d (dirac delta models)
 % \cite{martin_modeling_2005}, \cite{fumagalli_numerical_2011}, \cite{brezina_analysis_2015} and 
 % already adopted by some groundwater simulation software, e.g FeFlow \cite{trefry_feflow_2007} and Flow123d \cite{flow123d}.
 
-\section{Mesh of Combined Dimensions}
+\section{Mesh of Combined Dimensions} \label{sec:mesh_combined}
 The motivation to model the small scale disruptions in the bulk domain as lower dimensional objects has been
 stated in the introduction of the chapter. Now we fix the idea of a~mesh of combined dimensions and we give
 a~more precise description.
@@ -201,3 +201,215 @@ and simple reactions.
 Development of the software is an important practical part of the thesis. The aim is to implement support 
 of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
 Section \ref{chap:aims}.
+
+
+\newpage
+\section{General Well-Aquifer Model}
+The general settings of a~well-aquifer model that we solve is defined in this section.
+
+We consider wells (or boreholes, channels) to be straight narrow tubes (cylinders) $\Omega^w_C$ of radius $\rho_w$;
+we use the index $w\in\mathcal{W}=\{1,\ldots,W\}$ when refering to a~particular well.
+Using the reduced dimensional concept, the wells are modeled as lower dimensional objects,
+i.e. 1d manifolds $\Omega^w_1$ which represent the central lines of cylinders $\Omega^w_C$.
+The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu: [0,1] \rightarrow \Omega^w_1$:
+\begin{equation} \label{eqn:1d_parametrization}
+    \Omega^w_1 = \{\vc x\in\R^3: \vc x = \nu(t),\; t\in[0,1] \}. %\quad \nu: [0,1] \rightarrow \Omega^w_1
+\end{equation}
+We define the envelope of a cylinder $\Omega^w_C$
+\[
+    \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \nu(t) + \vc r,\; \vc r=\rho_w\vc n_{\Omega^w_1}(t),\; t\in[0,1] \},
+\]
+% \[
+%     \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \vc y + \vc r,\; \vc y\in\Omega^w_1,\; \vc r=\rho_w\vc n_{\Omega^w_1} \},
+% \]
+where $\vc n_{\Omega^w_1}(t)$ is the unit normal vector to the line $\Omega^w_1$ at point $t$.
+% We further denote $\vc t_w$ a direction vector of $\Omega^w_1$ and define the parametrization of the reduced domain
+% \[
+%     \Omega^w_1 = \{\vc x\in\R^3: \vc x = t \vc t_w,\; t\in[0,1]\}.
+% \]
+
+The domain of a~well $\Omega^w_1$ has a~boundary (obviously consisting of two end points)
+$\Gamma_1 = \Gamma_{1D} \cup \Gamma_{1N}$, where pressure (Dirichlet boundary condition)
+or flux (Neumann boundary condition) is prescribed.
+If possible, and apparent from context, we denote the domains of all wells by
+\[
+    \Omega_1 = \bigcup_{w\in\mathcal{W}} \Omega^w_1, \quad \Omega_C = \bigcup_{w\in\mathcal{W}} \Omega^w_C.
+\]
+
+A~steady groundwater flow governed by Darcy's law is considered in aquifers.
+The same is considered also in wells for simplicity:
+we can imagine the wells filled with different porous material, or in some tests we fix pressure in wells to a~constant value.
+Without any coupling terms, we would write for every dimension $d$
+\begin{eqnarray*}
+     \frac{1}{\delta_d} \vc K_d^{-1} \vc u_d + \grad p_d =& 0  &\qquad \textrm{ in }\Omega_d\\
+      \div\,\vc u_d  =& \delta_d f_d  &\qquad \textrm{ in }\Omega_d
+\end{eqnarray*}
+where $\delta_d\vc u_d\; [ms^{-1}]$ is the unknown Darcian velocity, $p_d \; [m]$ is the unknown pressure.
+Parameter $\delta_d$ is the complement measure of the domain: thickness $[m]$ in 2d,
+cross-section $[m^2]$ in 1d and $\delta_3=1\; [-]$ for consistency.
+The quantity $\vc u_d\; [m^{d-4}s^{-1}]$ itself can be seen as flux density, i.e. flux through $\Omega_d$
+with complementary dimension $\delta_d=1$.
+The conductivity tensor $\vc K_d\; [ms^{-1}]$ is generally $3\times 3$ matrix,
+symmetric and positive definite, possibly representing the anisotropy of the media.
+In the source term, $f_d\;[s^{-1}]$ denotes the water source density.
+
+We note that we use the same operators $\div$ and $\grad$ in all dimensions $d=1,2,3$ for the sake of notation simplicity,
+although in 1d we understand these as follows
+\begin{eqnarray*}
+\div\,\vc u_1 = \div_t\,\vc u_1 = \frac{\prtl}{\prtl t} \vc u_1(t), \\
+\grad p_1 = \grad_t p_1 = \frac{\prtl}{\prtl t} p_1(t), \\
+\end{eqnarray*}
+with $t$ being the 1d parameter in \eqref{eqn:1d_parametrization}.
+
+Two models are presented below, the first one includes 1d-2d coupling between dimensions,
+the other one couples 1d and 3d domains together.
+
+
+\subsection{1d-2d Model}
+We consider a~system of aquifers separated by aquitards
+(based on Gracie and Craig \cite{gracie_modelling_2010,craig_using_2011}).
+The aquifers are underground horizontal layers of permeable rock containing water in its pores.
+These layers often have negligible flow in the vertical direction so they can be modeled
+as 2d planes by means of the reduced dimensional modeling.
+There can be several aquifers on top of each other, separated by layers of very low permeability
+which are called aquitards.
+In contrast to Gracie and Craig, we suppose the aquitards to be impermeable, 
+so the aquifers can communicate between each other only through the wells.
+On the other hand, we add an artificial volume source term on aquifers.
+This allows us to better study the impact of the prescribed source on the solution
+which is better suited to the numerical experiments we are going to present. 
+
+The model is defined as a~complex multi-aquifer system to follow our implementation and to see the differences
+we made in comparison to Gracie and Craig. However before solving the complex model,
+we constrain ourselves to a~single aquifer in a~major part of the work.
+
+Let $\Omega^m_2$ be the domain of an aquifer with index $m\in\mathcal{M}=\{1,\ldots,M\}$.
+We denote the aquifers' boundary $\prtl\Omega^m_2 = \Gamma^m_{ext} \cup \Gamma^m_{int}$,
+where we call $\Gamma^m_{ext} = \Gamma^m_{2D} \cup \Gamma^m_{2N}$ the exterior boundary, consisting of two parts where we prescribe
+Dirichlet and Neumann boundary condition, respectively.
+The interior boundary $\Gamma^m_{int}$ is created by an union of all the cross-sections of the aquifer domain $\Omega^m_2$
+and wells cylinder envelopes
+\[
+    \Gamma^m_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma^m_w, \quad \Gamma^m_w = \Omega^m_2 \cap \prtl\Omega^w_C.
+\]
+The point where the reduced domain $\Omega^w_1$ intersects with $\Omega^m_2$ is denoted $\vc x^m_w$.
+Where possible, we again use the simplified notation
+\begin{eqnarray*}
+    \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^w_1, \quad \Gamma_{\#} = \bigcup_{m\in\mathcal{M}} \Gamma^m_{\#}
+\end{eqnarray*}
+with $\#$ being $ext,\; int,\; 2D$ or $2N$.
+
+On $\Gamma^m_w$, we define the following decomposition of an arbitrary function $q$ on average and fluctuation parts, 
+in the same manner as it can be found in \cite{koppl_vidotto_2018},
+\begin{equation}\label{eqn:average_decomposition}
+    q = \avg{q}^m_w + \{q\}^m_w \quad \textrm{on } \Gamma^m_w,
+\end{equation}
+where
+\begin{equation} \label{eqn:average_definition}
+    \avg{q}^m_w = \frac{1}{{\abs{\Gamma^m_w}}} \int_{\Gamma^m_w} q \dd s.
+\end{equation}
+It holds for the fluctuation term from the definition \eqref{eqn:average_definition}
+\begin{equation}
+\int_{\Gamma_w} \{q\}_w \dd s = \int_{\Gamma_w} q - \avg{q}_w \dd s = 0.
+\end{equation}
+% \notePE{Why do we use the averaging: - without it, the models on communicating dimension would be to tight, bad for numerical solution,
+% arising from hte models with Dirac delta sources}
+
+
+Then we can write the entire problem:
+\thmproblem{ \label{thm:problem_2d}
+Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
+\begin{align}
+% \begin{alignat}{4}
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2  \\
+\div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2 \label{eqn:problem_2d_2d_source}\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in{M}}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_2d_1d_source}\\
+\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M} \label{eqn:problem_2d_flux}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2 \label{eqn:problem_2d_dirichlet}\\
+\delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:problem_2d_neumann}
+%   \end{alignat}
+\end{align}
+where
+\[ 
+{\color{blue}
+    \Sigma^m_w = \delta_2\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big).
+} 
+\label{eqn:1d_2d_sigma_source}
+\]
+}
+% \notePE{we obviously consider the parameter $\sigma^m_w$ including the thickness $\delta_2$ - is that acceptable?}
+
+One can see the dimensional coupling terms highlighted in the blue color.
+The term $\Sigma^m_w$ is a~constant representing the flux from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
+through their intersection $\Gamma^w_1$. 
+which is dependent on the difference between the pressure in the well and the average pressure on the cross-section $\Gamma^m_w$.
+The flux is proportional to the pressure difference with the permeability coefficient $\sigma^m_w>0\;[s^{-1}]$ between $\Omega^m_2$ and $\Omega^w_1$.
+If the pressure difference is negative, the flux is in opposite direction.
+We can then read: the average outward flux from the aquifer
+over $\Gamma^m_w$ in \eqref{eqn:problem_2d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_2d_1d_source}.
+The last two equations are the boundary conditions, the first one \eqref{eqn:problem_2d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
+the later one \eqref{eqn:problem_2d_neumann} sets the inward flux $g_{dN}$. The sign of the flux in \eqref{eqn:problem_2d_neumann}
+is chosen such that it is consistent with the software Flow123d.
+
+The problematic place of a reduced dimensional model, if done in the simplest way, would be that after the reduction of wells,
+the 1d-2d intersections are degenerated to points. Then the term in the flux coupling condition \eqref{eqn:problem_2d_flux} would rather
+appear as a~point source on the right hand side of \eqref{eqn:problem_2d_2d_source} creating strong singularities in the solution.
+However, keeping the real scale of the intersections in the model by means of \eqref{eqn:problem_2d_flux}, we cut off the singularity peaks
+at finite height and get rid of the singular solution part running to infinity.
+Still there is left the problem of capturing the intersections and adjacent steep gradients in the solution by the numerical discretization.
+This is the same motivation found in models in \cite{gracie_modelling_2010,craig_using_2011,koppl_vidotto_2018} and ours,
+although treated very differently on the numerical level in each of the works.
+
+\subsection{1d-3d Model}
+In this model the aquifer domain is not reduced to a plane but it is represented as a~3d domain.
+This would be a necessary consideration when the aquifer cannot be properly modeled in layers.
+Let us denote the domain $\Omega_3$, we do not have the index $m$ here.
+The boundary $\prtl\Omega_3 = \Gamma_{ext} \cup \Gamma_{int}$,
+where the exterior boundary consists of two parts $\Gamma_{ext} = \Gamma_{3D} \cup \Gamma_{3N}$,
+analogically to the 1d-2d model.
+
+The interior boundary $\Gamma_{int}$ is created by an union of all the cross-sections of the domain $\Omega_3$
+and wells cylinder envelopes
+\[
+    \Gamma_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma_w, \quad \Gamma_w = \Omega_3 \cap \prtl\Omega^w_C.
+\]
+On $\Gamma_w$ we define the average decomposition $w = \avg{g}_w + \{g\}_w$ in the similar manner
+as in the 1d-2d case. However, the average is computed over a circle edge, perpendicular to $\Omega^w_1$,
+with its center at a~point $\vc x\in \Omega^w_1$
+\begin{equation} \label{eqn:average_definition_3d}
+    \avg{g}_w(\vc x) = \frac{1}{2\pi\rho_w} \int_0^{2\pi} g (\vc x + \rho_w \vc n_{\Omega^w_1}(\vc x,\theta)) \dd \theta.
+\end{equation}
+with $\vc n_{\Omega^w_1}(\vc x,\theta)$ being the unit normal vector of $\Omega^w_1$ at point $\vc x$ in the direction
+determined by the angle $\theta$.
+
+Then we can write the entire problem:
+\thmproblem{ \label{thm:problem_3d}
+Find $[\vc u_1,\,\vc u_3]$ and $[p_1,\,p_3]$ satisfying
+\begin{align}
+% \begin{alignat}{4}
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3  \\
+\div\, \vc u_3 &= \delta_3 f_3 && \textrm{in } \Omega_3\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\Sigma_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_3d_1d_source}\\
+\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = \Sigma_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_3d_flux}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3 \label{eqn:problem_3d_dirichlet}\\
+\delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,3 \label{eqn:problem_3d_neumann}
+%   \end{alignat}
+\end{align}
+where
+\[ 
+{\color{blue}
+    \Sigma_w(\vc x) = \delta_3\sigma_w(\vc x)\big(\avg{p_3}_w(\vc x)-p_1(\vc x)\big) \quad \vc x \in \Omega^w_1.
+} 
+\label{eqn:1d_3d_sigma_source}
+\]
+}
+
+One can see the dimensional coupling terms highlighted in the blue color.
+The term $\Sigma_w$, similarly to 1d-2d case, represents the flux from the aquifer $\Omega_3$ to the well $\Omega^w_1$.
+The flux is proportional to the pressure difference with the (variable) permeability coefficient $\sigma_w(\vc x)>0\;[s^{-1}]$ between $\Omega_3$ and $\Omega^w_1$.
+However in contrast to the 1d-2d case, $\Sigma_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
+Analogically we can then read: the average outward flux from the aquifer at point $\vc x\in\Omega^w_1$
+in \eqref{eqn:problem_3d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_3d_1d_source}.
+The last two equations are the boundary conditions, the first one \eqref{eqn:problem_3d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
+the later one \eqref{eqn:problem_3d_neumann} sets the inward flux $g_{dN}$ in the same manner as in 1d-2d case.
+
