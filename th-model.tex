@@ -3,7 +3,7 @@
 % \usepackage{enumitem}
 
 In this chapter we develop mathematical background for our model.
-The model formulation is built from simple 2d Dirichlet problem to fully coupled 1d-2d and 1d-3d problem.
+The model formulation is built from a~simple 2d Dirichlet problem to a~fully coupled 1d-2d and 1d-3d problem.
 
 % We start with some general notation and considerations. 
 
@@ -23,43 +23,52 @@ The model formulation is built from simple 2d Dirichlet problem to fully coupled
 \section{Mixed Dirichlet Problem}
 
 At the beginning, we consider a steady 2d problem with a single singularity present in a~domain $\Omega\subset\R^2$.
-The boundary of the domain $\prtl\Omega=\Gamma_D \cup \Gamma_w$ consists of two parts: the exterior boundary $\Gamma_D$
-and the interior boundary $\Gamma_w$. On $\Gamma_D$ we later prescribe the Dirichlet boundary condition, for simplicity.
-The $\Gamma_w$ is created by the (circular) cross-section of the domain $\Omega$ and a~well which causes the singularity
-in the solution in the vicinity of the well.
+We take Problem \ref{thm:problem_2d} and restrain ourselves to a~single aquifer, therefore ommitting the index $m$,
+and a~single well $w$ perpendicular to the aquifer. Further we fix the pressure in the well,
+so we do not solve the 1d part of the problem
+and we can focus on the properties of the mixed form in the aquifer domain.
+We consider the aquifer thickness $\delta_2=1$ for simplicity.
+Due to this assumption we also ommit the dimension index further in this section (we consider only $d=2$).
 
-On $\Gamma_w$, we define the following decomposition of an arbitrary function $g$ on average and fluctuation parts, 
-in the same manner as it can be found in \cite{koppl_vidotto_2018},
-\begin{equation}\label{eqn:average_definition}
-    w = \avg{g}_w + \{g\}_w \quad \textrm{on } \Gamma_w,
-\end{equation}
-where
-\begin{equation}
-    \avg{g}_w = \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} g \dd s.
-\end{equation}
-From the definition \eqref{eqn:average_definition}, we have immediately the zero mean property of the fluctuation term
-\begin{equation}
-\int_{\Gamma_w} \{g\}_w \dd s = \int_{\Gamma_w} g - \avg{g}_w \dd s = 0.
-\end{equation}
+We let the exterior boundary be  $\Gamma_{ext}=\Gamma_D$, where we prescribe the Dirichlet boundary condition, for simplicity.
+The boundary $\Gamma_w$ is created by the (circular) cross-section of the domain $\Omega$
+and the wells cylinder envelope $\prtl\Omega^w_C$.
+The boundary of the domain $\prtl\Omega=\Gamma_D \cup \Gamma_w$ then consists of only two parts: the exterior boundary $\Gamma_D$
+and the interior boundary $\Gamma_w$.
+
+% On $\Gamma_w$, we define the following decomposition of an arbitrary function $g$ on average and fluctuation parts, 
+% in the same manner as it can be found in \cite{koppl_vidotto_2018},
+% \begin{equation}\label{eqn:average_definition}
+%     w = \avg{g}_w + \{g\}_w \quad \textrm{on } \Gamma_w,
+% \end{equation}
+% where
+% \begin{equation}
+%     \avg{g}_w = \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} g \dd s.
+% \end{equation}
+% From the definition \eqref{eqn:average_definition}, we have immediately the zero mean property of the fluctuation term
+% \begin{equation}
+% \int_{\Gamma_w} \{g\}_w \dd s = \int_{\Gamma_w} g - \avg{g}_w \dd s = 0.
+% \end{equation}
 
 The flow in the domain $\Omega$ is governed by the Darcy's law, the continuity equation and
 boundary conditions, gathered in the following definition
 \thmproblem{ \label{thm:prob_mixed_simple}
+Find $\vc u$ and $p$ satisfying
 \begin{eqnarray}
     \vc K^{-1} \vc u + \nabla p &=& 0 \qquad \textrm{in } \Omega, \label{eqn:mixed_form_1}\\
-    \nabla \cdot \vc u &=& f \qquad \textrm{in } \Omega, \label{eqn:mixed_form_2}\\
-    \avg{\vc u \cdot \vc n}_w &=& \sigma_w (\avg{p}_w - P) \qquad \textrm{on } \Gamma_w, \label{eqn:mixed_form_3}\\
+    \div\, \vc u &=& f \qquad \textrm{in } \Omega, \label{eqn:mixed_form_2}\\
+    \avg{\vc u \cdot \vc n}_w &=& \sigma_w (\avg{p}_w - P_w) \qquad \textrm{on } \Gamma_w, \label{eqn:mixed_form_3}\\
     p &=& g_{D} \qquad \textrm{on } \Gamma_{D} \label{eqn:mixed_form_4}.
 \end{eqnarray}
 }
-We consider $f\in L_2(\Omega)$ to be the source term and the hydraulic conductivity tensor $\vc K$ to be an invertible 2x2 matrix,
-for which we denote
+We consider $f\in L_2(\Omega)$ to be the source term and the hydraulic conductivity tensor $\vc K$ to be an invertible
+positive definite 2x2 matrix, for which we denote
 \begin{eqnarray}
-    \underline{k} &=& \inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1}),\\
-    \overbar{k} &=& \sup\limits_{x\in\Omega}\lambda_{\max}(\vc K^{-1})
+    0 < \underline{k} &=& \inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1}),\\
+    \underline{k} \leq \overbar{k} &=& \sup\limits_{x\in\Omega}\lambda_{\max}(\vc K^{-1})
 \end{eqnarray}
 the minimum and maximum eigenvalues of the inverse matrix.
-The constant $P\in\R$ is the fixed pressure inside the well, $\sigma_w\in\R$, $\sigma_w>0$ is the
+The constant $P_w\in\R$ is the fixed pressure inside the well, $\sigma_w\in\R$, $\sigma_w>0$ is the
 permeability coefficient between the well and the 2d domain. Function $g_D\in L_2(\Gamma_D)$ is the 
 prescribed Dirichlet boundary condition for pressure on the exterior boundary.
 The condition \eqref{eqn:mixed_form_3} relates the average of the normal flux over $\Gamma_w$ in the outward direction
@@ -101,12 +110,12 @@ The derivation of the weak form follows
 % is considered nearly constant around the well edge).
 Using the property of the space $V$ we get
 \begin{equation}
-    \int_{\Gamma_w} p \,(\vc v \cdot \vc n) = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n} 
+    \int_{\Gamma_w} p \,(\vc v \cdot \vc n) = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n}_w 
     = \avg{p}_w \avg{\vc v \cdot \vc n}_w \abs{\Gamma_w}
 \end{equation}
 where we can substitute from the boundary condition \eqref{eqn:mixed_form_3}
 \begin{equation}
-    \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P.
+    \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P_w.
 \end{equation}
 Next, splitting the boundary integral in \eqref{eqn:mixed_weak_1} and using the above,
 we obtain the saddle point weak form
@@ -121,10 +130,10 @@ with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow
  a(\vc u, \vc v)=& \int_\Omega \vc u \vc K^{-1} \vc v
                    + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
 %
- b(\vc v, p)=& - \int_\Omega p \div\, \vc v,\\
+ b(\vc v, p)=& - \int_\Omega p \,\div\, \vc v,\\
 %
  \langle G, \vc v\rangle =&
-        -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P\avg{\vc v\cdot\vc n} \abs{\Gamma_w},\\
+        -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w},\\
  \langle F, q\rangle =& - \int_{\Omega} f q.
 \end{align*}
 
@@ -478,68 +487,6 @@ $\vc u_d$ (velocity) - discontinuous $RT_0$ elements + \textcolor{blue}{\bf sing
 $p_d$ (pressure head)- piecewise constant, $P_0$ on elements \\
 $\lambda_d$ (pressure head traces) - piecewise constant, $P_0$ on edges \\
 \textcolor{blue}{$\lambda_w$ (pressure head traces) - piecewise constant, $P_0$ on $\Gamma_w$}
-
-
-
-\section{Coupled 1d-2d model (Primary weak form)}
-
-\begin{eqnarray}
-\grad \cdot \left( -\delta_2 \vc K_2 \grad p_2 \right) &=& \delta_2 f_2 \qquad \textrm{in } \Omega_2,\;  \\
-\grad \cdot \left( -\delta_1 \vc K_1 \grad p_1 \right) &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)} \qquad \textrm{in } \Omega_1,\;  \\
-%\nabla \cdot \vc u_2 &=& \delta_2 f_2 \qquad \textrm{in } \Omega_2\\
-%\nabla \cdot \vc u_1 &=& \delta_1 f_1 + {\color{blue}\sigma_w(\avg{p_2}_w-p_1)}\qquad \textrm{in } \Omega_1\\
-\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}_w &=& \color{blue}\sigma_w (\avg{p_2}_w - p_{1}) \qquad \textrm{on } \Gamma_w\\
-p_d &=& g_{dD} \qquad \textrm{on } \Gamma_{dD},\; d=1,2 \\
-\delta_d \vc K_d \grad p_d \cdot \vc n &=& g_{dN} \qquad \textrm{on } \Gamma_{dN},\; d=1,2
-  \end{eqnarray}
-
-
-We define the trial space $V$ and the test space $V_0$:
-\begin{eqnarray} \label{eqn:spaces}
-  V &=& H^1(\Omega_1)\times H^1(\Omega_2), \\
-  V_0 &=& H^1_0(\Omega_1)\times H^1_0(\Omega_2),
-\end{eqnarray}
-where $H^1(\Omega_d)$, $d=1,2$, is the standard Sobolev space and 
-\[ H^1_0(\Omega_d)=\{\varphi\in H^1(\Omega_d); \varphi|_{\Gamma_{dD}}=0\}. \]
-We can now introduce the weak solution $p=(p_1,p_2)\in V$ and the test function $q=(q_1,q_2)\in V_0$.
-% \begin{eqnarray} \label{eqn:solution}
-%    u &=& (h^1,\ldots, h^M, H^1_1,\ldots,H^{M+1}_W)\in V, \\
-%    v &=& (\varphi^1,\ldots, \varphi^M, \Phi^1_1,\ldots,\Phi^M_W)\in V_0.
-% \end{eqnarray}
-%We understand $V_0$ as a~subspace of $V$.
-
-To obtain the weak form, we apply the standard Galerkin method. We multiply the equation \eqref{eqn:poisson} 
-by a~test function $q_d$ and integrate by parts over $\Omega_d$, to get
-\begin{multline} \label{eqn:weak_form1}
-  \int_{\Omega_2} \delta_2 \vc K_2 \grad p_2 \cdot \grad q_2 \dd\bx
-  + \int_{\Omega_1} \delta_1 \vc K_1 \grad p_1 \cdot \grad q_1 \dd\bx \\
-  + \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{p_2} - p_1) (\avg{q_2} - p_1) \dd\bx \\
-  = \int_{\Omega_2} \delta_2 f_2 q_2 \dd\bx + \int_{\Omega_1} \delta_1 f_1 q_1 \dd\bx.
-\end{multline}
-
-We say that $u\in V$ is a~weak solution if it satisfies \eqref{eqn:weak_form} for all $v\in V_0$.
-Denote the bilinear form on the left hand side $a(p,q)$.
-The first two terms of $a$ are elliptic in the whole test space $V_0$
-due to the Dirichlet boundary condition on a part of the boundary and Friedrich's inequality,
-the last term of $a$ is evidently non-negative:
-
-\begin{eqnarray}
-    a(q,q) &\geq&
-          \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{\grad q_2}^2_{L_2(\Omega_2)}
-        + \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{\grad q_1}^2_{L_2(\Omega_1)}\\
-        &&+ \sum_{w\in \mathcal{W}} \int_{\Gamma_w} \sigma_w (\avg{q_2} - p_1)^2 \dd\bx \\
-        &\geq&
-          C_{F2} \norm{\delta_2 \vc K_2}_{L_\infty(\Omega_2)}\norm{q_2}^2_{L_2(\Omega_2)}
-        + C_{F1} \norm{\delta_1 \vc K_1}_{L_\infty(\Omega_1)}\norm{q_1}^2_{L_2(\Omega_1)}.
-\end{eqnarray}
-
-The existence and uniqueness of the solution can be shown 
-via the Lax-Milgram lemma due to the ellipticity of the bilinear form $a$ and the boundedness of the problem.
-
-
-
-
-
 
 
 
