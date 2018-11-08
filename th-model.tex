@@ -74,6 +74,7 @@ prescribed Dirichlet boundary condition for pressure on the exterior boundary.
 The condition \eqref{eqn:mixed_form_3} relates the average of the normal flux over $\Gamma_w$ in the outward direction
 to the pressure difference. We consider the pressure average on the interior side of $\Gamma_w$.
 
+\subsection{Weak Form of Mixed problem}
 We define the following weak spaces for velocity and pressure,
 so we can derive the weak form of the problem \eqref{thm:prob_mixed_simple}
 \begin{eqnarray}    
@@ -118,11 +119,15 @@ where we can substitute from the boundary condition \eqref{eqn:mixed_form_3}
     \avg{p}_w = \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w + P_w.
 \end{equation}
 Next, splitting the boundary integral in \eqref{eqn:mixed_weak_1} and using the above,
-we obtain the saddle point weak form
+we obtain the saddle point weak problem
+%
+\thmproblem{ \label{thm:prob_mixed_weak_simple}
+Find $\vc u\in V$ and $p\in Q$ satisfying
+% \notePE{Do I have to define the duality brackets $\langle\cdot\rangle$ ?}
 \begin{align}
-    a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle &&
+    a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle_{V'\times V} &&
         \forall \vc v\in V, \label{eqn:mixed_saddle1}\\
-    b(\vc{u}, q) &= \langle F, q \rangle &&\forall q \in Q
+    b(\vc{u}, q) &= \langle F, q \rangle_{Q'\times Q} &&\forall q \in Q
         \label{eqn:mixed_saddle2},
 \end{align}
 with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
@@ -132,40 +137,29 @@ with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow
 %
  b(\vc v, p)=& - \int_\Omega p \,\div\, \vc v,\\
 %
- \langle G, \vc v\rangle =&
+ \langle G, \vc v\rangle_{V'\times V} =&
         -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w},\\
- \langle F, q\rangle =& - \int_{\Omega} f q.
+ \langle F, q\rangle_{Q'\times Q} =& - \int_{\Omega} f q.
 \end{align*}
-
-The necessary conditions for the existence of the unique solution of our problem are given in the Brezzi's theorem
-(based on \cite{brezzi_mixed_1991}, p. 42)
-\theorem{ \label{thm:brezzi_theorem}
-Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
-\begin{eqnarray}
-    \abs{a(\vc u,\vc v)} &\leq& \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,\\
-    \abs{b(\vc v,p)} &\leq& \beta_2 \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V.
-\end{eqnarray}
-Let us suppose that $a$ is coercive on the kernel $V_0$ of the space $V$, i.e. there holds
-\begin{equation}
-    a(\vc v,\vc v) \geq \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
-\end{equation}
-and that there holds the LBB (Ladyshenskaja-Babu{\v s}ka-Brezzi) condition
-\begin{equation}
-    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
-\end{equation}
-Then there exists a \notePE{unique} solution to problem \eqref{thm:prob_mixed_simple} for any $F\in V'$ and $G\in Q'$
-\notePE{where velocity $u$ is unique and pressure $p$ is defined up to an element of $Ker B'$}
-such that the solution fullfills the stability estimate
-\begin{eqnarray}
-    \norm{\vc u}_{H(\div,\Omega)} &\leq& \frac{1}{\alpha_1} \norm{F}_{V'} + \left( \frac{\alpha_2}{\alpha_1} + 1\right)\frac{1}{\beta_1} \norm{G}_{Q'}\\
-    \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
-            + \frac{\alpha_2}{\beta_1^2} \left( 1+ \frac{\alpha_2}{\alpha_1}\right) \norm{G}_{Q'}.
-\end{eqnarray}
 }
+%
+We denote $\langle \cdot, \cdot \rangle_{V'\times V}$ duality between $V$ and its dual space $V'$.
+The bilinear forms $a,b$ then define the operators
+\begin{align*}
+A:\;\;&   V \rightarrow V', & \langle A\vc u,\vc v \rangle_{V'\times V} =&\; a(\vc u,\vc v) && \forall \vc u,\, \vc v \in V\\ 
+B:\;\;&   V \rightarrow Q', & \langle B \vc v,q    \rangle_{Q'\times Q} =&\; b(\vc v,q)     && \forall \vc v\in V,\,q \in Q\\
+B^T:\;\;& Q \rightarrow V', & \langle \vc v, B^T q \rangle_{V\times V'} =&\; b(\vc v,q)     && \forall \vc v\in V,\,q \in Q
+\end{align*}
+and the problem \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2}can be rewritten in
+\begin{align}
+ A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:saddle3} \\
+ B\vc u &= F  \;\textrm{  in } Q'. \label{eqn:saddle4}
+\end{align}
 
-We will now show that the conditions in theorem \eqref{thm:brezzi_theorem} are fullfilled,
-beginning with the continuity of the bilinear forms.
-To bound the average terms in the form $a$,
+
+% We will now show that the conditions in theorem \eqref{thm:brezzi_theorem} are fullfilled,
+% beginning with the continuity of the bilinear forms.
+The bilinear form $a,b$ are continuous. To bound the average terms in the form $a$,
 we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ with boundary values
 \begin{equation*}
   \psi(\bx) =
@@ -176,46 +170,52 @@ we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ with bo
 \end{equation*}
 Then for $\vc v\in V$ we have
 \begin{align*}
-  \avg{\vc v \cdot\vc n} = \int_{\Gamma_w} \vc v \cdot\vc n \psi = 
+  \avg{\vc v \cdot\vc n}_w = \int_{\Gamma_w} \vc v \cdot\vc n \psi \dd s = 
     \int_{\partial\Omega} \left( \psi \vc v \right) \cdot\vc n \dd s & \\
     = \int_{\Omega} \div\left( \psi \vc v \right) \dd\bx
-    = \int_{\Omega} \psi\, &\div \vc v \dd\bx + \int_{\Omega} \vc v \cdot \grad\psi \dd\bx \\
-    \leq \norm{\psi}_{L_2(\Omega)} \norm{\div&\,\vc v}_{L_2(\Omega)} + \norm{\grad\psi}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+    = \int_{\Omega} \psi\, \div\, &\vc v \dd\bx + \int_{\Omega} \vc v \cdot \grad\psi \dd\bx \\
+    \leq \norm{\psi}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}& + \norm{\grad\psi}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
     \leq C_w \norm{\vc v}_{H(\div,\Omega)}
 \end{align*}
 with a constant $C_w(\partial\Omega)$. Then we obtain the following bound
-\begin{multline}
-    \abs{a(\vc u,\vc v)} \leq \norm{\vc K^{-1}}_{L_\infty(\Omega)} \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
-        + \abs{\sigma_w} \abs{\Gamma_w} \avg{\vc u\cdot\vc n} \avg{\vc v\cdot\vc n}\\
+\begin{multline} \label{eqn:form_a_bound}
+    \abs{a(\vc u,\vc v)} \leq \overbar{k}\, \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+        + \abs{\sigma_w} \abs{\Gamma_w} \avg{\vc u\cdot\vc n}_w \avg{\vc v\cdot\vc n}_w\\
         \leq \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,
 \end{multline}
-with a constant $\alpha_2 \left(\norm{\vc K^{-1}}_{L_\infty(\Omega)}, \abs{\sigma_w}, \partial\Omega\right)$.
+with a constant $\alpha_2 \left(\overbar{k}, \sigma_w, \partial\Omega\right)$.
 %\notePE{I don't understand the last step of Theorem 90 proof, p.103, 'numpde.pdf' to bound the average terms.
 % easy: the phi terms must be <= 1 and for the result we use  (a+b)^2 <= 2(a^2+b^2)
 %}
 The continuity of $b$ is straightforward
-\begin{multline}
+\begin{equation} \label{eqn:form_b_bound}
     \abs{b(\vc v,p)} \leq \norm{p}_{L_2(\Omega)} \norm{\div\,\vc v}_{L_2(\Omega)}
-        \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V, \\
-\end{multline}
-putting the constant $\beta_2=1$.
+        \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V.
+\end{equation}
+% putting the constant $\beta_2=1$.
 
 The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v\in V: b(\vc v,q)=0\;\forall q\in Q\}$, i.e.
 a subspace of $V$ where $\div\,\vc v=0$,
-\begin{multline}
+\begin{multline} \label{eqn:form_a_coercivity_V0}
     a(\vc v,\vc v) \geq \underline{k} \norm{\vc v}^2_{L_2(\Omega)}
-                + \sigma_w^{-1}\abs{\Gamma_w}\avg{\vc v\cdot\vc n}^2 \\
+                + \sigma_w^{-1}\abs{\Gamma_w}\avg{\vc v\cdot\vc n}_w^2 \\
         \geq  \alpha_1 \norm{\vc v}^2_{L_2(\Omega)} = \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
 \end{multline}
 with $\alpha_1=\underline{k}$ and having the average term greater than zero.
 
-To proove the continous LBB condition, we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
+To proove the continous $\inf$-$\sup$ condition (\cite{brezzi_mixed_1991}, p. 42),
+the so-called Ladyshenskaja-Babu{\v s}ka-Brezzi (LBB) condition,
+we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
 We solve the artificial Poisson problem
-\begin{eqnarray*}    
-    -\Delta\varphi &=& q\\
-    \varphi &=& 0 \textrm{ on } \Gamma_D \\
-    \grad\varphi\cdot\vc n &=& 0 \textrm{ on } \Gamma_w \\
-\end{eqnarray*}
+\begin{equation} \label{eqn:lbb_artificial_poisson}
+% \begin{eqnarray*}    
+\begin{aligned}
+    -\Delta\varphi &= q\\
+    \varphi &= 0 \textrm{ on } \Gamma_D \\
+    \grad\varphi\cdot\vc n &= 0 \textrm{ on } \Gamma_w
+\end{aligned}
+% \end{eqnarray*} 
+\end{equation}
 with homogenous Dirichlet b.c. on $\Gamma_D$ and homogenous Neumann b.c. on $\Gamma_w$.
 From the ellipticity of the artificial problem we get
 \begin{equation}
@@ -231,29 +231,79 @@ and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
         \leq (1+C_F^4) \norm{q}^2_{L_2(\Omega)}.
 \end{equation}
 Using it in the LBB condition, we obtain
-\begin{equation}
-    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} =
-    \sup_{\vc v\in V} \frac{\norm{q}^2_{L_2(\Omega)}}{\norm{\vc v}_{H(\div,\Omega)}}
-    \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)},
+\begin{equation} \label{eqn:form_b_lbb}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq
+    \frac{\norm{q}^2_{L_2(\Omega)}}{\norm{\grad\varphi}_{H(\div,\Omega)}}
+    \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)} = \beta_1 \norm{q}_{L_2(\Omega)},
 \end{equation}
-and having the constant $\beta_2 = (1+C_F^4)^{-1/2}$.
+and having the constant $\beta_1 = (1+C_F^4)^{-1/2}$.
+
+Using the Brezzi's theorem (\cite{brezzi_mixed_1991}, p. 42), we see that we have now
+all necessary conditions for the existence of the unique solution $\vc u$, $p$ of Problem \eqref{thm:prob_mixed_weak_simple}.
+The pressure part of the solution $p$ is according to the Brezzi's theorem defined up to an element of $\Ker B^T$.
+If we use the same construction of $\vc v$ as in the auxiliary Poisson problem \eqref{eqn:lbb_artificial_poisson},
+we see, that
+\[
+    \langle \vc v, B^T q \rangle_{V\times V'} = b(\vc v,q) = \int_\Omega q^2 \dd\bx \geq 0
+\]
+and so that $b(\vc v,q) = 0 \iff q=0$ and therefore $\Ker B^T=\{0\}$.
+
+We summarize this result on the continuous spaces in the following theorem
+\theorem{ \label{thm:brezzi_theorem}
+Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
+\begin{eqnarray}
+    \abs{a(\vc u,\vc v)} &\leq& \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,\\
+    \abs{b(\vc v,p)} &\leq& \beta_2 \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V,
+\end{eqnarray}
+with the constants $\alpha_2$ from \eqref{eqn:form_a_bound} and $\beta_2=1$ from \eqref{eqn:form_b_bound}.
+Let us suppose that $a$ is coercive on the kernel $V_0$ of the space $V$, i.e. there holds
+\begin{equation}
+    a(\vc v,\vc v) \geq \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
+\end{equation}
+with the constant $\alpha_1$ from \eqref{eqn:form_a_coercivity_V0},
+and that there holds the LBB condition
+\begin{equation}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q,
+\end{equation}
+with $\beta_1$ from \eqref{eqn:form_b_lbb}.\\
+Then there exists a~unique solution $\vc u$, $p$ to Problem \eqref{thm:prob_mixed_weak_simple} for any $F\in V'$ and $G\in Q'$
+such that the solution fullfills the stability estimate
+\begin{eqnarray}
+    \norm{\vc u}_{H(\div,\Omega)} &\leq& \frac{1}{\alpha_1} \norm{F}_{V'} + \left( \frac{\alpha_2}{\alpha_1} + 1\right)\frac{1}{\beta_1} \norm{G}_{Q'},\\
+    \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
+            + \frac{\alpha_2}{\beta_1^2} \left( 1+ \frac{\alpha_2}{\alpha_1}\right) \norm{G}_{Q'}.
+\end{eqnarray}
+}
+% \theorem{ \label{thm:brezzi_theorem}
+% Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
+% \begin{eqnarray}
+%     \abs{a(\vc u,\vc v)} &\leq& \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,\\
+%     \abs{b(\vc v,p)} &\leq& \beta_2 \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V.
+% \end{eqnarray}
+% Let us suppose that $a$ is coercive on the kernel $V_0$ of the space $V$, i.e. there holds
+% \begin{equation}
+%     a(\vc v,\vc v) \geq \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
+% \end{equation}
+% and that there holds the LBB (Ladyshenskaja-Babu{\v s}ka-Brezzi) condition
+% \begin{equation}
+%     \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q.
+% \end{equation}
+% Then there exists a \notePE{unique} solution to problem \eqref{thm:prob_mixed_simple} for any $F\in V'$ and $G\in Q'$
+% \notePE{where velocity $u$ is unique and pressure $p$ is defined up to an element of $Ker B'$}
+% such that the solution fullfills the stability estimate
+% \begin{eqnarray}
+%     \norm{\vc u}_{H(\div,\Omega)} &\leq& \frac{1}{\alpha_1} \norm{F}_{V'} + \left( \frac{\alpha_2}{\alpha_1} + 1\right)\frac{1}{\beta_1} \norm{G}_{Q'}\\
+%     \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
+%             + \frac{\alpha_2}{\beta_1^2} \left( 1+ \frac{\alpha_2}{\alpha_1}\right) \norm{G}_{Q'}.
+% \end{eqnarray}
+% }
 
 % \notePE{There is also some lemma in Brezzi, which says: if B is surjective (and $\div$ is) then the LBB condition holds.}
 % 
-% The bilinear forms $a,b$ then define the operators
-% \begin{eqnarray}
-% A:& V \rightarrow V',\\ 
-% B:& V \rightarrow Q',\\
-% B^T:& Q \rightarrow V,'
-% \end{eqnarray}
-% and the problem can be rewritten in
-% \begin{align}
-%  A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:saddle3} \\
-%  B\vc u &= F  \;\textrm{  in } Q'. \label{eqn:saddle4}
-% \end{align}
 
 
-\paragraph{Discretization.}
+\subsection{Discretization of Mixed problem}
+
 The pressure space $Q_h=\{q: q|_T\in \mathbb{P}^0\}$ consists of piecewise constant functions.
 Next we use the standard Raviart-Thomas shape functions space
 \begin{equation}
