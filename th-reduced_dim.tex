@@ -246,7 +246,8 @@ Without any coupling terms, we would write for every dimension $d$
 \end{eqnarray*}
 where $\delta_d\vc u_d\; [ms^{-1}]$ is the unknown Darcian velocity, $p_d \; [m]$ is the unknown pressure.
 Parameter $\delta_d$ is the complement measure of the domain: thickness $[m]$ in 2d,
-cross-section $[m^2]$ in 1d and $\delta_3=1\; [-]$ for consistency.
+cross-section $[m^2]$ in 1d and $\delta_3=1\; [-]$ for consistency. Since the wells are considered as cylinders,
+the cross-section $\delta_1$ is constant per well: $\delta_1(\vc x)=\delta^w_1=\pi\rho^2_w$ for all $\vc x\in \Omega^w_1$.
 The quantity $\vc u_d\; [m^{d-4}s^{-1}]$ itself can be seen as flux density, i.e. flux through $\Omega_d$
 with complementary dimension $\delta_d=1$.
 The conductivity tensor $\vc K_d\; [ms^{-1}]$ is generally $3\times 3$ matrix,
@@ -337,7 +338,6 @@ where
 \label{eqn:1d_2d_sigma_source}
 \]
 }
-% \notePE{we obviously consider the parameter $\sigma^m_w$ including the thickness $\delta_2$ - is that acceptable?}
 
 One can see the dimensional coupling terms highlighted in the blue color.
 The term $\Sigma^m_w$ is a~constant representing the flux from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
@@ -347,6 +347,15 @@ The flux is proportional to the pressure difference with the permeability coeffi
 If the pressure difference is negative, the flux is in opposite direction.
 We can then read: the average outward flux from the aquifer
 over $\Gamma^m_w$ in \eqref{eqn:problem_2d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_2d_1d_source}.
+In \eqref{eqn:problem_2d_1d_source} we used the Dirac measure at the point $\vc x^m_w$
+\[
+    \delta(\vc x - \vc x^m_w) = 
+    \begin{cases}
+        1 & \vc x = \vc x^m_w, \\
+        0 & \vc x \neq \vc x^m_w,
+    \end{cases}.
+\]
+to express the concentration of $\Sigma^m_w$ at point.
 The last two equations are the boundary conditions, the first one \eqref{eqn:problem_2d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
 the later one \eqref{eqn:problem_2d_neumann} sets the inward flux $g_{dN}$. The sign of the flux in \eqref{eqn:problem_2d_neumann}
 is chosen such that it is consistent with the software Flow123d.
