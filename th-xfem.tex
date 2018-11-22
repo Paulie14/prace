@@ -5,7 +5,10 @@
 % orthogonalization processes (Loehnert, or Babuska et al. LOT)
 % level set methods
 
-
+In the first part of this chapter, we provide a~background research on the XFEM,
+describing the fundamentals and giving an overview on the evolution of the XFEM.
+Later we apply the XFEM on a~well-aquifer pressure model and study various numerical aspects.
+The results presented here are based on our publication \cite{exner_2016}.
 
 \section{eXtended Finite Element Method (XFEM)} \label{sec:soa_xfem}
 
@@ -33,14 +36,14 @@ in a~small subdomain -- several elements of the computational mesh close to the 
 The XFEM solution with a~single enrichment is sought in the form
 \begin{equation} \label{eqn:soa_xfem_standard_form}
   u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
-    + \sum_{\alpha\in\mathcal{I}^e} b_{\alpha} \phi_{\alpha}(x),
+    + \sum_{\alpha\in\mathcal{J}} b_{\alpha} \phi_{\alpha}(x),
 \end{equation}
 where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
 the enrichment, $v_\alpha(x)$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
-$\mathcal{I}^e$ that contain all indices of the standard and enriched degrees of freedom, respectively.
+$\mathcal{J}$ that contain all indices of the standard and enriched degrees of freedom, respectively.
 The \emph{local enrichment function} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} is typically defined as
 \begin{equation} \label{eqn:soa_xfem_enrich}
-    \phi_{\alpha} = N_\alpha(x)L(x), \quad \alpha\in\mathcal{I}^e,
+    \phi_{\alpha} = N_\alpha(x)L(x), \quad \alpha\in\mathcal{J},
 \end{equation}
 where $L$ is the actual enrichment function and $N_\alpha$ is a~function of the partition of unity
 $\sum_\alpha N_\alpha(x) = 1$, creating the localised degrees of freedom for the enrichment.
@@ -48,7 +51,7 @@ Typically, $N_\alpha$ are linear FE basis functions, having support points at th
 so one is often talking about enriching nodes and calling these \emph{enriched nodes}.
 Different functions which make the partition of unity might be used, but linear functions are the most common.
 
-% The index set $\mathcal{I}^e$ includes 
+% The index set $\mathcal{J}$ includes 
 % all enriched nodes, i.e. the nodes that are in the vicinity of the effect, due to which we are applying the enrichment.
 
 The most straightforward choice of $L(x)$ is the global enrichment function itself but it is not optimal. It can suffer with a~lack of convergence, a~large approximation error at some elements or an ill-conditioning of the linear system.
@@ -60,12 +63,12 @@ both became standard for XFEM in general. These are discussed in more details la
 Considering more than one enrichment is straightforward. The approximation will then change into the following form
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult1}
     u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
-        + \sum_{e\in\mathcal{E}}\sum_{\alpha\in\mathcal{I}^e} b_{e\alpha} \phi_{e\alpha}(x)
+        + \sum_{e\in\mathcal{E}}\sum_{\alpha\in\mathcal{J}^e} b_{e\alpha} \phi_{e\alpha}(x)
 \end{equation}
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult2}
-    \phi_{e\alpha}(x) = N_\alpha(x)L_e(x), \quad e\in\mathcal{E},\; \alpha\in\mathcal{I}^e
+    \phi_{e\alpha}(x) = N_\alpha(x)L_e(x), \quad e\in\mathcal{E},\; \alpha\in\mathcal{J}^e
 \end{equation}
-The enrichment $e$ is enriching all the nodes in the index set $\mathcal I^e$ with degrees of freedom $b_{e\alpha}$
+The enrichment $e$ is enriching all the nodes in the index set $\mathcal{J}^e$ with degrees of freedom $b_{e\alpha}$
 corresponding to the local enrichment functions $\phi_{e\alpha}$. Note that there can be multiple functions $\phi_{e\alpha}$ with support on the same element. If these functions are close to each other in some measure in the approximation space, then the respective degrees of freedom can become linearly dependent which results in ill-conditioning of the linear system (SGFEM is mainly addressed to this issue).
 % TODO: add some reference - e.g. something from Loehnert about orthogonalization (studies position of crack near the nodes)
 
@@ -125,7 +128,7 @@ in some convection dominated transport models. Abbas et al. in the article \cite
 a set of regularized (smooth) step functions that can capture arbitrary gradients and applied that method on linear advection-diffusion equation.
 %TODO can be viewed as an complement or alternatives to some stabilisation methods, like SUPG
 
-\subsection{Enrichment zone} \label{sec:glob_enr_zone}
+\subsection{Enrichment Zone} \label{sec:glob_enr_zone}
 % In case of discontinuity 
 Typically the singular effects reach not only to the element where the singularity is located but also in its surroundings,
 where steep gradients are present.
@@ -186,7 +189,7 @@ unwanted terms show up in assembly on these elements which can significantly inc
  
 To overcome these drawbacks, the corrected XFEM introduces the \emph{ramp function}, built from the linear basis functions,
 \begin{eqnarray} \label{eqn:ramp_function}
-  G(\bx) &=& \sum_{\alpha\in\mathcal{I}^e} N_\alpha(\bx)    \\
+  G(\bx) &=& \sum_{\alpha\in\mathcal{J}} N_\alpha(\bx)    \\
   &=& 
   \begin{cases}
     0 & \textrm{ on unenriched elements,}    \\
@@ -197,10 +200,10 @@ To overcome these drawbacks, the corrected XFEM introduces the \emph{ramp functi
 and modifies the enrichment function into the form
 \begin{eqnarray} \label{eqn:xfem_ramp}
     L(\bx) &=& G(\bx) s_(\bx),\\
-    \phi_{\alpha}(\bx) &=& N_\alpha(\bx)L(\bx), \quad \alpha\in\mathcal{J}^e.
+    \phi_{\alpha}(\bx) &=& N_\alpha(\bx)L(\bx), \quad \alpha\in\mathcal{J}^*.
 \end{eqnarray}
-Note the set $\mathcal{J}^e$ which is slighty bigger than $\mathcal{I}^e$. It includes the nodes on the blending
-elements which were previously unenriched. Thus $\mathcal{I}^e_w\subset\mathcal{J}^e_w$.
+Note the set $\mathcal{J}^*$ which is slightly bigger than $\mathcal{J}$. It includes the nodes on the blending
+elements which were previously unenriched. Thus $\mathcal{J}\subset\mathcal{J}^*$.
 The ramp function keeps the properties on standard and reproducing elements (is constant 0 and 1, respectively),
 but on blending elements it creates smooth transition between standard and enriched approximation. Due to
 additional DoFs the modified enrichment function can be reproduced exactly and there is no lack of partition of unity.
@@ -213,7 +216,7 @@ FE approximation at nodes $h(\bx_\alpha)=a_\alpha$: the value at the node is equ
 of freedom. The enrichment functions must be then zero at the nodes which is satisfied in the form
 \begin{equation} \label{eqn:xfem_shift}
     L_{\alpha}(\bx) = G(\bx) \left[s(\bx) - s(\bx_\alpha)\right],
-    \quad \alpha\in\mathcal{J}^e.
+    \quad \alpha\in\mathcal{J}^*.
 \end{equation} 
 The property of the shifted formulation enables us to prescribe Dirichlet boundary condition such that
 $a_\alpha = h_D(\bx_\alpha)$.
@@ -250,21 +253,32 @@ The target property of the SGFEM is to retain the convergence rate of the XFEM w
 close to the FEM. Beside that, a~good approximation of the enrichment function on blending elements comes naturally without any special treatment.
 The approximation also holds the property of standard FE approximation at nodes $h(\bx_\alpha)=a_\alpha$ (same as in case of shifting in the Corrected XFEM).
 
-The enrichment function is defined as the subtraction of the global enrichment function and its interpolation 
+The enrichment function is defined as the subtraction of the global enrichment function and its interpolation
 \begin{equation} \label{eqn:sgfem_enrich}
-    L_{\alpha}|_{\tau}(\bx) = s(\bx) - \pi_\tau (s)(\bx),
-    \quad \alpha\in\mathcal{I}^e.
+    L_{\alpha}|_{T}(\bx) = s(\bx) - \pi_T (s)(\bx),
+    \quad \alpha\in\mathcal{J}.
 \end{equation} 
-for any element $\tau$ of the mesh that have at least one enriched node.
-The interpolation $\pi_\tau$ is built using the linear shape functions
-associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
+for any element $T$ of the mesh that have at least one enriched node.
+The interpolation $\pi_T$ is built using the linear shape functions
+associated with nodes $\mathcal{I}_N(T)$ of the element $T$
 \begin{equation} \label{eqn:sgfem_interpolation}
-    \pi_\tau (s)(\bx) = \sum_{\beta\in\mathcal{I}(\tau)} N_\beta(\bx) s(\bx_\beta).
-    %\quad \textrm{ on } \tau,\; \alpha\in\mathcal{I}^e, w\in\mathcal{W}.
+    \pi_T (s)(\bx) = \sum_{\beta\in\mathcal{I}_N(T)} N_\beta(\bx) s(\bx_\beta).
+    %\quad \textrm{ on } \tau,\; \alpha\in\mathcal{J}, w\in\mathcal{W}.
 \end{equation}
+% \begin{equation} \label{eqn:sgfem_enrich}
+%     L_{\alpha}|_{\tau}(\bx) = s(\bx) - \pi_\tau (s)(\bx),
+%     \quad \alpha\in\mathcal{J}.
+% \end{equation} 
+% for any element $\tau$ of the mesh that have at least one enriched node.
+% The interpolation $\pi_\tau$ is built using the linear shape functions
+% associated with nodes $\mathcal{I}(\tau)$ of the element $\tau$
+% \begin{equation} \label{eqn:sgfem_interpolation}
+%     \pi_\tau (s)(\bx) = \sum_{\beta\in\mathcal{I}(\tau)} N_\beta(\bx) s(\bx_\beta).
+%     %\quad \textrm{ on } \tau,\; \alpha\in\mathcal{J}, w\in\mathcal{W}.
+% \end{equation}
 Notice that there are no additional enriched nodes on blending elements, like in $\mathcal{J}^e$ in 
 \eqref{eqn:xfem_ramp} and \eqref{eqn:xfem_shift}, and no ramp function is involved.
-Since the interpolant is built using the regular FE shape functions, the additional computational costs lie in the evaluation of $s(\bx_\beta)$, $\beta\in\mathcal{I}^e$,
+Since the interpolant is built using the regular FE shape functions, the additional computational costs lie in the evaluation of $s(\bx_\beta)$, $\beta\in\mathcal{J}$,
 i.e., the enrichment function value at all enriched nodes.
 
 Later in \cite{zhang_robust_2016}, the robustness of SGFEM regarding the relative position of a~fracture and a~mesh is addressed.
