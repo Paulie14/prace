@@ -101,15 +101,25 @@ stated in the introduction of the chapter. Now we fix the idea of a~mesh of comb
 a~more precise description.
 
 An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of a~porous medium, i.e. the bulk domain.
-In the same manner, a~set of 2d manifolds $\Omega_2 \subset \Real^2$ is considered, representing the 2d fractures
-and a~set of 1d manifolds $\Omega_1 \subset \Real$ representing the 1d channels in an arbitrary 3d space.
+In the same manner, a~set of 2d manifolds $\Omega_2 \subset \Real^3$ is considered, representing the 2d fractures
+and a~set of 1d manifolds $\Omega_1 \subset \Real^3$ representing the 1d channels in an arbitrary 3d space.
 See the Figure \ref{fig:multi-dim}.
 
 
 The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
 Following the documentation of Flow123d \cite{flow123d_doc_2015} and its notation,
 for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
-is introduced that consists of finite elements $T_{d}^{i},$\ $i = 1,\dots,N_{E}^{d}$.
+is introduced that consists of
+% \begin{align}
+\begin{eqnarray*}
+    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \} \\
+    \textrm{faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \} \\
+    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}
+% \end{align}
+\end{eqnarray*}
+% $T_{d}^{i},\, i = 1,\dots,N_{E}^{d}$,
+% with nodes $\vc x_{i},\, i\in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N}\}$.
+
 Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
 This is not the case in some results in Section \ref{sec:model_aquifer}, where quadrilateral elements are considered
 due to the use of a~specific FEM library code.
@@ -119,13 +129,17 @@ due to the use of a~specific FEM library code.
 
 The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
 \begin{equation}
-        T_{d-1}^i \cap T_d \subset \mathcal{F}_d,   \qquad \text{where } \mathcal{F}_d = \bigcup_{k} \partial T_{d}^{k}
+        T_{d-1}^i \cap \mathcal{T}_d \subset \mathcal{F}_d,  \qquad \text{where } \mathcal{F}_d = \bigcup_{k\in\mathcal{I}_{d,E}} \partial T_{d}^{k}
 \end{equation}
 and
 \begin{equation}
-        T_{d-1}^i \cap \mathcal{F}_d    \text{ is either $T_{d-1}^i$ or $\emptyset$}    
+        T_{d-1}^i \cap \mathcal{F}_d = 
+        \begin{cases}
+            T_{d-1}^i, \\
+            \emptyset,
+        \end{cases}
 \end{equation}
-for every $i\in\{1,\dots, N_{E}^{d-1}\}$, $j\in\{1,\dots,N_{E}^{d}\}$,  and $d=2,3$. 
+for every $\,i\in\mathcal{I}_{d-1,E}$, and $d=2,3$. 
 That is, the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
 match their sides or they poke out of $\Omega_d$. 
 We do not consider a compatible mesh in case of co-dimension 2, i.e. for 1d and 3d coupling.
@@ -283,6 +297,20 @@ which is better suited to the numerical experiments we are going to present.
 The model is defined as a~complex multi-aquifer system to follow our implementation and to see the differences
 we made in comparison to Gracie and Craig. However before solving the complex model,
 we constrain ourselves to a~single aquifer in a~major part of the work.
+%
+\begin{figure}[!htb]
+  %\vspace{-15pt}
+%   \begin{center}         
+%     \def\svgwidth{0.4\textwidth}
+% %     \input{\figpath well_communcation.pdf_tex}
+%     \input{\figpath well_communcation2_omit_text.pdf_tex}
+%   \end{center}
+  \begin{center}         
+    \includegraphics[width=0.5\textwidth]{\figpath well_communcation2.pdf}
+  \end{center}
+  \caption{Flow balance in the well.}
+  \label{fig:well_flows}
+\end{figure}
 
 Let $\Omega^m_2$ be the domain of an aquifer with index $m\in\mathcal{M}=\{1,\ldots,M\}$.
 We denote the aquifers' boundary $\prtl\Omega^m_2 = \Gamma^m_{ext} \cup \Gamma^m_{int}$,
@@ -311,11 +339,14 @@ where
 \end{equation}
 It holds for the fluctuation term from the definition \eqref{eqn:average_definition}
 \begin{equation}
-\int_{\Gamma_w} \{q\}_w \dd s = \int_{\Gamma_w} q - \avg{q}_w \dd s = 0.
+\int_{\Gamma^m_w} \{q\}^m_w \dd s = \int_{\Gamma^m_w} q - \avg{q}^m_w \dd s = 0.
 \end{equation}
 % \notePE{Why do we use the averaging: - without it, the models on communicating dimension would be to tight, bad for numerical solution,
 % arising from hte models with Dirac delta sources}
-
+Further for the average term, it holds 
+\begin{equation}
+    \avg{q_1+q_2}^m_w = \avg{q_1}^m_w + \avg{q_2}^m_w.
+\end{equation}
 
 Then we can write the entire problem:
 \thmproblem{ \label{thm:problem_2d}
@@ -324,7 +355,7 @@ Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
 % \begin{alignat}{4}
 \delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2  \\
 \div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2 \label{eqn:problem_2d_2d_source}\\
-\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in{M}}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_2d_1d_source}\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_2d_1d_source}\\
 \color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M} \label{eqn:problem_2d_flux}\\
 p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2 \label{eqn:problem_2d_dirichlet}\\
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:problem_2d_neumann}
@@ -333,15 +364,15 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2 \label{eqn:problem_2d_dirichl
 where
 \[ 
 {\color{blue}
-    \Sigma^m_w = \delta_2\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big).
+    \Sigma^m_w = \delta_2(\vc x^m_w)\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big).
 } 
 \label{eqn:1d_2d_sigma_source}
 \]
 }
 
 One can see the dimensional coupling terms highlighted in the blue color.
-The term $\Sigma^m_w$ is a~constant representing the flux from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
-through their intersection $\Gamma^w_1$. 
+The term $\Sigma^m_w$ is a~constant representing the flux density from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
+through their intersection $\Gamma^m_w$. 
 which is dependent on the difference between the pressure in the well and the average pressure on the cross-section $\Gamma^m_w$.
 The flux is proportional to the pressure difference with the permeability coefficient $\sigma^m_w>0\;[s^{-1}]$ between $\Omega^m_2$ and $\Omega^w_1$.
 If the pressure difference is negative, the flux is in opposite direction.
@@ -353,7 +384,8 @@ In \eqref{eqn:problem_2d_1d_source} we used the Dirac measure at the point $\vc 
     \begin{cases}
         1 & \vc x = \vc x^m_w, \\
         0 & \vc x \neq \vc x^m_w,
-    \end{cases}.
+    \end{cases}, 
+    \qquad \int_{\Omega^w_1}q(\vc x) \delta(\vc x - \vc x^m_w) \dd\bx = q(\vc x^m_w).
 \]
 to express the concentration of $\Sigma^m_w$ at point.
 The last two equations are the boundary conditions, the first one \eqref{eqn:problem_2d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
