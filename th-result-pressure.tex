@@ -742,75 +742,6 @@ we can still use the previously described quadrature.
 %JB%  \label{fig:adapt_integration_conv}
 %JB%\end{figure}
 %JB%
-\subsection{Estimate of the enrichment radius} \label{sec:enrichemnt_radius}
-In this section, we study the dependence of the solution error on the enrichment radius $R_w$.
-We look for some clues for a~particular choice of $R_w$ that is optimal in a~specific sense.
-
-First part is devoted to 
-theoretical analysis, the later part presents numerical results.
-Let us consider a~general elliptic problem to find $p\in V$ satisfying
-\[
-   a(p, q) = l(q), \text{ for } q \in V,
-\]
-where $a$ is bounded elliptic bilinear form: $\norm{a}\le \alpha_2$, $a(q, q) \ge \alpha_1 \norm{q}_V^2$, $\alpha_1>0$, and $l$ a~bounded linear form, $l\in V'$. 
-Suppose, that the problem is to be solved on a~domain $\Omega \subset \Real^2$ with a~single well of radius $\rho_w$ at the origin. 
-Let us assume, that the solution can be split into the singular part $p_{sin}(\vc x)= \log |\vc x|$ and the regular part $p_{reg}=p-p_{sin}$.
-Let $V^{reg}_h$ be a~polynomial finite element subspace of $V$ on a~regular mesh of elements with a~maximal side length $h$
-and let $V_h=V^{reg}_h + V^{enr}_h$ be a~such enriched space that $p_{sin}$ can be approximated exactly on the enriched domain $Z_w$, i.e.
-\begin{equation}
-   \inf_{q\in V_h} \norm{p_{sin} - q}_V = \inf_{q\in V^{reg}_h} \norm{p_{sin}|_{Z'_w} - q}_V, \quad Z'_w = \Omega\setminus Z_w.
-\end{equation}
-Using standard error estimate for elliptic PDE (e.g. \cite[Theorem 13.1]{ciarlet_basic_1991}), we get
-\begin{equation}
-    \label{eq:std_err_estimate}
-    \norm{p - p_h}_{V} \le c_a \inf_{q \in V_h} \norm{p - q}_{V} 
-    \le c_a \left(\inf_{q \in V^{reg}_h} \norm{p_{reg} - q}_{V} + \inf_{q \in V_h} \norm{p_{sin} - q}_{V} \right)   
-\end{equation}
-where $c_a=1+\alpha_2/\alpha_1$.
-In the following, we consider $V=H^1(\Omega)$, a square grid and $V^{reg}_h$ formed by bilinear finite elements. 
-Then \eqref{eq:std_err_estimate} can be further estimated using approximation property of $V^{reg}_h$:
-\begin{equation}
-    \label{eq:particular_estimate}
-    \norm{p - p_h}_{H^1(\Omega)} \le c_a \big(c h \abs{p_{reg}}_{H^2(\Omega)} + \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \big)
-\end{equation}
-where $\Pi p_{sin}$ denotes interpolation of $p_{sin}$ in $V^{reg}_h$. Our next aim is to find tight estimate for the second term.
-To this end, we calculate $H^1$ error on a~single square element $S_{h,r}$ with side $h$ and distance $r$ from origin.
-Using parametrization $0<s,t<1$,  we get
-
-\begin{align*}
- (p_{sin} - \Pi p_{sin})(s,t)&=\log\sqrt{(r+hs)^2+(ht)^2} -\Big[(1-s)(1-t)\log r\\
- &\quad+ (1-s)t\log\sqrt{r^2+h^2} + s(1-t) \log(r+h) \\
- &\quad+ st\log\sqrt{(r+h)^2+h^2} \Big]\\
- &=\frac12 \frac{h^2}{r^2}\left(t^2-t - s^2 +s\right) + O\left(\frac{h^3}{r^3}\right)
-\end{align*}
-and 
-\begin{equation}
- \grad(p_{sin} - \Pi p_{sin})(s,t) = \frac{h}{r^2} \left( \frac12-s, t-\frac12 \right) + O\left(\frac{h^2}{r^2}\right).
-\end{equation}
-Assuming $h<r$, we can neglect higher order terms. Then, we obtain by direct integration
-\begin{align*}
- \norm{p_{sin} - \Pi p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
-\end{align*}
-and
-\begin{equation}
-    \label{eq:grad_estimate_on_square}
-    \norm{\grad(p_{sin} - \Pi p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
-\end{equation}
-Thus for the density of squared error we have
-\[
-    \frac{1}{\abs{S_{h,r}}} \norm{p_{sin} - \Pi p_{sin}}^2_{H^1(S_{h,r})} \approx \frac{h^2}{6r^4}
-\]
-which after integration over the unenriched domain gives final estimate:
-\begin{equation}
-    \label{eq:singular_approx_error}
-    \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \le \left[\int_0^{2\pi} \int_{R_w}^\infty \frac{h^2} {6r^4} r \,\dd r\, \dd \theta\right]^{1/2} = \sqrt\frac{\pi}{6}\frac{h}{R_w}. 
-\end{equation}
-
-Recalling the estimate \eqref{eq:std_err_estimate}, we can conclude that optimal choice of the enrichment radius is $h/R_w\approx \norm{p_{reg}-\Pi p_{reg}}_{H^1(\Omega)}$, 
-which balances the error in the regular and the singular part. In combination with an a~posteriori error analysis, this could give a~rule for an automatic
-determination of the enrichment radius.
-
-
 
 \subsection{Numerical Results}
 \label{sec:results}
@@ -1433,14 +1364,88 @@ preconditioner of the system matrix and looking for an~alternative iteration sch
 
 
 
-
-\subsubsection{Dependence on the enrichment radius}
+\subsection{Enrichment Radius Estimation} \label{sec:enrichemnt_radius}
 Up to now, we set the enrichment radius $R_w$ in the experiments to a~fixed value, without providing any explanation of the particular choice.
-The aim of this section is twofold: we first validate the estimate \eqref{eq:grad_estimate_on_square}, secondly we simulate 
+In this section, we study the dependence of the solution error on the enrichment radius $R_w$.
+We look for a~clue for a~particular choice of $R_w$ that is optimal in a~specific sense.
+The first part of this section is devoted to a~theoretical analysis, the later part presents numerical validation of obtained estimates.
+
+\subsubsection{Derivation of Theoretical Estimate}
+Let us consider a~general elliptic problem to find $p\in V$ satisfying
+\[
+   a(p, q) = l(q), \text{ for } q \in V,
+\]
+where $a$ is bounded elliptic bilinear form: $\norm{a}\le \alpha_2$, $a(q, q) \ge \alpha_1 \norm{q}_V^2$, $\alpha_1>0$, and $l$ a~bounded linear form, $l\in V'$. 
+Suppose, that the problem is to be solved on a~domain $\Omega \subset \Real^2$ with a~single well of radius $\rho_w$ at the origin. 
+Let us assume, that the solution can be split into the singular part $p_{sin}(\vc x)= \log |\vc x|$ and the regular part $p_{reg}=p-p_{sin}$.
+Let $V^{reg}_h$ be a~polynomial finite element subspace of $V$ on a~regular mesh of elements with a~maximal side length $h$
+and let $V_h=V^{reg}_h + V^{enr}_h$ be a~such enriched space that $p_{sin}$ can be approximated exactly on the enriched domain $Z_w$, i.e.
+\begin{equation}
+   \inf_{q\in V_h} \norm{p_{sin} - q}_V = \inf_{q\in V^{reg}_h} \norm{p_{sin}|_{Z'_w} - q}_V, \quad Z'_w = \Omega\setminus Z_w.
+\end{equation}
+Using standard error estimate for elliptic PDE (e.g. \cite[Theorem 13.1]{ciarlet_basic_1991}), we get
+\begin{equation}
+    \label{eq:std_err_estimate}
+    \norm{p - p_h}_{V} \le c_a \inf_{q \in V_h} \norm{p - q}_{V} 
+    \le c_a \left(\inf_{q \in V^{reg}_h} \norm{p_{reg} - q}_{V} + \inf_{q \in V_h} \norm{p_{sin} - q}_{V} \right)   
+\end{equation}
+where $c_a=1+\alpha_2/\alpha_1$.
+In the following, we consider $V=H^1(\Omega)$, a square grid and $V^{reg}_h$ formed by bilinear finite elements. 
+Then \eqref{eq:std_err_estimate} can be further estimated using approximation property of $V^{reg}_h$:
+\begin{equation}
+    \label{eq:particular_estimate}
+    \norm{p - p_h}_{H^1(\Omega)} \le c_a \big(c h \abs{p_{reg}}_{H^2(\Omega)} + \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \big)
+\end{equation}
+where $\Pi p_{sin}$ denotes interpolation of $p_{sin}$ in $V^{reg}_h$. Our next aim is to find tight estimate for the second term.
+To this end, we calculate $H^1$ error on a~single square element $S_{h,r}$ with side $h$ and distance $r$ from origin.
+Using parametrization $0<s,t<1$,  we get
+
+\begin{align*}
+ (p_{sin} - \Pi p_{sin})(s,t)&=\log\sqrt{(r+hs)^2+(ht)^2} -\Big[(1-s)(1-t)\log r\\
+ &\quad+ (1-s)t\log\sqrt{r^2+h^2} + s(1-t) \log(r+h) \\
+ &\quad+ st\log\sqrt{(r+h)^2+h^2} \Big]\\
+ &=\frac12 \frac{h^2}{r^2}\left(t^2-t - s^2 +s\right) + O\left(\frac{h^3}{r^3}\right)
+\end{align*}
+and 
+\begin{equation}
+ \grad(p_{sin} - \Pi p_{sin})(s,t) = \frac{h}{r^2} \left( \frac12-s, t-\frac12 \right) + O\left(\frac{h^2}{r^2}\right).
+\end{equation}
+Assuming $h<r$, we can neglect higher order terms. Then, we obtain by direct integration
+\begin{align*}
+ \norm{p_{sin} - \Pi p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
+\end{align*}
+and
+\begin{equation}
+    \label{eq:grad_estimate_on_square}
+    \norm{\grad(p_{sin} - \Pi p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
+\end{equation}
+Thus for the density of squared error we have
+\[
+    \frac{1}{\abs{S_{h,r}}} \norm{p_{sin} - \Pi p_{sin}}^2_{H^1(S_{h,r})} \approx \frac{h^2}{6r^4}
+\]
+which after integration over the unenriched domain gives final estimate
+\begin{equation}
+    \label{eq:singular_approx_error}
+    \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \le \left[\int_0^{2\pi} \int_{R_w}^\infty \frac{h^2} {6r^4} r \,\dd r\, \dd \theta\right]^{1/2} = \sqrt\frac{\pi}{6}\frac{h}{R_w}. 
+\end{equation}
+
+Recalling the estimate \eqref{eq:std_err_estimate}, we can conclude that optimal choice of the enrichment radius is $h/R_w\approx \norm{p_{reg}-\Pi p_{reg}}_{H^1(\Omega)}$, 
+which balances the error in the regular and the singular part. In combination with an a~posteriori error analysis, this could give a~rule for an automatic
+determination of the enrichment radius.
+
+\subsubsection{Numeric Validation}
+Here we provide numerical validation of the results above.
+Our aim is twofold: we first validate the estimate \eqref{eq:grad_estimate_on_square}, secondly we simulate 
 the dependence of the error in $L^2$ norm on the enrichment radius numerically and compare it with \eqref{eq:singular_approx_error}.
+
+Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calculating the ratio
+\begin{equation} \label{eqn:log_h1_estimate_ratio}
+\frac{h^{3/2} r^{-2} 12^{-1/2}}{\|p_{sin} - \Pi p_{sin}\|^2_{H^1(T)}},\quad p_{sin}(\vc x) = \log \abs{\vc x}
+\end{equation}
+on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm.
 %
-\begin{table}[!htb]
-\begin{center}
+\begin{table}[!h]
+\centering
 \begin{tabular}{crr}
 \toprule
 % \multicolumn{2}{c}{Item} \\
@@ -1451,26 +1456,20 @@ $\rfrac{10}{8}$   & 0.97 & 7.1  \\% & 1.38 & 10.0  \\ %& 0.7 & 5.3   \\
 $\rfrac{10}{16}$  & 0.99 & 16.4  \\% & 1.40 & 23.1  \\ %& 1.0 & 17.4  \\
 $\rfrac{10}{32}$  & 1.00 & 34.4  \\% & 1.41 & 48.7  \\ %& 1.5 & 51.8  \\
 $\rfrac{10}{64}$  & 1.00 & 70.3  \\% & 1.41 & 99.5  \\ %& 2.1 & 150   \\
-$\rfrac{10}{128}$ & 1.00 (0.756)& 142.0   \\% & 1.41 & 201   \\ %& 3.0 & 427   \\
+$\rfrac{10}{128}$ & 1.00 & 142.0   \\% & 1.41 & 201   \\ %& 3.0 & 427   \\
 \bottomrule
 \end{tabular}
 \caption{Minimal and maximal values of the ratio \eqref{eqn:log_h1_estimate_ratio} for sequence of refined 
 meshes with element size $h$. Validation of the estimate \eqref{eq:grad_estimate_on_square}.}
 \label{tab:log_h1_estimate}
-\end{center}
 \end{table}
-
-Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calculating the ratio
-\begin{equation} \label{eqn:log_h1_estimate_ratio}
-\frac{h^{3/2} r^{-2} 12^{-1/2}}{\|p_{sin} - \Pi p_{sin}\|^2_{H^1(T)}},\quad p_{sin}(\vc x) = \log \abs{\vc x}
-\end{equation}
-on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm. Table 
-\ref{tab:log_h1_estimate} reports the minimum and the maximum values of the ratio over all elements of every mesh.
+%
+Table \ref{tab:log_h1_estimate} reports the minimum and the maximum values of the ratio over all elements of every mesh.
 The minimum values are close to 1 independently of $h$ which is in perfect agreement with \eqref{eq:grad_estimate_on_square}.
 Moreover, the minimum value is attained on the majority of
 elements, see \fig{fig:log_estimate_b}. Both parts of \fig{fig:log_estimate} demonstrate also higher convergence rate on diagonal elements
 where the nonlinear term of the bilinear finite elements allows better approximation of the saddle shaped logarithmic surface.
-
+%
 \begin{figure}[!htb]
 %   \vspace{0pt}
   \centering    
@@ -1489,22 +1488,22 @@ where the nonlinear term of the bilinear finite elements allows better approxima
 %
 
 
-Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Problem 2 with parameter $U=3$
-using the shifted XFEM for different mesh steps and different values of $R_w$.
+Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Test case 3
+using the SGFEM for different mesh steps and different values of $R_w$.
 Let us remind that $O(h^p)$ convergence of the solution in the $H^1$ norm translates to the $O(h^{p+1})$ convergence of the solution in the $L^2$ norm 
-for the linear elliptic problems (c.f. \cite[Theorem 19.2]{ciarlet_basic_1991}). According to the estimates \eqref{eq:std_err_estimate}
+for the linear elliptic problems (cf. \cite[Theorem 19.2]{ciarlet_basic_1991}). According to the estimates \eqref{eq:std_err_estimate}
 and \eqref{eq:singular_approx_error}, we expect $O(h^2)$ convergence of $L^2$ norm independently of the enrichment radius. This is 
-clearly demonstrated in \fig{fig:radius_conv_1}. For comparison, we plot also the error of the regular part of the solution
-\[
-  p_{reg}(x,y) = U(r_w-\rho_w)^2 \sin(\omega x)
-\]
+clearly demonstrated in \fig{fig:radius_conv_1}. For comparison, we plot also the error of the regular part $p_{reg}$ of the solution
+% \[
+%   p_{reg}(x,y) = U(r_w-\rho_w)^2 \sin(\omega x)
+% \]
 solved by standard FEM showing the $O(h^2)$ convergence.
 As predicted, the total error diminishes with $R_w$ but cannot 
 drop under the error of $p_{reg}$. We approximate $\norm{p_{reg} - \Pi p_{reg}}_{H^1(\Omega)}$
 using a~fine mesh and then according to \eqref{eq:singular_approx_error},
 we get the optimal value of the enrichment radius
 \[
-    R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \Pi p_{reg}}_{H^1(\Omega)} \sim 0.36
+    R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \Pi p_{reg}}_{H^1(\Omega)} \sim 0.32
 \]
 This value roughly matches a~point in the plots of the error as a~function of $R_w$ in
 \fig{fig:radius_conv_2}, from which the error is not decreasing any more.
