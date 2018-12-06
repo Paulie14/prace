@@ -25,7 +25,7 @@
 % grahpics
 \usepackage{graphicx}
 \usepackage{subfig}
-\newcommand{\fig}[1]{\hyperref[#1]{Figure \ref{#1}}}
+\newcommand{\fig}[1]{Figure \hyperref[#1]{\ref{#1}}}
 \newcommand{\figpath}{figures/}
 \newcommand{\results}{results/}
 
@@ -121,8 +121,13 @@ coupling between incompatible meshes of combined dimensions.
 %\end{acknowledgement}
 
 \tableofcontents
-
 \clearpage
+
+% \listoffigures
+% \clearpage
+% 
+% \listoftables
+% \clearpage
 
 %% \linenumbers
 
@@ -132,6 +137,7 @@ coupling between incompatible meshes of combined dimensions.
 % FVM, FDM, FEM
 % XFEM, GFEM, SGFEM
 % Fig. vs Figure, ?? the ?? Figure
+% use of subequations ??
 
 % \textbf{TUL} & Technická univerzita v~Liberci \\
 % \textbf{FM} & Fakulta mechatroniky, informatiky a mezioborových studií
