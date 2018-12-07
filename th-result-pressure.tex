@@ -502,10 +502,11 @@ There are two aspects which the integration must handle properly:
   \item the well edge geometry, since we need to integrate only outside of the well.
 \end{itemize}
 
-One of the approaches to deal with these requirements is an adaptive quadrature. The element is divided into 
-subregions (squares on the reference element) only to place more quadrature points inside but not to bring 
-any more degrees of freedom into the system. In this section we will discuss the adaptivity rules, 
-suggest an improvement and compare our strategy to the original one (developed in \cite{gracie_modelling_2010}).
+One of the approaches to deal with these requirements is an adaptive quadrature. The element is further subdivided 
+to split the integration area into much smaller pieces, where the standard quadrature rules, possibly of higher order, are used.
+This way the integration is more accurate, increasing the number of quadrature points per element, but not bringing
+any more degrees of freedom into the system. In this section we discuss the adaptivity rules for the element subdivision, 
+suggest an improvement and compare our strategy to the original one from which we have started, developed in \cite{gracie_modelling_2010}.
 
 \subsubsection{Instability of adaptive quadrature}
 \label{sec:refinement_element}
@@ -1368,7 +1369,7 @@ preconditioner of the system matrix and looking for an~alternative iteration sch
 Up to now, we set the enrichment radius $R_w$ in the experiments to a~fixed value, without providing any explanation of the particular choice.
 In this section, we study the dependence of the solution error on the enrichment radius $R_w$.
 We look for a~clue for a~particular choice of $R_w$ that is optimal in a~specific sense.
-The first part of this section is devoted to a~theoretical analysis, the later part presents numerical validation of obtained estimates.
+The first part of this section is devoted to a~theoretical analysis, the later part presents a~numerical validation of obtained estimates.
 
 \subsubsection{Derivation of Theoretical Estimate}
 Let us consider a~general elliptic problem to find $p\in V$ satisfying
@@ -1394,43 +1395,45 @@ In the following, we consider $V=H^1(\Omega)$, a square grid and $V^{reg}_h$ for
 Then \eqref{eq:std_err_estimate} can be further estimated using approximation property of $V^{reg}_h$:
 \begin{equation}
     \label{eq:particular_estimate}
-    \norm{p - p_h}_{H^1(\Omega)} \le c_a \big(c h \abs{p_{reg}}_{H^2(\Omega)} + \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \big)
+    \norm{p - p_h}_{H^1(\Omega)} \le c_a \big(c h \abs{p_{reg}}_{H^2(\Omega)} + \norm{p_{sin} - \pi_h p_{sin}}_{H^1(Z'_w)} \big)
 \end{equation}
-where $\Pi p_{sin}$ denotes interpolation of $p_{sin}$ in $V^{reg}_h$. Our next aim is to find tight estimate for the second term.
+where $\pi_h p_{sin}$ denotes interpolation of $p_{sin}$ in $V^{reg}_h$. Our next aim is to find tight estimate for the second term.
 To this end, we calculate $H^1$ error on a~single square element $S_{h,r}$ with side $h$ and distance $r$ from origin.
 Using parametrization $0<s,t<1$,  we get
 
 \begin{align*}
- (p_{sin} - \Pi p_{sin})(s,t)&=\log\sqrt{(r+hs)^2+(ht)^2} -\Big[(1-s)(1-t)\log r\\
+ (p_{sin} - \pi_h p_{sin})(s,t)&=\log\sqrt{(r+hs)^2+(ht)^2} -\Big[(1-s)(1-t)\log r\\
  &\quad+ (1-s)t\log\sqrt{r^2+h^2} + s(1-t) \log(r+h) \\
  &\quad+ st\log\sqrt{(r+h)^2+h^2} \Big]\\
  &=\frac12 \frac{h^2}{r^2}\left(t^2-t - s^2 +s\right) + O\left(\frac{h^3}{r^3}\right)
 \end{align*}
 and 
 \begin{equation}
- \grad(p_{sin} - \Pi p_{sin})(s,t) = \frac{h}{r^2} \left( \frac12-s, t-\frac12 \right) + O\left(\frac{h^2}{r^2}\right).
+ \grad(p_{sin} - \pi_h p_{sin})(s,t) = \frac{h}{r^2} \left( \frac12-s, t-\frac12 \right) + O\left(\frac{h^2}{r^2}\right).
 \end{equation}
 Assuming $h<r$, we can neglect higher order terms. Then, we obtain by direct integration
 \begin{align*}
- \norm{p_{sin} - \Pi p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
+ \norm{p_{sin} - \pi_h p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
 \end{align*}
 and
 \begin{equation}
     \label{eq:grad_estimate_on_square}
-    \norm{\grad(p_{sin} - \Pi p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
+    \norm{\grad(p_{sin} - \pi_h p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
 \end{equation}
 Thus for the density of squared error we have
 \[
-    \frac{1}{\abs{S_{h,r}}} \norm{p_{sin} - \Pi p_{sin}}^2_{H^1(S_{h,r})} \approx \frac{h^2}{6r^4}
+    \frac{1}{\abs{S_{h,r}}} \norm{p_{sin} - \pi_h p_{sin}}^2_{H^1(S_{h,r})} \approx \frac{h^2}{6r^4}
 \]
 which after integration over the unenriched domain gives final estimate
 \begin{equation}
     \label{eq:singular_approx_error}
-    \norm{p_{sin} - \Pi p_{sin}}_{H^1(Z'_w)} \le \left[\int_0^{2\pi} \int_{R_w}^\infty \frac{h^2} {6r^4} r \,\dd r\, \dd \theta\right]^{1/2} = \sqrt\frac{\pi}{6}\frac{h}{R_w}. 
+    \norm{p_{sin} - \pi_h p_{sin}}_{H^1(Z'_w)} \le \left[\int_0^{2\pi} \int_{R_w}^\infty \frac{h^2} {6r^4} r \,\dd r\, \dd \theta\right]^{1/2} = \sqrt\frac{\pi}{6}\frac{h}{R_w}. 
 \end{equation}
 
-Recalling the estimate \eqref{eq:std_err_estimate}, we can conclude that optimal choice of the enrichment radius is $h/R_w\approx \norm{p_{reg}-\Pi p_{reg}}_{H^1(\Omega)}$, 
-which balances the error in the regular and the singular part. In combination with an a~posteriori error analysis, this could give a~rule for an automatic
+Recalling the estimate \eqref{eq:std_err_estimate}, we can conclude that optimal choice of the enrichment radius is $h/R_w\approx \norm{p_{reg}-\pi_h p_{reg}}_{H^1(\Omega)}$, 
+which balances the error in the regular and the singular part. Larger $R_w$ would not benefit to better overall approximation error and it would lead unnecessiraly to
+higher amount of enriched DoFs.
+In combination with an a~posteriori error analysis, this could give a~rule for an automatic
 determination of the enrichment radius.
 
 \subsubsection{Numeric Validation}
@@ -1440,7 +1443,7 @@ the dependence of the error in $L^2$ norm on the enrichment radius numerically a
 
 Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calculating the ratio
 \begin{equation} \label{eqn:log_h1_estimate_ratio}
-\frac{h^{3/2} r^{-2} 12^{-1/2}}{\|p_{sin} - \Pi p_{sin}\|^2_{H^1(T)}},\quad p_{sin}(\vc x) = \log \abs{\vc x}
+\frac{h^{3/2} r^{-2} 12^{-1/2}}{\|p_{sin} - \pi_h p_{sin}\|^2_{H^1(T)}},\quad p_{sin}(\vc x) = \log \abs{\vc x}
 \end{equation}
 on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm.
 %
@@ -1499,11 +1502,11 @@ clearly demonstrated in \fig{fig:radius_conv_1}. For comparison, we plot also th
 % \]
 solved by standard FEM showing the $O(h^2)$ convergence.
 As predicted, the total error diminishes with $R_w$ but cannot 
-drop under the error of $p_{reg}$. We approximate $\norm{p_{reg} - \Pi p_{reg}}_{H^1(\Omega)}$
+drop under the error of $p_{reg}$. We approximate $\norm{p_{reg} - \pi_h p_{reg}}_{H^1(\Omega)}$
 using a~fine mesh and then according to \eqref{eq:singular_approx_error},
 we get the optimal value of the enrichment radius
 \[
-    R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \Pi p_{reg}}_{H^1(\Omega)} \sim 0.32
+    R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \pi_h p_{reg}}_{H^1(\Omega)} \sim 0.32
 \]
 This value roughly matches a~point in the plots of the error as a~function of $R_w$ in
 \fig{fig:radius_conv_2}, from which the error is not decreasing any more.
@@ -1518,8 +1521,8 @@ This value roughly matches a~point in the plots of the error as a~function of $R
 %   \hspace{0pt}
 %   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
 %     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
-  \caption[Enrichment radius choice.]{Convergence graph for different enrichment radii. The 'FEM (ur)'
-  data comes from the problem without well solved by the standard FEM -- it has the optimal convergence order 2.0.}
+  \caption[Convergence for different enrichment radii.]{Convergence graph for different enrichment radii. The "FEM reg"
+  data comes from the problem without the singularity solved by the standard FEM -- it has the optimal convergence order 2.0.}
   \label{fig:radius_conv_1}
 \end{figure}
 \begin{figure}[!htb]
@@ -1531,8 +1534,8 @@ This value roughly matches a~point in the plots of the error as a~function of $R
 %   \hspace{0pt}
 %   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
 %     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
-  \caption[Enrichment radius choice.]{Dependence of the error on the enrichment radius for different
-  element sizes.}
+  \caption[Optimal enrichment radius.]{Dependence of the error on the enrichment radius for different
+  element sizes $h$.}
   \label{fig:radius_conv_2}
 \end{figure}
 
