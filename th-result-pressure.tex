@@ -472,10 +472,10 @@ which we refer to as the \textbf{shifted XFEM}.
 We remind that in the Corrected XFEM, the index set of the enriched nodes is extended due to the ramp function
 such that every node of elements that have non-zero intersection with the area $Z_w$ is enriched:
 \begin{equation} \label{eqn:prim_enriched_nodes_corr}
-    \mathcal{J}^{*w}_{2N} = \{\alpha\in\mathcal{I}_{2N}: \bx_\alpha\in T^j_2,\, j\in\mathcal{J}^w_{2E},\, w\in\mathcal{W}\}.
+    \mathcal{J}^{*w}_{2N} = \{\alpha\in\mathcal{I}_{2N}: \bx_\alpha\in T^j_2,\, j\in\mathcal{J}^w_{2E},\, w\in\mathcal{W}\},
 %     \mathcal{J}^{*w}_{2N} = \{\bx_\alpha: \bx_\alpha\in T^i_2,\, T^i_2\cap Z_w \neq \emptyset, \, i\in\mathcal{I}_{2E},\, \alpha\in\mathcal{I}_{2N} \} \quad \forall w\in\mathcal{W}.
 \end{equation}
-Finally we have the \textbf{SGFEM} scheme, see \eqref{eqn:sgfem_enrich},
+see \fig{fig:enrichment_zone_radial} above. Finally we have the \textbf{SGFEM} scheme, see \eqref{eqn:sgfem_enrich},
 \begin{equation} \label{eqn:prim_sgfem_enrich}
     L_{\alpha w}|_{T_2^j} = \left[s_w(\bx) - \pi_{T_2^j} (s_w)(\bx)\right],
     \quad \alpha\in\mathcal{J}^w_{2N},\, j\in\mathcal{J}^w_{2E},\, w\in\mathcal{W},

@@ -35,26 +35,48 @@ The XFEM is mainly perceived as a~method for local enrichment, which means that 
 in a~small subdomain -- several elements of the computational mesh close to the local phenomenon.
 The XFEM solution with a~single enrichment is sought in the form
 \begin{equation} \label{eqn:soa_xfem_standard_form}
-  u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
-    + \sum_{\alpha\in\mathcal{J}} b_{\alpha} \phi_{\alpha}(x),
+  u(\bx) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(\bx)
+    + \sum_{\alpha\in\mathcal{J}} b_{\alpha} \phi_{\alpha}(\bx),
 \end{equation}
 where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
-the enrichment, $v_\alpha(x)$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
+the enrichment, $v_\alpha$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
 $\mathcal{J}$ that contain all indices of the standard and enriched degrees of freedom, respectively.
 The \emph{local enrichment function} $\phi_{\alpha}$ in~\eqref{eqn:soa_xfem_standard_form} is typically defined as
 \begin{equation} \label{eqn:soa_xfem_enrich}
-    \phi_{\alpha} = N_\alpha(x)L(x), \quad \alpha\in\mathcal{J},
+    \phi_{\alpha}(\bx) = N_\alpha(\bx)L(\bx), \quad \alpha\in\mathcal{J},
 \end{equation}
 where $L$ is the actual enrichment function and $N_\alpha$ is a~function of the partition of unity
-$\sum_\alpha N_\alpha(x) = 1$, creating the localised degrees of freedom for the enrichment.
-Typically, $N_\alpha$ are linear FE basis functions, having support points at the mesh nodes, $N_\alpha(x_\alpha)=1$,
+$\sum_\alpha N_\alpha(\bx) = 1$, creating the localized degrees of freedom for the enrichment.
+Typically, $N_\alpha$ are linear FE basis functions, having support points at the mesh nodes, $N_\alpha(\bx_\alpha)=1$,
 so one is often talking about enriching nodes and calling these \emph{enriched nodes}.
 Different functions which make the partition of unity might be used, but linear functions are the most common.
+An example of such local enrichment is shown in \fig{fig:enrichment_zone}. One can see the enriched nodes, denoted
+by red dots, inside the chosen enrichment zone $Z$, defined by the green boundary line. All nodes of the dark elements
+are enriched, so $N_\alpha$ in \eqref{eqn:soa_xfem_enrich} creates the whole partition of unity there. In contrast to that, 
+the light elements are enriched only partially and the sum of $N_\alpha$ in the enrichment is smaller than one.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone.pdf}
+  \caption[Local enrichment]{Local enrichment on a~quadrilateral mesh. }
+  \label{fig:enrichment_zone}
+\end{figure}
+% \begin{figure}[!htb]
+%   %\vspace{-15pt}
+%   %TODO: do not forget to replace the notation of the enrichment function
+%   \begin{center}         
+%     \def\svgwidth{0.5\textwidth}
+%     \input{\figpath enrichment_zone.pdf_tex}
+%   \end{center}
+%   \caption{The enrichment.}
+%   \label{fig:enrich_func}
+% \end{figure}
 
 % The index set $\mathcal{J}$ includes 
 % all enriched nodes, i.e. the nodes that are in the vicinity of the effect, due to which we are applying the enrichment.
 
-The most straightforward choice of $L(x)$ is the global enrichment function itself but it is not optimal. It can suffer with a~lack of convergence, a~large approximation error at some elements or an ill-conditioning of the linear system.
+The most straightforward choice of $L(\bx)$ is the global enrichment function itself but it is not optimal. It can suffer with a~lack of convergence, a~large approximation error at some elements or an ill-conditioning of the linear system.
 All these problems were intensively studied and lead to different XFEM methods:
 the so called Corrected XFEM~\cite{fries_corrected_2008}
 and the Stable Generalized Finite Element Method (SGFEM)~\cite{babuska_stable_2012, gupta_stable_2013}, which 
@@ -62,11 +84,11 @@ both became standard for XFEM in general. These are discussed in more details la
 
 Considering more than one enrichment is straightforward. The approximation will then change into the following form
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult1}
-    u(x) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(x)
-        + \sum_{e\in\mathcal{E}}\sum_{\alpha\in\mathcal{J}^e} b_{e\alpha} \phi_{e\alpha}(x)
+    u(\bx) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(\bx)
+        + \sum_{e\in\mathcal{E}}\sum_{\alpha\in\mathcal{J}^e} b_{e\alpha} \phi_{e\alpha}(\bx)
 \end{equation}
 \begin{equation} \label{eqn:soa_xfem_standard_form_mult2}
-    \phi_{e\alpha}(x) = N_\alpha(x)L_e(x), \quad e\in\mathcal{E},\; \alpha\in\mathcal{J}^e
+    \phi_{e\alpha}(\bx) = N_\alpha(\bx)L_e(\bx), \quad e\in\mathcal{E},\; \alpha\in\mathcal{J}^e
 \end{equation}
 The enrichment $e$ is enriching all the nodes in the index set $\mathcal{J}^e$ with degrees of freedom $b_{e\alpha}$
 corresponding to the local enrichment functions $\phi_{e\alpha}$. Note that there can be multiple functions $\phi_{e\alpha}$ with support on the same element. If these functions are close to each other in some measure in the approximation space, then the respective degrees of freedom can become linearly dependent which results in ill-conditioning of the linear system (SGFEM is mainly addressed to this issue).
@@ -86,21 +108,21 @@ The discontinuity is commonly described by a~\emph{levelset} function -- a~signe
 that assings positive values to one part of the domain $\Omega$, negative values to the other part and is zero at the discontinuity/interface $\Gamma_{disc}$, for example
 % cite TP Fries
 \[
-    \gamma(x) = \pm \min \norm{x-x_{disc}} \quad \forall x_{disc} \in \Gamma_{disc},\; \forall x \in \Omega.
+    \gamma(\bx) = \pm \min \norm{\bx-\bx_{disc}} \quad \forall \bx_{disc} \in \Gamma_{disc},\; \forall \bx \in \Omega.
 \]
 The global enrichment function then takes the form of a~signum or a~Heaviside function
 \begin{eqnarray}
-    s(x) &=& \textrm{sign}(\gamma(x)),\\
-    s(x) &=& \textrm{H}(\gamma(x)).
+    s(\bx) &=& \textrm{sign}(\gamma(\bx)),\\
+    s(\bx) &=& \textrm{H}(\gamma(\bx)).
 \end{eqnarray}
 for strong discontinuity, or
 \begin{equation}
-    s(x) = \abs{\gamma(x)}.
+    s(\bx) = \abs{\gamma(\bx)}.
 \end{equation}
 for weak discontinuity, respectively.
 
-The discontinuity location $\Gamma_{disc}(t)$ does not always have to be known explicitly and/or it can be time dependent.
-In that situation the signed distance function $\gamma(x,t)$ can be obtained as a~solution of auxiliary problem, or be a~part of
+The discontinuity location $\Gamma_{disc}$ does not always have to be known explicitly and/or it can be time dependent, $\Gamma_{disc}(t)$.
+In that situation the signed distance function $\gamma(\bx,t)$ can be obtained as a~solution of auxiliary problem, or be a~part of
 the searched solution (e.g. in the article \cite{sauerland_stable_2013}
 where the moving interface of two-phase flow is a~solution of a~transport equation).
 
@@ -173,9 +195,9 @@ This matter is discussed later, giving more details in section \ref{sec:enrichem
 
  
 \subsection{Enrichment Methods} \label{sec:enrichment_methods}
-We now discuss different choices of the local enrichment functions $L(x)$ and their particular aspects and properties.
+We now discuss different choices of the local enrichment functions $L(\bx)$ and their particular aspects and properties.
 All the presented XFEM methods considered below are using the standard linear finite element shape 
-functions $N_\alpha(x)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
+functions $N_\alpha(\bx)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
 as the partition of unity.
 
 \subsubsection{Corrected XFEM} \label{sec:corrected_xfem}
@@ -203,7 +225,16 @@ and modifies the enrichment function into the form
     \phi_{\alpha}(\bx) &=& N_\alpha(\bx)L(\bx), \quad \alpha\in\mathcal{J}^*.
 \end{eqnarray}
 Note the set $\mathcal{J}^*$ which is slightly bigger than $\mathcal{J}$. It includes the nodes on the blending
-elements which were previously unenriched. Thus $\mathcal{J}\subset\mathcal{J}^*$.
+elements which were previously unenriched, see \fig{fig:enrichment_zone_radial}. Thus $\mathcal{J}\subset\mathcal{J}^*$.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone_radial.pdf}
+  \caption[Radial enrichment zone]{Radial enrichment zone on a~quadrilateral mesh -- blending and reproducing elements.}
+  \label{fig:enrichment_zone_radial}
+\end{figure}
+%
 The ramp function keeps the properties on standard and reproducing elements (is constant 0 and 1, respectively),
 but on blending elements it creates smooth transition between standard and enriched approximation. Due to
 additional DoFs the modified enrichment function can be reproduced exactly and there is no lack of partition of unity.
