@@ -1,0 +1,61 @@
+%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'smooth_step.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{316bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.62025316)%
+    \put(0,0){\includegraphics[width=\unitlength]{\figpath smooth_step.pdf}}%
+    \put(0.00185103,0.07234235){\makebox(0,0)[lb]{\smash{0}}}%
+    \put(0.00185103,0.49591893){\makebox(0,0)[lb]{\smash{1}}}%
+    \put(0.13,0.0169626){\makebox(0,0)[lb]{\smash{$\rho_w$}}}%
+    \put(0.8,0.0169626){\makebox(0,0)[lb]{\smash{$\rho_w + \gamma$}}}%
+    %\put(0.08,0.58){\makebox(0,0)[lb]{\smash{$\mu(z) = -2 z^3 +3 z^2,\; z=\frac{r_w-\rho_w}{\gamma}$}}}% %6z^5-15z^4+10z^3
+    \put(0.88573552,0.315){\makebox(0,0)[lb]{\smash{$\mu$}}}%
+    \put(0.83650451,0.225){\makebox(0,0)[lb]{\smash{$1-\mu$}}}%
+  \end{picture}%
+\endgroup%
