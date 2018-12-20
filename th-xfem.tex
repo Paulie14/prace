@@ -25,11 +25,11 @@ the Generalized Finite Element Method (e.g. by Strouboulis in~\cite{strouboulis_
 and the early XFEM (e.g. by Belytschko and Mo{\"e}s in \cite{moes_finite_1999}) are commented in details there.
 
 The most frequent application of the XFEM is in mechanics, where people take advantage of the XFEM especially in
-modelling cracks growth without requiring remeshing the computational mesh in every time step. 
-Discontinuous functions (Heaviside function, signum) are used to capture the jump in stress or strain at the crack,
+modeling cracks growth without requiring remeshing the computational mesh in every time step. 
+Discontinuous functions (Heaviside or signum function) are used to capture the jump in stress or strain at the crack,
 singular functions are applied in the vicinity of the crack tips. The exact function for the selected enrichment
 comes either directly from the nature of the phenomenon, or can be obtained as the solution of a~local auxiliary
-problem. This function is most often reffered as the \emph{global enrichment function}.
+problem. This function is most often referred as the \emph{global enrichment function}.
 
 The XFEM is mainly perceived as a~method for local enrichment, which means that the enrichment is applied only
 in a~small subdomain -- several elements of the computational mesh close to the local phenomenon.
@@ -104,8 +104,8 @@ A discontinuity at a~crack or an interface is one of the phenomena where XFEM is
 We talk about a~\emph{strong} discontinuity, if the quantity of interest is discontinuous (pressure in fluid mechanics, stress in mechanics, potential in electrostatics etc.).
 The term \emph{weak} discontinuity is then used when the derivative of the quantity of interest is discontinuous (fluid velocity, strain or damage, electric current etc.).
 
-The discontinuity is commonly described by a~\emph{levelset} function -- a~signed function,
-that assings positive values to one part of the domain $\Omega$, negative values to the other part and is zero at the discontinuity/interface $\Gamma_{disc}$, for example
+The discontinuity is commonly described by a~\emph{level-set} function -- a~signed function,
+that assigns positive values to one part of the domain $\Omega$, negative values to the other part and is zero at the discontinuity/interface $\Gamma_{disc}$, for example
 % cite TP Fries
 \[
     \gamma(\bx) = \pm \min \norm{\bx-\bx_{disc}} \quad \forall \bx_{disc} \in \Gamma_{disc},\; \forall \bx \in \Omega.
@@ -115,11 +115,11 @@ The global enrichment function then takes the form of a~signum or a~Heaviside fu
     s(\bx) &=& \textrm{sign}(\gamma(\bx)),\\
     s(\bx) &=& \textrm{H}(\gamma(\bx)).
 \end{eqnarray}
-for strong discontinuity, or
+for a~strong discontinuity, or
 \begin{equation}
     s(\bx) = \abs{\gamma(\bx)}.
 \end{equation}
-for weak discontinuity, respectively.
+for a~weak discontinuity, respectively.
 
 The discontinuity location $\Gamma_{disc}$ does not always have to be known explicitly and/or it can be time dependent, $\Gamma_{disc}(t)$.
 In that situation the signed distance function $\gamma(\bx,t)$ can be obtained as a~solution of auxiliary problem, or be a~part of
@@ -128,22 +128,22 @@ where the moving interface of two-phase flow is a~solution of a~transport equati
 
 
 \subsubsection{Singularity} \label{sec:glob_enr_singularity}
-Another problematic phenomenon that damages the finite element approximation is singular or high gradient behaviour often present in the solution.
+Another problematic phenomenon that damages the finite element approximation is singular or high gradient behavior often present in the solution.
 This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d.
 The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions;
 these are of our main interest.
 
-A function with its singularity concentrated in a~single point has a~symmetric radial character.
-Therefore the polar coordinates in 2d are commonly used and the global enrichment function $s(r,\theta)$ is defined in this coordinate system.
+A function with its singularity concentrated in a~single point, denoted $\bx_e$ for singularity (enrichment) $e$, has a~symmetric radial character.
+Therefore the polar coordinates in 2d are commonly used and the global enrichment function $s(r,\theta)$ is defined in this coordinate system with the origin at $\bx_e$.
 The actual form of $s(r,\theta)$ is based on the solution of a~local auxiliary problems, e.g. the solution of a~simple 2d Laplace problem with a~single point source 
 is $\log(r)$ dependent. Other singular enrichment functions are typically $r^\alpha,\;\alpha\in\R$ dependent.
 More examples not only in mechanics, namely
 \[ r^{3/2},\;r^{1/2},\;r^{-1/2},\;r^{-1},\;r^{-3/2},\; r^{-2}, \]
 are collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, in the overview table 2.3-2.5.
 
-In three dimensional space the spheric or cylindric coordinate systems can be applied when the singularity is concentrated in a~point or on a~line, respectively.
-For example a~crack front or a~line source in 3d has the same strength of the singularity as in 2d, thus there is no need for an enrichment in the lenght axis
-of the cylindric coordinates.
+In three dimensional space the spherical or cylindrical coordinate systems can be applied when the singularity is concentrated in a~point or on a~line, respectively.
+For example a~crack front or a~line source in 3d has the same strength of the singularity as in 2d, thus there is no need for an enrichment in the length axis
+of the cylindrical coordinates.
 
 High gradient in the solution occurs also in the vicinity of discontinuities. A~demonstrative examples are boundary (or interior) layers
 in some convection dominated transport models. Abbas et al. in the article \cite{abbas_alizada_fries_highgradient_2010} described an XFEM with
@@ -151,44 +151,60 @@ a set of regularized (smooth) step functions that can capture arbitrary gradient
 %TODO can be viewed as an complement or alternatives to some stabilisation methods, like SUPG
 
 \subsection{Enrichment Zone} \label{sec:glob_enr_zone}
+Depending on the enrichment type (discontinuous or singular), the enrichment zone is chosen adequately.
+In case of discontinuity, the effect is local on the elements intersected by $\Gamma_{disc}$, thus only
+these elements are to be enriched. The enrichment zone $Z$ is then defined implicitly by those intersected elements,
+see the left part of \fig{fig:enrichment_zone_types}.
+
+% Regardless of the particular enrichment method used, the en
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone_types.pdf}
+  \caption[Enrichment zone types]{Enrichment zones in case of a~discontinuity (on the left) and a~singularity (on the right).
+  In case of the singularity, the large green circle denotes the fixed (geometrical) enrichment zone; the topological one would
+  only enrich the nodes of the element denoted by the green dashed line.}
+  \label{fig:enrichment_zone_types}
+\end{figure}
 % In case of discontinuity 
+The situation in case of singular enrichments is trickier.
 Typically the singular effects reach not only to the element where the singularity is located but also in its surroundings,
 where steep gradients are present.
 %TODO in contrast to energy correction method (reentrant corners), where the optimal convergence is gained
 % by editing the local contribution of the bilinear form on the elements adjacent to the reentrant corner (at a node of the mesh)
-A proper enrichment area in the vicinity of the singularity must be chosen so the method converges optimally
+A proper enrichment zone in the vicinity of the singularity must be chosen so the method converges optimally
 and/or gives satisfying approximation error. If it is too
-small, the method can loose its approximation properties and its convergence rate might decrease. If the enrichment area is too large,
+small, the method can loose its approximation properties and its convergence rate might decrease. If the enrichment zone is too large,
 a high amount of degrees of freedom can be added unnecessarily and the method can become too computationally expensive.
 In some cases, the additional degrees of freedom can become almost linearly dependent which then causes ill-conditioning of the linear system.
 
-%TODO use systematically enrichment zone instead of enrichment area
-This problematics is originally addressed in \cite{laborde_highorder_2005}, where the fixed enrichment zone size is suggested for standard XFEM,
+This topic is originally addressed in \cite{laborde_highorder_2005}, where the fixed enrichment zone size is suggested for standard XFEM,
 including some ideas for integral quadrature improvements and decreasing the ill-conditioning. In the same time, authors of \cite{bechet_improved_2005}
 have the same aim and introduce the terms \emph{topological} and \emph{geometrical} enrichment. The former one is a~kind of enrichment where only the element
 that includes the singularity is enriched. The later one defines a~fixed enrichment zone in the same manner as it is in the reference above.
 In \cite{fries_corrected_2008}, the geometrical enrichment is also viewed as necessary to reach the optimal convergence, on the other hand
-it is mentioned that for a~crack branching or multiple cracks, the enrichment zone is preffered as small as possible, i.e., topological enrichment is applied
-while sacrifising the optimal convergence rate.
+it is mentioned that for a~crack branching or multiple cracks, the enrichment zone is preferred as small as possible, i.e., topological enrichment is applied
+while sacrificing the optimal convergence rate.
+Both types of singular enrichment zones are shown on the right side of \fig{fig:enrichment_zone_types}.
 
-Since the singularities of our interest have a~radial character, we shall specify the size of the geometrical enrichment area by so called \emph{enrichment radius} $R_e$.
-We think this aspect of singular enrichments does not receive appropriate attention in XFEM literature, since the size of the enrichment area
+Since the singularities of our interest have a~radial character, we shall specify the size of the geometrical enrichment zone by so called \emph{enrichment radius} $R_e$.
+We think this aspect of singular enrichments does not receive appropriate attention in XFEM literature, since the size of the enrichment zone
 can influence the solution significantly and is often given fixed and without any explanation.
 There is no general recipe available, up to our best knowledge, except the two following hints.
 
-Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an apriori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a~2d linear elasticity crack problem,
+Gupta and Duarte in~\cite{gupta_enr_zone_2016} provide an a~priori estimate for the enrichment radius $R_e>Ch^{-2p}$ for a~2d linear elasticity crack problem,
 where $h$ is the mesh parameter and $p$ is the FE polynomial order.
 The estimate derivation is dependent on the problem specific bilinear form and the enrichment function $\vc s(r,\theta) = \sqrt{r} \vc f(\theta)$.
 The main idea behind is the following: to achieve the optimal convergence of order $p$, choose $R_e$ such that the restriction of the solution to
 a narrow band of unenriched elements adjacent to the enrichment zone belongs to the Hilbert space of order $p+1$.
 According to the estimate, the minimum size of the enrichment zone is not fixed and it decreases with the mesh refinement.
 Therefore, if a~fixed large enough geometrical enrichment is adopted, an optimal convergence rate will be achieved regardless of the value of the constant $C$.
-On the other hand, the constant $C$ is not specified precisely, so for a~pratical application (with a~given mesh), the estimate does not answer the proper value of $R_e$.
+On the other hand, the constant $C$ is not specified precisely, so for a~practical application (with a~given mesh), the estimate does not answer the proper value of $R_e$.
 The authors further state in their conclusion that the geometrical enrichment zone is necessary to obtain optimal convergence rate in this type of problems
 and that large enrichment zones can lead to ill-conditioning of the underlying linear system, which is in agreement with our experience in our models.
 
 The other reference of choosing the enrichment zone is by us in~\cite{exner_2016}.
-There we suggest an a~posteori analyses of the enrichment radius for the Poisson equation.
+There we suggest an a~posteriori analyses of the enrichment radius for the Poisson equation.
 We consider splitting the solution onto a~regular and a~singular part and we measure the approximation error of the singular part
 in the unenriched part of the domain. This error should be then balanced with the approximation error of the regular part of the solution.
 This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
@@ -253,7 +269,7 @@ The property of the shifted formulation enables us to prescribe Dirichlet bounda
 $a_\alpha = h_D(\bx_\alpha)$.
 
 It has been also shown in many cases that both ramp function and shifting are needed to obtain optimal convergence rate.
-In \cite{ventura_fast_2009}, authors analyse a~more general form of a~ramp function (calling the method a~weighted XFEM)
+In \cite{ventura_fast_2009}, authors analyze a~more general form of a~ramp function (calling the method a~weighted XFEM)
 and compare different alternatives of shifting on crack and dislocation problems. The methods described above can be then seen
 as special types of the weighted XFEM. 
 % Let us call them the \textbf{ramp function XFEM}  
@@ -272,7 +288,7 @@ called it the Stable Generalized Finite Element Method.
 In \cite{gupta_stable_2013}, the authors elaborate the problem in 2d and show the application of the SGFEM on elastic fracture model.
 The proposed method is supposed to overcome the common problem of the ill-conditioning of the stiffness matrix coming out of enrichment methods.
 
-Particulary the ill-conditioning is observed when using the linear shape functions as the PU which results in some cases in almost linearly dependent degrees of freedom.
+Particularly the ill-conditioning is observed when using the linear shape functions as the PU which results in some cases in almost linearly dependent degrees of freedom.
 We also often see that the ill-conditioning is sensitively dependent on the underlying mesh, i.e., the position of a~discontinuity or a~singularity with respect to 
 element nodes or edges.
 This can then lead to much worse conditioned stiffness matrix than the one of the FEM
@@ -330,8 +346,8 @@ and keeps its approximation properties. Although LOT is applied on the specific 
 it is a~general idea and might be also suitable for cases, where more than a~single enrichment are present on an element.
 
 The same group of authors in \cite{gupta_3d_fracture_2015} study the SGFEM application to a~3d fracture mechanics problem.
-The transition from 2d to 3d is demonstrated not to be trivial. Two different enrichment basis for displacement are tested -- vectorial and scalar.
-Also the topological versus the geometrical enrichment in 3d is compared in the sense of conditiong and convergence.
+The transition from 2d to 3d is demonstrated not to be trivial. Two different enrichment basis for displacement are tested -- vector and scalar.
+Also the topological versus the geometrical enrichment in 3d is compared in the sense of conditioning and convergence.
 Finally, they show that only one of their proposed methods has at least the first two properties listed above,
 regarding the specific 3d problem.
 
@@ -347,27 +363,32 @@ regarding the specific 3d problem.
 % energy correction method - solving reentrant corners
 % dirac delta sources
 
-There is much less to be found on the usage of the XFEM in the field of flow modelling, especially regarding the dimensions coupling,
+There is much less to be found on the usage of the XFEM in the field of flow modeling, especially regarding the dimensions coupling,
 than in mechanics.
-% Many researchers are using some kind of the extended finite element method, but the applications are mainly aimed
-% at problems in mechanics. 
-% One of the reasons is that the stability of the discrete mixed form is more sensitive 
-% on the choice of the finite elements used in flow problems. 
 Apart from the references on various types of the XFEM in previous paragraph, we can name some works regarding flow and the XFEM.
-Extensive work has been done in the area of modelling 1D-2D fractured domains with mixed finite 
+
+Extensive work has been done in the area of modeling 1d-2d fractured domains with mixed finite 
 elements by D'Angelo, Fumagalli and Scotti~\cite{fumagalli_numerical_2012, dangelo_mixed_2012, fumagalli_efficient_2014}. 
 In there, the XFEM is used to incorporate additional degrees of freedom of zero order Raviart-Thomas basis 
-functions on the intersected elements to allow the discontinuity in velocity. The trick is, that the same
-basis functions are used but with different support. The model is formulated in 1D-2D at the moment.
+functions on the intersected elements to allow the discontinuity in velocity.
+The trick is, that the same basis functions are used but with different support determined by the geometry of the discontinuity.
+Thus no step function is actually used to enrich the finite element space,
+like we would do in standard XFEM approach described in Section \ref{sec:glob_enr_discontinuity}.
+This approach however is not suitable for the approximation of a~singularity,
+since enriching the FE space by additional Raviart-Thomas basis fuctions would not help to capture neither the geometry of the singularity
+nor the adjacent steep gradients.
+The authors further analyze the stability and convergence properties of their approach, in particular the inf-sup condition.
+They also deal with various types of the discontinuity-element cross-sections and with branching of the fractures.
+The model is formulated in 1d-2d at the moment.
 
-Another work regarding 1D-2D fractures is by Schwenck~\cite{schwenck_xfem-based_2015} (also in \cite{schwenck_2015}), 
+Another work regarding 1d-2d fractures is by Schwenck~\cite{schwenck_xfem-based_2015} (also in \cite{schwenck_2015}), 
 where the primary formulation is used and among others, the fracture tip and fractures intersection is dealt with.
 
 Next, there are several publications on multi-phase fluid flow governed by Navier-Stokes equations using the XFEM for
-approximation on the interfaces in 2D (\cite{diez_stable_2013,sauerland_stable_2013}). However, these are
+approximation on the interfaces in 2d (\cite{diez_stable_2013,sauerland_stable_2013}). However, these are
 little bit further from our application.
 
-A 1D-3D model for investigation of the transport of substances in a~human body has been developed by D'Angelo 
+A 1d-3d model for investigation of the transport of substances in a~human body has been developed by D'Angelo 
 and Zunino et al. (e.g in~\cite{dangelo_coupling_2008,cattaneo_numerical_2015}), without usage of the XFEM.
-Further, 1D-3D coupling for blood flow and mass transport in vascularized human tissue is
+Further, 1d-3d coupling for blood flow and mass transport in vascularized human tissue is
 investigated by K{\" o}ppl in\cite{koppl_tum_2015}.
