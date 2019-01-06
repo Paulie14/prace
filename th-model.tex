@@ -78,7 +78,7 @@ to the pressure difference. We consider the pressure average on the interior sid
 We define the following weak spaces for velocity and pressure,
 so we can derive the weak form of the problem \eqref{thm:prob_mixed_simple}
 \begin{eqnarray}    
-    V &=& \{\vc v\in H(\div,\Omega);\; \fluct{\vc v\cdot\vc n} = 0\}, \label{eqn:space_V}\\
+    V &=& \{\vc v\in H(\div,\Omega):\; \fluct{\vc v\cdot\vc n} = 0\}, \label{eqn:space_V}\\
     Q &=& \{q \in L_2(\Omega) %;\; \fluct{q} = 0
           \}. \label{eqn:space_Q}
 \end{eqnarray}
@@ -88,10 +88,10 @@ is considered nearly constant along the well edge.
 
 The derivation of the weak form follows
 \begin{align}
-    \int_\Omega \vc u \vc K^{-1} \vc v
-    + \int_{\prtl\Omega} p \,(\vc v \cdot \vc n)
-    - \int_\Omega p\,\div\, \vc v &= 0 && \forall \vc v\in V, \label{eqn:mixed_weak_1}\\
-    - \int_\Omega q\,\div\, \vc u &= - \int_\Omega fq &&  \forall q\in Q. \label{eqn:mixed_weak_2}
+    \int_\Omega \vc u \vc K^{-1} \vc v \dd\bx
+    + \int_{\prtl\Omega} p \,(\vc v \cdot \vc n) \dd s
+    - \int_\Omega p\,\div\, \vc v \dd\bx &= 0 && \forall \vc v\in V, \label{eqn:mixed_weak_1}\\
+    - \int_\Omega q\,\div\, \vc u \dd\bx &= - \int_\Omega fq \dd\bx &&  \forall q\in Q. \label{eqn:mixed_weak_2}
 \end{align}
 % To apply the given boundary condition on $\Gamma_w$ we define
 % the following decomposition of the normal flux into average and fluctuating parts
@@ -111,7 +111,7 @@ The derivation of the weak form follows
 % is considered nearly constant around the well edge).
 Using the property of the space $V$ we get
 \begin{equation}
-    \int_{\Gamma_w} p \,(\vc v \cdot \vc n) = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n}_w 
+    \int_{\Gamma_w} p \,(\vc v \cdot \vc n) \dd s = \int_{\Gamma_w} p \,\avg{\vc v \cdot \vc n}_w \dd s
     = \avg{p}_w \avg{\vc v \cdot \vc n}_w \abs{\Gamma_w}
 \end{equation}
 where we can substitute from the boundary condition \eqref{eqn:mixed_form_3}
@@ -132,14 +132,14 @@ Find $\vc u\in V$ and $p\in Q$ satisfying
 \end{align}
 with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
 \begin{align*}
- a(\vc u, \vc v)=& \int_\Omega \vc u \vc K^{-1} \vc v
+ a(\vc u, \vc v)=& \int_\Omega \vc u \vc K^{-1} \vc v \dd\bx
                    + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
 %
- b(\vc v, p)=& - \int_\Omega p \,\div\, \vc v,\\
+ b(\vc v, p)=& - \int_\Omega p \,\div\, \vc v \dd\bx,\\
 %
  \langle G, \vc v\rangle_{V'\times V} =&
-        -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) - P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w},\\
- \langle F, q\rangle_{Q'\times Q} =& - \int_{\Omega} f q.
+        -\int_{\Gamma_D} g_{D} (\vc v \cdot \vc n) \dd s - P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w},\\
+ \langle F, q\rangle_{Q'\times Q} =& - \int_{\Omega} f q \dd\bx.
 \end{align*}
 }
 %
@@ -302,28 +302,129 @@ such that the solution fullfills the stability estimate
 % 
 
 
-\subsection{Discretization of Mixed problem}
+\subsection{Discretization of Mixed Problem}
 
-The pressure space $Q_h=\{q: q|_T\in \mathbb{P}^0\}$ consists of piecewise constant functions.
-Next we use the standard Raviart-Thomas shape functions space
+The discretization applied in the flow model in Flow123d is followed in this section
+and it is enhanced using an~enrichment of the velocity space.
+In contrast to the first part of this work, simplicial meshes are considered from now on.
+At the beginning a~mixed-hybrid discretization approach is described,
+then a~proper enrichment of the discrete velocity space is introduced.
+
+
+For the approximation of the $H(\div,\Omega)$ space, we use the lowest order Raviart-Thomas space
 \begin{equation}
-    \mathbb{RT}^0(T) = \{\vc\psi_j\}_j^{nE}
+    \mathbb{RT}^0(T^i) = \{\vc\psi_j\}_{j=1}^{n_F}, 
 \end{equation}
-with the side fluxes defining its degrees of freedom
+on the element $T^i$, $i\in\mathcal{I}_E$. The vector basis functions of $\mathbb{RT}^0(T^i)$
+are defined in the standard way
 \begin{equation}
-    \int_{E_i} \vc\psi_j \cdot \vc n \dd s = \delta_{ij}.
+    \vc\psi_j(\bx) = \frac{\abs{F^j}}{\abs{T^i}} \left( \bx - \bx_k \right), \qquad \bx\in T^i,\, j=1,\ldots,n_F
 \end{equation}
+with $\bx_k$ being the opposite node of face $F^j$ and $n_F$ the number of faces of the element $T^i$
+(holds in all dimensions, having $\abs{F^j}:=1$ in 1d for point faces).
+The degrees of freedom are interpreted as the fluxes over the corresponding faces
+\begin{equation}
+    \int_{F_i} \vc\psi_j \cdot \vc n \dd s = \delta_{ij} \qquad i,j=1,\ldots,n_F.
+\end{equation}
+Let us denote the standard discrete space for velocity
+\begin{equation}
+    \tilde V_h^{reg} = \{\vc v\in V: \vc v|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
+\end{equation}
+% The pressure space $Q$ is discretized using the finite dimensional space
+and the discrete space for pressure, consisting of piecewise constant functions
+\begin{equation}
+    Q_h=\{q\in L_2(\Omega):\; q|_{T^i}\in \mathbb{P}^0(T^i),\; i\in\mathcal{I}_E\}.
+\end{equation}
+One can then read the discrete counterpart of Problem \ref{thm:prob_mixed_weak_simple} as follows
+\thmproblem{ \label{thm:prob_mixed_weak_simple_discrete}
+Find $\vc u\in \tilde V_h^{reg}$ and $p\in Q_h$ satisfying
+\begin{align}
+    a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle_{V'\times V} &&
+        \forall \vc v\in \tilde V_h^{reg}, \label{eqn:mixed_saddle1}\\
+    b(\vc{u}, q) &= \langle F, q \rangle_{Q'\times Q} &&\forall q \in Q_h
+        \label{eqn:mixed_saddle2}.
+\end{align}
+}
+
+
+Considering the hybridization, we define a~new discrete space
+\begin{equation}
+    V_h^{reg} = \prod\limits_{i\in\mathcal{I}_E} \mathbb{RT}^0(T^i)
+\end{equation}
+in which the functions normal components on the element faces are not continuous
+in contrast to $\tilde V_h^{reg}$.
+Further we define the space of Lagrange multipliers
+\begin{equation}
+    \Lambda^{reg} = \{\mu\in L_2(\mathcal{F}\setminus\partial\Omega): \mu=(\vc v\cdot\vc n)|_{\mathcal{F}\setminus\partial\Omega},\; \vc v\in \tilde V_h^{reg}\}.
+\end{equation}
+
+% The discrete pressure space $Q_h$ is not enriched.
+By splitting the integrals in the bilinear forms onto elements and using the spaces above,
+Problem \ref{thm:prob_mixed_weak_simple_discrete} is then transformed to
+
+\thmproblem{ \label{thm:prob_mh_weak_simple}
+Find $(\vc u, p, \lambda) \in V_h^{reg} \times Q_h \times \Lambda^{reg}$ which satisfy
+\begin{subequations}
+\label{eqn:prob_mh_weak_simple}
+\begin{align}
+    a_h(\vc{u},\vc v) + b_h(\vc v, p) + b_{\mathcal{F}}(\vc v, \lambda) &= \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} &&
+        \forall \vc v\in V_h^{reg}, \label{eqn:prob_mh_weak_simple1}\\
+    b_h(\vc{u}, q) &= \langle F, q \rangle_{Q_h'\times Q_h} &&\forall q \in Q_h,
+        \label{eqn:prob_mh_weak_simple2}\\
+    b_{\mathcal{F}}(\vc{u}, \mu) &= 0 &&\forall \mu \in \Lambda^{reg} \label{eqn:prob_mh_weak_simple3},
+\end{align}
+\end{subequations}
+with the bilinear forms %$a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
+\begin{subequations}
+\label{eqn:prob_mh_weak_simple_forms}
+\begin{align}
+ a_h(\vc u, \vc \psi)=&\sum_{i\in \mathcal I_E} \int_{T^i}
+   \vc u \vc K^{-1} \vc v \dd\bx
+   + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
+%
+ b_h(\vc v, p)=&\sum_{i\in \mathcal I_E} 
+        \int_{T^i} -p\,\div\,\vc v \dd\bx, \\
+ b_{\mathcal{F}}(\vc v, \lambda)=&\sum_{i\in \mathcal I_F}        
+        \int_{F^i\setminus \prtl\Omega}
+                 \lambda (\vc v \cdot \vc n) \dd s,\\
+ \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} =& \sum_{i\in \mathcal I_F}
+        \int_{F^i\cap \Gamma_{D}}
+                 - g_{D} (\vc v \cdot \vc n) \dd s,\\
+ \langle F, q\rangle_{Q_h'\times Q_h} =& \sum_{i\in \mathcal I_E}
+        \int_{T^i} -f q \dd\bx.
+\end{align}
+\end{subequations}
+}
+
+The continuity of the normal components on the element faces, which is missing in $V_h^{reg}$, is forced by the equation \eqref{eqn:prob_mh_weak_simple3},
+so that the solution $\vc u\in V$. Thus the problems \ref{thm:prob_mixed_weak_simple_discrete} and \ref{thm:prob_mh_weak_simple} are equivalent.
+The Lagrange multipliers $\lambda$ represent the trace of pressure $p$ on element faces $\mathcal F$. See \cite{lawrence_balancing_1995} for details.
+
+% Lagrange multiplicators represent pressure trace on element faces
+% Cowsar LC, Mandel J, Wheeler MF. Balancing domain decomposition for mixed finite elements. Mathematics of
+% Computation 1995; 64(211):989–1015.
+
+
+In addition to this standard discretization approach, we are now interested in a~proper XFEM enrichment of the velocity space.
+To this end we introduce space $V_h^{enr}$ in a~similar manner as in the pressure model in Section \ref{sec:prim_discretization},
+such that the discrete velocity space is
+\begin{equation}
+    V_h = V_h^{reg} + V_h^{enr}.
+\end{equation}
+
+
 At first, we suppose the simpler case when the well cross section is
 inside the elements $T\cap\Gamma_w = \Gamma_w$ in 2d case.
 This means the edges are not cut by the well edge.
-We define the interpolation operator into $\mathbb{RT}^0(T)$ space
+We define an interpolation operator into $\mathbb{RT}^0(T)$ space of an arbitrary element $T$
 \begin{equation}
-    \pi^{RT}_T\vc v = \sum_{j=1}^{nE} \left( \int_{E_j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j, \label{eqn:local_rt_interpolator}
+    \pi^{RT}_T\vc v = \sum_{j=1}^{n_F} \left( \int_{F_j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j
+    \qquad \forall \vc v \in V, \label{eqn:local_rt_interpolator}
 \end{equation}
 which satisfies
 \begin{align}
-b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \quad \forall q\in Q_h\\ 
-\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \quad \textrm{since } q|_T\in \mathbb{P}^0.
+b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h\\ 
+\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
 \end{align}
 
 % \begin{eqnarray}
