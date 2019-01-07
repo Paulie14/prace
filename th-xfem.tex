@@ -336,10 +336,20 @@ It is stated that GFEM or XFEM is stable (SGFEM) when the following 3 conditions
         GFEM is not worse than $O(h^2)$, and
         \item \label{enum:sgfem_conditions_c} its conditioning is robust with respect to the position of the mesh relative to the features of the problem.
 \end{enumerate}
+
 It is shown in \cite{zhang_robust_2016} that the method as defined in \cite{babuska_stable_2012,gupta_stable_2013}, %with specialized enrichment functions for the elastic fracture problem,
-does not satisfy all the conditions. %, especially the last one. 
+does not satisfy all the conditions for a~particular choice of discontinuous enrichment in linear elasticity.
 To regain the optimal convergence, the enrichment spaces is enlarged by so-called linear Heaviside functions and linear singular functions,
 which resolve the approximation error of discontinuities in particular.
+Instead of using just piecewise constant Heaviside function $H$, two \emph{linear} functions are added per node to the approximation:
+\begin{equation}
+    \left\{ H, H\frac{x-x_i}{h_i}, H\frac{y-y_i}{h_i} \right\},
+\end{equation}
+where $i$ is an index of a~node and $h_i$ is the diameter of the largest element sharing $\bx_i$.
+These functions can then approximate discontinuity in an arbitrary direction and also capture
+possible discontinuity of the gradient (if a~weak discontinuity is also present). Similarly the singular enrichments at the tip of the crack can be adapted.
+Since we are not dealing with discontinuities in our work, we do not discuss this matter in any more details.
+
 To meet the last condition, a~local orthogonalization technique (LOT) is introduced.
 This technique orthogonalizes the local basis of the enrichment spaces with respect to the problem specific inner product,
 and keeps its approximation properties. Although LOT is applied on the specific problem,

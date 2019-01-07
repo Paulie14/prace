@@ -1,11 +1,11 @@
 \section{Model of Well-Aquifer System} 
 \label{sec:model_aquifer}
-The content of this section is established on our publication \cite{exner_2016}, in which 
-we narrow the problem to finding pressure only and study different enrichment methods and singular enrichments.
-Several important numerical aspects are inspected there, mainly an adaptive quadrature and
-a~choice of enrichment radius with respect to the convergence of the methods.
-Some problems with convergence towards the most refined meshes are addressed in the article,
-however these have been resolved since then.
+In this section we narrow the problem to solving pressure only and study different enrichment methods and singular enrichments.
+Several important numerical aspects are inspected, mainly an adaptive quadrature and
+a~choice of an enrichment radius with respect to the convergence of the methods.
+% Some problems with convergence towards the most refined meshes are addressed in the article,
+% however these have been resolved since then.
+The core of this section is established in our publication \cite{exner_2016}.
 
 At first the problem for the primary unknown is defined and its weak form is derived. Then
 XFEM discretizations for several enrichment methods are described for the singular problems.
@@ -81,7 +81,7 @@ The spaces $V,\,V_0$ are equipped with the norm
 Below the weak form of Problem \ref{thm:problem_2d_prim} is derived.
 Assuming the wells are very small in diameter, $\rho_w << |\Omega^m_2|$, and the flux over the well edge $\Gamma^m_w$ is
 changing minimally along the $\Gamma^m_w$, we put 
-\begin{equation}
+\begin{equation} \label{eqn:well_edge_fluctuation_neglect}
     \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq 0,
 \end{equation}
 thus we simplify the well edge integral
@@ -461,7 +461,7 @@ which we later compare in numerical tests. At first we use the simplest scheme
 \end{equation}
 which we refer to as \textbf{standard XFEM} later in this section.
 %
-The Corrected XFEM introduces at first the ramp function $G$, see \eqref{eqn:xfem_ramp},
+For the Corrected XFEM, we start with the ramp function $G$, see \eqref{eqn:xfem_ramp},
 having the local enrichment function in the form
 \begin{equation} \label{eqn:prim_xfem_ramp}
     L_{\alpha w} = G_w(\bx) s_{w}(\bx), \quad \alpha\in\mathcal{J}^{*w}_{2N}, w\in\mathcal{W}.
@@ -602,7 +602,7 @@ and possibly to employ a~higher order quadrature.
 %JB%
 %\noteJB{TODO: modify test of integration on unit disk for the function $1/r^2$.}
 
-\subsubsection{A priori adaptive quadrature rules}
+\subsubsection{A priori adaptive quadrature rules} \label{sec:adaptive_quad_rules}
 Let us denote $r_{min}$ the minimum and $r_{max}$ the maximum distance from a~particular subelement $S$ to the singularity center. 
 Based on the analysis presented above, we propose following adaptive quadrature rules:
 %JB%\begin{enumerate}
@@ -1022,7 +1022,7 @@ We are interested in the behavior of the enrichment in the 2d domain.
 Thus we measure the convergence of the methods only inside the aquifer.
 % and we do not pay attention to the solution in the well.
 The error of the solution is measured in $L^2$ norm, which is evaluated using higher order quadrature
-on the unenriched elements and adaptive quadrature in the enriched area.
+on the unenriched elements and adaptive quadrature in the enriched area, as defined in Section \ref{sec:adaptive_quad_rules}.
 
 \paragraph{Test case 1}
 Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
@@ -1176,11 +1176,13 @@ To explain this behavior we plot the error distribution in two different refinem
 On the left side, the error in the regular part is dominating. On the right side, the error of the singular part dominates in the center
 and it spreads in $x$ direction. Closer look at the solution on the well edge shows that the pressure on the well edge is incorrect.
 The problem has been solved several times for different $\rho_w$ (smaller and larger) and this error always shows up when there is 
-an~element of the mesh with all its nodes inside the well-aquifer intersection. There is most probably a bug in the elimination of the
-degrees of freedom of these elements from the linear system.
+an~element of the mesh with all its nodes inside the well-aquifer intersection.
+We have a~suspicion that the elimination of the degrees of freedom of such elements from the linear system is done incorrectly
+in our implementation. On the finer meshes where $\rho_w$ is larger than the element size,
+neglecting the fluctuation term on the well edge \eqref{eqn:well_edge_fluctuation_neglect} might actually increase the error.
 Since our model is not describing the pressure in the aquifer inside the well-aquifer intersection
 (the pressure is constant and equal $p_1(\bx_w)$ according to the reduced 1d model of the well),
-and we do not aim to compute on such fine meshes, we did not pursue solving this error any further.
+and we do not aim in reality to compute on such fine meshes, we do not pursue solving this error at the moment.
 
 \begin{figure}[!htb]
 %   \vspace{0pt}
@@ -1268,15 +1270,15 @@ around 1.7-1.8 in our experiments using the original adaptive quadrature. Althou
 depending on the position of the well to the nodes of the mesh. We do not experience this behavior with our adaptive
 quadrature and the convergence order is always close to the optimum of 2.0.
 
-The error of the shifted XFEM and the SGFEM addressed in \cite{exner_2016} for Test case 4 is suppressed due to two improvements. 
-Firstly the analytic solution has been derived more generally, including the effect of the well permeability $c_w$
-and the averaged terms, which better corresponds to the weak form.
-Secondly the code has been improved and debugged heavily since then and there was apparently a~problem in assembling the averaged terms.
+% The error of the shifted XFEM and the SGFEM addressed in \cite{exner_2016} for Test case 4 is suppressed due to two improvements. 
+% Firstly the analytic solution has been derived more generally, including the effect of the well permeability $c_w$
+% and the averaged terms, which better corresponds to the weak form.
+% Secondly the code has been improved and debugged heavily since then and there was apparently a~problem in assembling the averaged terms.
 
 
 
 \subsubsection{Conditioning of System Matrix} \label{sec:res_conditioning}
-A~problem with ill-conditioning of the linear system coming from the XFEM methods are mentioned in Section \ref{sec:soa_xfem}
+A~problem with ill-conditioning of the linear system coming from the XFEM methods is mentioned in Section \ref{sec:soa_xfem}
 and are encountered also in our test cases in the section above. We do not inspect the matrices of the linear system in details, 
 but we use some general results on the conjugate gradients method and the Laplace equation to have an insight on this problem.
 
@@ -1314,13 +1316,12 @@ in shifted XFEM and SGFEM in this particular settings is not that significant.
 \begin{figure}[!htb]
 %   \vspace{0pt}
   \centering    
-    \includegraphics[width=\textwidth]{\results moving_xw_error.pdf}
+    \includegraphics[width=\textwidth]{\results moving_xw_error_zero.pdf}
   \caption[Approximation error dependence on singularity position]{Graph of dependence of the approximation error
    on the position of the singularity respective to a~mesh node.}
   \label{fig:moving_xw_error}
 \end{figure}
 %
-\notePE{Not sure if it is proper to include following results in \fig{fig:moving_xw_error} and \fig{fig:moving_xw_iterations}.}
 Another test is considered based on Test case 3, in which the source term is set zero. The model is solved for different 
 positions of the singularity $\bx_w$ and the effects on the solution and the linear system is observed. The mesh is structured and fixed with $h=0.125$,
 centered at point $[0,0]$ which is an~element node. The position of the well (the singularity center) is parametrized by $\bx_w = [t,t]$ with 
@@ -1738,7 +1739,7 @@ for the test problem and it corresponded with the computed data.
 
 The ill-conditioning of the system matrix was observed through the increasing iteration count of conjugate gradients solver.
 The standard XFEM and the ramp function XFEM suffered from ill-conditioning even in the simplest test cases.
-The shifted performed well when there was only one singular enrichment per element. Otherwise, when the enrichment
+The shifted XFEM performed well when there was only one singular enrichment per element. Otherwise, when the enrichment
 zones from multiple singularities were overlapping, only the SGFEM behaved well in terms of system matrix conditioning.
 
 
