@@ -22,9 +22,11 @@ Find $[p_1,\,p_2]$ satisfying
 \begin{align}
 % \begin{alignat}{4}
 \div \left( -\delta_2 \vc K_2 \grad p_2 \right) &= \delta_2 f_2 && \textrm{in } \Omega_2,\;  \label{eqn:prim_problem_2d_2d} \\
-\div \left( -\delta_1 \vc K_1 \grad p_1 \right) &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:prim_problem_2d_1d_source}\\
-\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M} \label{eqn:prim_problem_2d_flux}\\
-p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2 \label{eqn:prim_problem_2d_dirichlet}\\
+\div \left( -\delta_1 \vc K_1 \grad p_1 \right) &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta_t(t - t^m)} && \textrm{in }
+\Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:prim_problem_2d_1d_source}\\
+\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:prim_problem_2d_flux}\\
+\fluct{p_2}^m_w &= g^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:prim_problem_2d_press_fluct}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:prim_problem_2d_dirichlet}\\
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:prim_problem_2d_neumann}
 %   \end{alignat}
 \end{align}
@@ -58,40 +60,44 @@ the Friedrich's inequality to show the coercivity of the assembled bilinear form
 Otherwise for $\Gamma_{2D} = \emptyset$, the proof would be more complicated and it would require following
 the proof of the Friedrich's inequality itself.
 
-
-We define the trial space $V$ and the test space $V_0$:
-\begin{eqnarray} \label{eqn:spaces}
-  V &=& H^1(\Omega_1)\times H^1(\Omega_2), \\
-  V_0 &=& H^1_0(\Omega_1)\times H^1_0(\Omega_2),
+We consider the standard Sobolev spaces $H^1(\Omega_d)$, $d=1,2$ and
+\[ H^1_0(\Omega_d)=\big\{q_d\in H^1(\Omega_d); q_d|_{\Gamma_{dD}}=0\big\}.
+\]
+which takes into account the Dirichlet boundary condition.
+Next we define the trial space $V$ and the test space $V_0$:
+\begin{eqnarray}
+  V &=& H^1(\Omega_1)\times H^1(\Omega_2), \label{eqn:prim_weak_space_V}\\
+  V_0 &=& H^1_0(\Omega_1)\times V^1_0(\Omega^1_2) \times\cdots\times V^M_0(\Omega^M_2), \label{eqn:prim_weak_space_V0}
 \end{eqnarray}
-where $H^1(\Omega_d)$, $d=1,2$, is the standard Sobolev space and 
-\[ H^1_0(\Omega_d)=\{\varphi\in H^1(\Omega_d); \varphi|_{\Gamma_{dD}}=0\} \]
-takes into account the Dirichlet boundary condition.
-We now introduce the weak solution $p=[p_1,p_2]\in V$ and the test function $q=[q_1,q_2]\in V_0$.
+with
+\begin{eqnarray}
+  \textrm{with } V^m_0(\Omega^m_2) &=& \big\{q_2\in H^1_0(\Omega^m_2):\, \fluct{q_2}^m_w=0,\,\forall w\in\mathcal{W}\big\}
+  \quad \forall m\in\mathcal{M}. \label{eqn:prim_weak_space_Vm0}
+\end{eqnarray}
+%
+% We define the trial space $V$ and the test space $V_0$:
+% \begin{eqnarray} \label{eqn:spaces}
+%   V &=& H^1(\Omega_1)\times H^1(\Omega_2), \\
+%   V_0 &=& H^1_0(\Omega_1)\times H^1_0(\Omega_2),
+% \end{eqnarray}
+% where $H^1(\Omega_d)$, $d=1,2$, is the standard Sobolev space and 
+% \[ H^1_0(\Omega_d)=\{\varphi\in H^1(\Omega_d); \varphi|_{\Gamma_{dD}}=0\} \]
+% takes into account the Dirichlet boundary condition.
 The spaces $V,\,V_0$ are equipped with the norm
 \begin{equation}
-    \norm{q}_V = \big( \norm{q_2}^2_{H^1(\Omega_2)} + \norm{q_1}^2_{H^1(\Omega_1)} \big)^{1/2}.
+    \norm{q}_V = \big( \norm{q_1}^2_{H^1(\Omega_1)} + \norm{q_2}^2_{H^1(\Omega_2)} \big)^{1/2}.
 \end{equation}
-% \begin{eqnarray} \label{eqn:solution}
-%    u &=& (h^1,\ldots, h^M, H^1_1,\ldots,H^{M+1}_W)\in V, \\
-%    v &=& (\varphi^1,\ldots, \varphi^M, \Phi^1_1,\ldots,\Phi^M_W)\in V_0.
-% \end{eqnarray}
-%We understand $V_0$ as a~subspace of $V$.
+We denote the weak solution $p=[p_1,p_2]\in V$ and the test functions $q=[q_1,q_2]\in V_0$.
+
 
 Below the weak form of Problem \ref{thm:problem_2d_prim} is derived.
-Assuming the wells are very small in diameter, $\rho_w << |\Omega^m_2|$, and the flux over the well edge $\Gamma^m_w$ is
-changing minimally along the $\Gamma^m_w$, we put 
-\begin{equation} \label{eqn:well_edge_fluctuation_neglect}
-    \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq 0,
-\end{equation}
-thus we simplify the well edge integral
+Due to the choice of $V^m_0$ in \eqref{eqn:prim_weak_space_Vm0},
+the well edge integral is simplified:
 \begin{equation} \label{eqn:prim_avg_assumption}
     \int_{\Gamma^m_w} p_2q_2 \dd s %= \int_{\Gamma^m_w} \big(\avg{p}\avg{q} + \avg{p}\fluct{q} + \fluct{p}\avg{q} + \fluct{p}\fluct{q} \big)\dd s
-    =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s
+    =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s.
 \end{equation}
-Effects of this assumption on such problems are studied in details in \cite{koppl_vidotto_2018}.
-%
-Next we apply the standard Galerkin method. We multiply the equations \eqref{eqn:prim_problem_2d_2d} and \eqref{eqn:prim_problem_2d_1d_source}
+We now apply the standard Galerkin method. We multiply the equations \eqref{eqn:prim_problem_2d_2d} and \eqref{eqn:prim_problem_2d_1d_source}
 by test functions $q_d$, integrate by parts over $\Omega_d$ using \eqref{eqn:prim_problem_2d_flux}-\eqref{eqn:prim_problem_2d_neumann} and the assumption \eqref{eqn:prim_avg_assumption}, 
 then we sum up the two equations together to get
 \begin{multline} \label{eqn:prim_weak_form}
@@ -104,15 +110,31 @@ then we sum up the two equations together to get
   = l(q).
 \end{multline}
 
-Considering the Dirichlet boundary condition, we split the solution into two parts $p=p_0 + p_D$, while
-$p_0\in V_0$ and $p_D\in V$ is a~function chosen such that is satisfies \eqref{eqn:prim_problem_2d_dirichlet}.
-Then we define the weak problem
+
+% In the definition of $V^m_0$ in \eqref{eqn:prim_weak_space_Vm0}, we assume that the wells are very small in diameter,
+% $\rho_w << |\Omega^m_2|$, and that pressure is changing minimally along $\Gamma^m_w$.
+% Thus we effectively neglect the given boundary condition for the pressure fluctuation in \eqref{eqn:prim_problem_2d_press_fluct}.
+% and we put
+% \begin{equation} \label{eqn:well_edge_fluctuation_neglect}
+%     \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq 0,
+% \end{equation}
+% thus we simplify the well edge integral
+% \begin{equation} \label{eqn:prim_avg_assumption}
+%     \int_{\Gamma^m_w} p_2q_2 \dd s %= \int_{\Gamma^m_w} \big(\avg{p}\avg{q} + \avg{p}\fluct{q} + \fluct{p}\avg{q} + \fluct{p}\fluct{q} \big)\dd s
+%     =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s
+% \end{equation}
+% Effects of this assumption on such problems are studied in details in \cite{koppl_vidotto_2018}.
+
+Considering the Dirichlet boundary conditions, we split the solution into three parts $p=p_0 + p_w + p_D$, while
+$p_0\in V_0$ and $p_w, p_D\in V$ are functions chosen such that they satisfy \eqref{eqn:prim_problem_2d_press_fluct} on the wells edges and
+\eqref{eqn:prim_problem_2d_dirichlet} on the exterior boundary, respectively.
+Finally we define the weak problem
 \thmproblem{ \label{thm:problem_2d_prim_weak}
 Find $p\in V$ such that
 \begin{align}
-a(p_0, q) &= l(q) - a(p_D, q) && \forall q\in V_0.
+a(p_0, q) &= l(q) - a(p_w, q) - a(p_D, q) && \forall q\in V_0.
 \end{align}
-for given $f_2\in L_2(\Omega_2)$, $f_1\in L_2(\Omega_1)$ and $g_{2N}\in L_2(\Gamma_{2N})$, $g_{1N}\in L_2(\Gamma_{1N})$.
+for given $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D$ fixed.
 \vspace{10pt}
 }
 
@@ -185,18 +207,33 @@ of the bilinear form $a$ and the boundedness of the problem:
 \theorem{ \label{thm:prim_lax_milgram_theorem}
 Let $a: V\times V \rightarrow \R$ be a~continuous coercive bilinear form on $V_0$, i.e.
 \begin{align}
-    \abs{a(p,q)} &\leq \alpha_2 \norm{p}_V \norm{q}_V && \forall p,q \in V_0,\\
+    \abs{a(p_0,q)} &\leq \alpha_2 \norm{p_0}_V \norm{q}_V && \forall p_0,q \in V_0,\\
     a(q,q) &\geq \alpha_1 \norm{q}^2_V && \forall q\in V_0,
 \end{align}
 with the constants $\alpha_2$ from \eqref{eqn:prim_form_a_bound} and $\alpha_1$ from \eqref{eqn:prim_form_a_coercivity_V0}.\\
 Then there exists a~unique solution $p\in V$ to Problem \eqref{thm:problem_2d_prim_weak} for any
-$f_2\in L_2(\Omega_2)$, $f_1\in L_2(\Omega_1)$ and $g_{2N}\in L_2(\Gamma_{2N})$, $g_{1N}\in L_2(\Gamma_{1N})$
-and fixed $p_D$, such that
+% $f_2\in L_2(\Omega_2)$, $f_1\in L_2(\Omega_1)$ and $g_{2N}\in L_2(\Gamma_{2N})$, $g_{1N}\in L_2(\Gamma_{1N})$
+$f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D\in V$ fixed, such that
 \begin{equation}
-    \norm{p}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'}.\\
+%     \norm{p}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'}.
+    \norm{p_0}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'} + \frac{\alpha_2}{\alpha_1}\big( \norm{p_w}_V+\norm{p_D}_V \big).
 \end{equation}
 }
 
+%
+Eventually we add a~practical assumption and we approximate the pressure fluctuation $g^m_w\approx 0$.
+This assumption is based on the wells being very small in diameter, $\rho_w << |\Omega^m_2|$,
+and so that pressure is changing minimally along $\Gamma^m_w$.
+Then we put $a(p_w,q)\approx 0$ in Problem \eqref{thm:problem_2d_prim_weak}
+and thus we effectively neglect the given boundary condition for the pressure fluctuation in \eqref{eqn:prim_problem_2d_press_fluct}.
+The practical impact of this assumption is the reduction of input data, since in real cases
+it is apparently impossible to measure $g^m_w$.
+%
+In \cite{koppl_vidotto_2018}, a~similar assumption is taken and the fluctuation term in the weak form is neglected
+\begin{equation} \label{eqn:well_edge_fluctuation_neglect}
+    \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq 0.
+\end{equation}
+Effects of this assumption are studied in details there and an error estimate is provided.
 
 
 % \subsection{Model equations}
@@ -397,7 +434,8 @@ to one of the XFEM.
 \subsubsection{Enrichment Function} \label{sec:enrichment_func}
 The enrichment function can be obtained from the solution of a~local problem on the neighborhood of the well $w$.
 Let $\Omega$ be an annulus with center $\vc x_w$, inner radius $\rho_w$ and arbitrary outer radius $D \gg \rho_w$.
-The solution of the Laplace equation $-\Delta p = 0$ on $\Omega$ with any radially symmetric boundary conditions has a~form
+The solution of the Laplace equation $-\Delta p = 0$ on $\Omega$ with any radially symmetric boundary conditions
+(e.g. in \cite{evans_partial_2010}, Section 2.2.1) has a~form
 %
 \begin{equation} \label{eqn:solution_form}
   p = a \log(r_w)+b, %\quad \textrm{where }
