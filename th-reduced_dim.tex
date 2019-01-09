@@ -113,9 +113,9 @@ for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set
 is introduced that consists of
 % \begin{align}
 \begin{eqnarray*}
-    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \} \\
-    \textrm{element faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \} \\
-    \textrm{element nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}
+    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \\
+    \textrm{faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \}, \\
+    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \},
 % \end{align}
 \end{eqnarray*}
 % $T_{d}^{i},\, i = 1,\dots,N_{E}^{d}$,
@@ -123,7 +123,9 @@ is introduced that consists of
 
 % Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
 If not specified, the simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
-Especially in Section \ref{sec:model_aquifer}, the quadrilateral elements are considered in contrast to the rest of the work
+By faces $F^i_d$ we understand $(d-1)$-dimensional boundary objects of elements $T_d^i$,
+i.e. end points $F^i_1$ of $T^i_1$, triangle sides $F^i_2$ of $T^i_2$, tetrahedron faces $F^i_3$ of $T^i_3$.
+We note that in Section \ref{sec:model_aquifer}, the quadrilateral elements are considered in contrast to the rest of the work
 due to the use of a~specific FEM library code.
 
 % $\Omega_2\subset\overline\Omega_3$
@@ -229,13 +231,14 @@ We consider wells (or boreholes, channels) to be straight narrow tubes (cylinder
 we use the index $w\in\mathcal{W}=\{1,\ldots,W\}$ when refering to a~particular well.
 Using the reduced dimensional concept, the wells are modeled as lower dimensional objects,
 i.e. 1d manifolds $\Omega^w_1$ which represent the central lines of cylinders $\Omega^w_C$.
-The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu: [0,1] \rightarrow \Omega^w_1$:
+The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu_w: [0,1] \rightarrow \Omega^w_1$:
 \begin{equation} \label{eqn:1d_parametrization}
-    \Omega^w_1 = \{\vc x\in\R^3: \vc x = \nu(t),\; t\in[0,1] \}. %\quad \nu: [0,1] \rightarrow \Omega^w_1
+    \Omega^w_1 = \{\vc x\in\R^3: \vc x = \nu_w(t),\; t\in[0,1] \}. %\quad \nu_w: [0,1] \rightarrow \Omega^w_1
 \end{equation}
+Later in the text we suppose that functions in $\Omega^w_1$ depend on the relevant parameter $t$.
 We define a~lateral surface of a~cylinder $\Omega^w_C$
 \[
-    \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \nu(t) + \vc r,\; \vc r=\rho_w\vc n_{\Omega^w_1}(t),\; t\in[0,1] \},
+    \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \nu_w(t) + \vc r,\; \vc r=\rho_w\vc n_{\Omega^w_1}(t),\; t\in[0,1] \},
 \]
 % \[
 %     \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \vc y + \vc r,\; \vc y\in\Omega^w_1,\; \vc r=\rho_w\vc n_{\Omega^w_1} \},
@@ -325,17 +328,16 @@ and wells lateral surfaces
 \[
     \Gamma^m_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma^m_w, \quad \Gamma^m_w = \Omega^m_2 \cap \prtl\Omega^w_C.
 \]
-The point where the reduced domain $\Omega^w_1$ intersects with $\Omega^m_2$ is denoted $\vc x^m_w$.
 Where possible, we again use the simplified notation
 \begin{eqnarray*}
     \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^w_2, \quad \Gamma_{\#} = \bigcup_{m\in\mathcal{M}} \Gamma^m_{\#}
 \end{eqnarray*}
 with $\#$ being $ext,\; int,\; 2D$ or $2N$.
 
-On $\Gamma^m_w$, we define the following decomposition of an arbitrary function $q$ on average and fluctuation parts, 
+On $\Gamma^m_w$, we define the following decomposition of an arbitrary function $q\in C(\overbar\Omega^m_2)$ on average and fluctuation parts, 
 in the same manner as it can be found in \cite{koppl_vidotto_2018},
 \begin{equation}\label{eqn:average_decomposition}
-    q = \avg{q}^m_w + \{q\}^m_w \quad \textrm{on } \Gamma^m_w,
+    q = \avg{q}^m_w + \fluct{q}^m_w \quad \textrm{on } \Gamma^m_w,
 \end{equation}
 where
 \begin{equation} \label{eqn:average_definition}
@@ -343,7 +345,7 @@ where
 \end{equation}
 It holds for the fluctuation term from the definition \eqref{eqn:average_definition}
 \begin{equation}
-\int_{\Gamma^m_w} \{q\}^m_w \dd s = \int_{\Gamma^m_w} q - \avg{q}^m_w \dd s = 0.
+\int_{\Gamma^m_w} \fluct{q}^m_w \dd s = \int_{\Gamma^m_w} q - \avg{q}^m_w \dd s = 0.
 \end{equation}
 % \notePE{Why do we use the averaging: - without it, the models on communicating dimension would be to tight, bad for numerical solution,
 % arising from hte models with Dirac delta sources}
@@ -352,17 +354,31 @@ The average term is linear, since it holds
     \avg{q_1+q_2}^m_w = \avg{q_1}^m_w + \avg{q_2}^m_w.
 \end{equation}
 
+The point where the reduced domain $\Omega^w_1$ intersects with aquifer $\Omega^m_2$ is denoted $\vc x^m_w=\nu_w(t^m)$.
+In order to prescribe a~communication term in $\Omega^w_1$, we use a~Dirac measure at the point $t^m$
+\[
+    \delta_t(t - t^m) = 
+    \begin{cases}
+        1 & t = t^m \\
+        0 & t \neq t^m
+    \end{cases}, 
+    \quad \int_0^1 q(t) \delta_t(t - t^m) \dd t = q(t^m), \quad q\in C(\overbar\Omega^w_1).
+\]
 
 Then we can write the entire problem:
 \thmproblem{ \label{thm:problem_2d}
 Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
 \begin{align}
 % \begin{alignat}{4}
-\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2  \\
-\div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2 \label{eqn:problem_2d_2d_source}\\
-\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_2d_1d_source}\\
-\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M} \label{eqn:problem_2d_flux}\\
-p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2 \label{eqn:problem_2d_dirichlet}\\
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2,  \\
+\div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2, \label{eqn:problem_2d_2d_source}\\
+% \div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta(\vc x - \vc x^m_w)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta_t(t - t^m)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_2d_1d_source}\\
+% &&&  \nonumber\\
+\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_flux_avg}\\
+% \fluct{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= 0 && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_flux_fluct}\\
+\fluct{p_2}^m_w &= g^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_press_fluct}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:problem_2d_dirichlet}\\
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:problem_2d_neumann}
 %   \end{alignat}
 \end{align}
@@ -381,28 +397,34 @@ through their intersection $\Gamma^m_w$.
 The flux is proportional to the pressure difference with the permeability coefficient $\sigma^m_w>0\;[s^{-1}]$ between $\Omega^m_2$ and $\Omega^w_1$.
 If the pressure difference is negative, the flux is in opposite direction.
 We can then read: the average outward flux from the aquifer
-over $\Gamma^m_w$ in \eqref{eqn:problem_2d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_2d_1d_source}.
+over $\Gamma^m_w$ in \eqref{eqn:problem_2d_flux_avg} acts as a~positive source term in the well in \eqref{eqn:problem_2d_1d_source}.
+
+The equation \eqref{eqn:problem_2d_press_fluct} prescribes the fluctuation of pressure on $\Gamma^m_w$,
+which is not defined by the coupling terms. In reality, wells are very narrow in comparison to the scale of aquifers
+and so the changes in pressure on $\Gamma^m_w$ are very small. Thus we consider $g^m_w \approx \rho_w$ and
+we neglect the effects of $g^m_w$ as shown later.
+
 % Eventually it is worth noticing that the flux between dimensions is approximated by a~single value,
 % although the flux over $\Gamma^m_w$ can change arbitrarily.
 
-In \eqref{eqn:problem_2d_1d_source} we used the Dirac measure at the point $\vc x^m_w$
-\[
-    \delta(\vc x - \vc x^m_w) = 
-    \begin{cases}
-        1 & \vc x = \vc x^m_w, \\
-        0 & \vc x \neq \vc x^m_w,
-    \end{cases}, 
-    \qquad \int_{\Omega^w_1}q(\vc x) \delta(\vc x - \vc x^m_w) \dd\bx = q(\vc x^m_w).
-\]
-to express the concentration of $\Sigma^m_w$ at point.
+% In \eqref{eqn:problem_2d_1d_source} we used the Dirac measure at the point $\vc x^m_w$
+% \[
+%     \delta(\vc x - \vc x^m_w) = 
+%     \begin{cases}
+%         1 & \vc x = \vc x^m_w, \\
+%         0 & \vc x \neq \vc x^m_w,
+%     \end{cases}, 
+%     \qquad \int_{\Omega^w_1}q(\vc x) \delta(\vc x - \vc x^m_w) \dd\bx = q(\vc x^m_w).
+% \]
+% to express the concentration of $\Sigma^m_w$ at point.
 The last two equations are the boundary conditions, the first one \eqref{eqn:problem_2d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
 the later one \eqref{eqn:problem_2d_neumann} sets the inward flux $g_{dN}$. The sign of the flux in \eqref{eqn:problem_2d_neumann}
 is chosen such that it is consistent with the software Flow123d.
 
 The problematic place of a reduced dimensional model, if done in the simplest way, would be that after the reduction of wells,
-the 1d-2d intersections are degenerated to points. Then the term in the flux coupling condition \eqref{eqn:problem_2d_flux} would rather
+the 1d-2d intersections are degenerated to points. Then the term in the flux coupling condition \eqref{eqn:problem_2d_flux_avg} would rather
 appear as a~point source on the right hand side of \eqref{eqn:problem_2d_2d_source} creating strong singularities in the solution.
-However, keeping the real scale of the intersections in the model by means of \eqref{eqn:problem_2d_flux}, we cut off the singularity peaks
+However, keeping the real scale of the intersections in the model by means of \eqref{eqn:problem_2d_flux_avg}, we cut off the singularity peaks
 at finite height and get rid of the singular solution part running to infinity.
 Still there is left the problem of capturing the intersections and adjacent steep gradients in the solution by the numerical discretization.
 This is the same motivation found in models in \cite{gracie_modelling_2010,craig_using_2011,koppl_vidotto_2018} and ours,
@@ -435,11 +457,12 @@ Then we can write the entire problem:
 Find $[\vc u_1,\,\vc u_3]$ and $[p_1,\,p_3]$ satisfying
 \begin{align}
 % \begin{alignat}{4}
-\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3  \\
-\div\, \vc u_3 &= \delta_3 f_3 && \textrm{in } \Omega_3\\
-\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\Sigma_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_3d_1d_source}\\
-\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = \Sigma_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W} \label{eqn:problem_3d_flux}\\
-p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3 \label{eqn:problem_3d_dirichlet}\\
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3,  \\
+\div\, \vc u_3 &= \delta_3 f_3 && \textrm{in } \Omega_3,\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\Sigma_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_1d_source}\\
+\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = \Sigma_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_flux}\\
+\fluct{p_3}_w &= g_w && \forall w\in\mathcal{W}, \label{eqn:problem_3d_press_fluct}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3, \label{eqn:problem_3d_dirichlet}\\
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,3 \label{eqn:problem_3d_neumann}
 %   \end{alignat}
 \end{align}
