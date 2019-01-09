@@ -328,23 +328,82 @@ The degrees of freedom are interpreted as the fluxes over the corresponding face
 \end{equation}
 Let us denote the standard discrete space for velocity
 \begin{equation}
-    \tilde V_h^{reg} = \{\vc v\in V: \vc v|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
+    \tilde V_h^{reg} = \{\vc v_h\in V: \vc v_h|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
 \end{equation}
 % The pressure space $Q$ is discretized using the finite dimensional space
 and the discrete space for pressure, consisting of piecewise constant functions
 \begin{equation}
-    Q_h=\{q\in L_2(\Omega):\; q|_{T^i}\in \mathbb{P}^0(T^i),\; i\in\mathcal{I}_E\}.
+    Q_h=\{q_h\in L_2(\Omega):\; q_h|_{T^i}\in \mathbb{P}^0(T^i),\; i\in\mathcal{I}_E\}.
 \end{equation}
 One can then read the discrete counterpart of Problem \ref{thm:prob_mixed_weak_simple} as follows
 \thmproblem{ \label{thm:prob_mixed_weak_simple_discrete}
-Find $\vc u\in \tilde V_h^{reg}$ and $p\in Q_h$ satisfying
+Find $\vc u_h\in \tilde V_h^{reg}$ and $p_h\in Q_h$ satisfying
 \begin{align}
-    a(\vc{u},\vc v) + b(\vc v, p) &= \langle G, \vc v\rangle_{V'\times V} &&
-        \forall \vc v\in \tilde V_h^{reg}, \label{eqn:mixed_saddle1}\\
-    b(\vc{u}, q) &= \langle F, q \rangle_{Q'\times Q} &&\forall q \in Q_h
+    a(\vc u_h,\vc v_h) + b(\vc v_h, p_h) &= \langle G, \vc v_h\rangle_{V'\times V} &&
+        \forall \vc v_h\in \tilde V_h^{reg}, \label{eqn:mixed_saddle1}\\
+    b(\vc u_h, q_h) &= \langle F, q_h \rangle_{Q'\times Q} &&\forall q_h \in Q_h
         \label{eqn:mixed_saddle2}.
 \end{align}
 }
+
+For the mixed problem, not all the assumptions in Theorem \ref{thm:brezzi_theorem}
+hold on the discrete level for Problem \ref{thm:prob_mixed_weak_simple_discrete}.
+Particulary the coercivity of $a$ on $\tilde V_{0h}^{reg}$
+and LBB condition on discrete spaces $\tilde V_h^{reg}$ and $Q_h$ are not implied by the continuous inequalities
+\eqref{eqn:form_a_coercivity_V0} and \eqref{eqn:form_b_lbb}.
+
+Considering the $\mathbb{RT}^0$ and $\mathbb P^0$ finite elements,
+we have $\div\,\tilde V_{h}^{reg}\subset Q_h$, i.e. $\div\, \tilde V_h^{reg}$ is the space of piecewise constant functions.
+Thus $\tilde V_{0h}^{reg} \subset V_0$ and the coercivity of $a$ holds:
+\begin{equation}
+a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in \tilde V_{0h}^{reg}.
+\end{equation}
+
+% \paragraph{Discrete LBB condition.}
+%(inequation 3.14, p. 75 in \cite{brezzi_mixed_1991}
+
+Next, we define a~local interpolation operator into $\mathbb{RT}^0(T)$ space of an arbitrary element $T$
+\begin{equation}
+    \pi^{RT}_T\vc v = \sum_{j=1}^{n_F} \left( \int_{F_j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j
+    \qquad \forall \vc v \in V, \label{eqn:local_rt_interpolator}
+\end{equation}
+which satisfies
+\begin{align}
+b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h\\ 
+\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
+\end{align}
+
+Following the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58)
+According to Lemma 99 ('numpde.pdf'), if there exists an interpolation operator
+$\pi_h: V\rightarrow V_h$ which is continuous and satisfies
+\begin{equation}
+    b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
+\end{equation}
+then the LBB condition holds.
+For standard space choice $\mathbb{RT}^0\times\mathbb{P}^0$ we define
+the operator 
+\begin{equation}
+    (\pi^{RT}_h \vc v)|_T = \pi^{RT}_T \vc v
+\end{equation}
+using the local interpolation operator from \eqref{eqn:local_rt_interpolator}.
+This operator is not continuous on $V=H(\div,\Omega)$ but on
+smaller space we have
+\begin{equation}
+    \norm{\pi^{RT}_h \vc v}_V \leq C_\pi \norm{\vc v}_W \qquad \forall \vc v\in W=[H^1(\Omega)]^d
+\end{equation}
+and
+\begin{equation}
+    \sup_{\vc v\in W} \frac{(\div\,\vc v, q)}{\norm{\vc v}_W} \geq \tilde{k}_0 \norm{q}_Q \qquad \forall q\in Q.
+\end{equation}
+Using this we obtain for all $q_h\in Q_h$
+\begin{align}
+    \sup_{\vc v_h\in V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
+    \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div (\pi^{RT}_h \vc v_h)}{\norm{\pi^{RT}_h \vc v}_V} \geq
+    \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W}
+    \nonumber\\ \geq \frac{\tilde{k}_0}{C_\pi}\norm{q_h}_Q
+\end{align}
+
+
 
 
 Considering the hybridization, we define a~new discrete space
@@ -416,16 +475,7 @@ such that the discrete velocity space is
 At first, we suppose the simpler case when the well cross section is
 inside the elements $T\cap\Gamma_w = \Gamma_w$ in 2d case.
 This means the edges are not cut by the well edge.
-We define an interpolation operator into $\mathbb{RT}^0(T)$ space of an arbitrary element $T$
-\begin{equation}
-    \pi^{RT}_T\vc v = \sum_{j=1}^{n_F} \left( \int_{F_j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j
-    \qquad \forall \vc v \in V, \label{eqn:local_rt_interpolator}
-\end{equation}
-which satisfies
-\begin{align}
-b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h\\ 
-\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
-\end{align}
+
 
 % \begin{eqnarray}
 %     V_T = \mathbb{RT}^0(T) &=& \{\vc\psi_j\}_j^{nE}\\
@@ -530,42 +580,6 @@ we need to check the coercivity
     \end{eqnarray}
     (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
 }
-
-\paragraph{Discrete LBB condition.}
-
-%(inequation 3.14, p. 75 in \cite{brezzi_mixed_1991}
-
-According to Lemma 99 ('numpde.pdf'), if there exists an interpolation operator
-$\pi_h: V\rightarrow V_h$ which is continuous and satisfies
-\begin{equation}
-    b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
-\end{equation}
-then the LBB condition holds.
-For standard space choice $\mathbb{RT}^0\times\mathbb{P}^0$ we define
-the operator 
-\begin{equation}
-    (\pi^{RT}_h \vc v)|_T = \pi^{RT}_T \vc v
-\end{equation}
-using the local interpolation operator from \eqref{eqn:local_rt_interpolator}.
-This operator is not continuous on $V=H(\div,\Omega)$ but on
-smaller space we have
-\begin{equation}
-    \norm{\pi^{RT}_h \vc v}_V \leq C_\pi \norm{\vc v}_W \qquad \forall \vc v\in W=[H^1(\Omega)]^d
-\end{equation}
-and
-\begin{equation}
-    \sup_{\vc v\in W} \frac{(\div\,\vc v, q)}{\norm{\vc v}_W} \geq \tilde{k}_0 \norm{q}_Q \qquad \forall q\in Q.
-\end{equation}
-Using this we obtain for all $q_h\in Q_h$
-\begin{align}
-    \sup_{\vc v_h\in V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
-    \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div (\pi^{RT}_h \vc v_h)}{\norm{\pi^{RT}_h \vc v}_V} \geq
-    \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W}
-    \nonumber\\ \geq \frac{\tilde{k}_0}{C_\pi}\norm{q_h}_Q
-\end{align}
-
-
-
 
 \section{Coupled 1d-2d model (Mixed Hybrid model)}
 
