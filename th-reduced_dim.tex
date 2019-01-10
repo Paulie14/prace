@@ -112,12 +112,12 @@ Following the documentation of Flow123d \cite{flow123d_doc_2015} and its notatio
 for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
 is introduced that consists of
 % \begin{align}
-\begin{eqnarray*}
-    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \\
+\begin{eqnarray}
+    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \nonumber\\
     \textrm{faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \}, \\
-    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \},
+    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}, \nonumber
 % \end{align}
-\end{eqnarray*}
+\end{eqnarray}
 % $T_{d}^{i},\, i = 1,\dots,N_{E}^{d}$,
 % with nodes $\vc x_{i},\, i\in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N}\}$.
 
@@ -237,9 +237,9 @@ The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu_w: [0,1] \
 \end{equation}
 Later in the text we suppose that functions in $\Omega^w_1$ depend on the relevant parameter $t$.
 We define a~lateral surface of a~cylinder $\Omega^w_C$
-\[
+\begin{equation}
     \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \nu_w(t) + \vc r,\; \vc r=\rho_w\vc n_{\Omega^w_1}(t),\; t\in[0,1] \},
-\]
+\end{equation}
 % \[
 %     \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \vc y + \vc r,\; \vc y\in\Omega^w_1,\; \vc r=\rho_w\vc n_{\Omega^w_1} \},
 % \]
@@ -253,18 +253,18 @@ The domain of a~well $\Omega^w_1$ has a~boundary (obviously consisting of two en
 $\Gamma_1 = \Gamma_{1D} \cup \Gamma_{1N}$, where pressure (Dirichlet boundary condition)
 or flux (Neumann boundary condition) is prescribed.
 If possible, and apparent from context, we denote the domains of all wells by
-\[
+\begin{equation}
     \Omega_1 = \bigcup_{w\in\mathcal{W}} \Omega^w_1, \quad \Omega_C = \bigcup_{w\in\mathcal{W}} \Omega^w_C.
-\]
+\end{equation}
 
 A~steady groundwater flow governed by Darcy's law is considered in aquifers.
 The same is considered also in wells for simplicity:
 we can imagine the wells filled with different porous material, or in some tests we fix pressure in wells to a~constant value.
 Without any coupling terms, we would write for every dimension $d$
-\begin{eqnarray*}
+\begin{eqnarray}
      \frac{1}{\delta_d} \vc K_d^{-1} \vc u_d + \grad p_d =& 0  &\qquad \textrm{ in }\Omega_d\\
       \div\,\vc u_d  =& \delta_d f_d  &\qquad \textrm{ in }\Omega_d
-\end{eqnarray*}
+\end{eqnarray}
 where $\delta_d\vc u_d\; [ms^{-1}]$ is the unknown Darcian velocity, $p_d \; [m]$ is the unknown pressure.
 Parameter $\delta_d$ is the complement measure of the domain: thickness $[m]$ in 2d,
 cross-section $[m^2]$ in 1d and $\delta_3=1\; [-]$ for consistency. Since the wells are considered as cylinders,
@@ -277,10 +277,10 @@ In the source term, $f_d\;[s^{-1}]$ denotes the water source density.
 
 We note that we use the same operators $\div$ and $\grad$ in all dimensions $d=1,2,3$ for the sake of notation simplicity,
 although in 1d we understand these as follows
-\begin{eqnarray*}
+\begin{eqnarray}
 \div\,\vc u_1 = \div_t\,\vc u_1 = \frac{\prtl}{\prtl t} \vc u_1(t), \\
-\grad p_1 = \grad_t p_1 = \frac{\prtl}{\prtl t} p_1(t), \\
-\end{eqnarray*}
+\grad p_1 = \grad_t p_1 = \frac{\prtl}{\prtl t} p_1(t),
+\end{eqnarray}
 with $t$ being the 1d parameter in \eqref{eqn:1d_parametrization}.
 
 Two models are presented below, the first one supposes further simplifications and includes 1d-2d coupling between dimensions,
@@ -325,13 +325,13 @@ where we call $\Gamma^m_{ext} = \Gamma^m_{2D} \cup \Gamma^m_{2N}$ the exterior b
 Dirichlet and Neumann boundary condition, respectively.
 The interior boundary $\Gamma^m_{int}$ is created by an union of all the cross-sections of the aquifer domain $\Omega^m_2$
 and wells lateral surfaces
-\[
+\begin{equation}
     \Gamma^m_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma^m_w, \quad \Gamma^m_w = \Omega^m_2 \cap \prtl\Omega^w_C.
-\]
+\end{equation}
 Where possible, we again use the simplified notation
-\begin{eqnarray*}
+\begin{equation}
     \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^w_2, \quad \Gamma_{\#} = \bigcup_{m\in\mathcal{M}} \Gamma^m_{\#}
-\end{eqnarray*}
+\end{equation}
 with $\#$ being $ext,\; int,\; 2D$ or $2N$.
 
 On $\Gamma^m_w$, we define the following decomposition of an arbitrary function $q\in C(\overbar\Omega^m_2)$ on average and fluctuation parts, 
@@ -356,18 +356,19 @@ The average term is linear, since it holds
 
 The point where the reduced domain $\Omega^w_1$ intersects with aquifer $\Omega^m_2$ is denoted $\vc x^m_w=\nu_w(t^m)$.
 In order to prescribe a~communication term in $\Omega^w_1$, we use a~Dirac measure at the point $t^m$
-\[
+\begin{equation}
     \delta_t(t - t^m) = 
     \begin{cases}
         1 & t = t^m \\
         0 & t \neq t^m
     \end{cases}, 
     \quad \int_0^1 q(t) \delta_t(t - t^m) \dd t = q(t^m), \quad q\in C(\overbar\Omega^w_1).
-\]
+\end{equation}
 
 Then we can write the entire problem:
 \thmproblem{ \label{thm:problem_2d}
 Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
+\begin{subequations}
 \begin{align}
 % \begin{alignat}{4}
 \delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2,  \\
@@ -382,6 +383,7 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:problem_2d_dirich
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:problem_2d_neumann}
 %   \end{alignat}
 \end{align}
+\end{subequations}
 where
 \[ 
 {\color{blue}
@@ -440,9 +442,9 @@ analogically to the 1d-2d model.
 
 The interior boundary $\Gamma_{int}$ is created by an union of all the cross-sections of the domain $\Omega_3$
 and wells lateral surfaces
-\[
+\begin{equation}
     \Gamma_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma_w, \quad \Gamma_w = \Omega_3 \cap \prtl\Omega^w_C.
-\]
+\end{equation}
 On $\Gamma_w$ we define the average decomposition $w = \avg{g}_w + \{g\}_w$ in the similar manner
 as in the 1d-2d case. However, the average is computed over a circle edge, perpendicular to $\Omega^w_1$,
 with its center at a~point $\vc x\in \Omega^w_1$
@@ -455,6 +457,7 @@ determined by the angle $\theta$.
 Then we can write the entire problem:
 \thmproblem{ \label{thm:problem_3d}
 Find $[\vc u_1,\,\vc u_3]$ and $[p_1,\,p_3]$ satisfying
+\begin{subequations}
 \begin{align}
 % \begin{alignat}{4}
 \delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3,  \\
@@ -466,6 +469,7 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3, \label{eqn:problem_3d_dirich
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,3 \label{eqn:problem_3d_neumann}
 %   \end{alignat}
 \end{align}
+\end{subequations}
 where
 \[ 
 {\color{blue}
