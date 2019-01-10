@@ -55,10 +55,10 @@ We denote the minimal and maximal cross-section $\delta_d$ of the domains $\Omeg
     \overbar{\delta_1}    = \max\limits_{w\in\mathcal{W}} (\pi\rho_w^2), \qquad
      0 < \underline{\delta_1} \leq \overbar{\delta_1}.
 \end{eqnarray}
-We suppose the boundary $\Gamma_{dD} \neq \emptyset$ for simplicity, so that we can later apply 
-the Friedrich's inequality to show the coercivity of the assembled bilinear form.
-Otherwise for $\Gamma_{2D} = \emptyset$, the proof would be more complicated and it would require following
-the proof of the Friedrich's inequality itself.
+% We suppose the boundary $\Gamma_{dD} \neq \emptyset$ for simplicity, so that we can later apply 
+% the Friedrich's inequality to show the coercivity of the assembled bilinear form.
+% Otherwise for $\Gamma_{2D} = \emptyset$, the proof would be more complicated and it would require following
+% the proof of the Friedrich's inequality itself.
 
 We consider the standard Sobolev spaces $H^1(\Omega_d)$, $d=1,2$ and
 \[ H^1_0(\Omega_d)=\big\{q_d\in H^1(\Omega_d); q_d|_{\Gamma_{dD}}=0\big\}.
@@ -148,14 +148,14 @@ we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ such th
   \end{cases} \nonumber
 \end{equation*}
 Then we have the upper bound
-\begin{eqnarray*}
+\begin{eqnarray}
   \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \avg{q}^m_w
     &=& \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \int_{\Gamma^m_w} q (\grad\psi\cdot\vc n) \dd s
     = \int_{\partial\Omega_2} q (\grad\psi\cdot\vc n) \dd s
-    = \int_{\Omega} \big(q \Lapl\psi + \grad q \cdot\grad\psi \big) \dd\bx \\
-    &\leq& \norm{q}_{L_2(\Omega)}\norm{\Delta\psi}_{L_2(\Omega)} + \norm{\grad q}_{L_2(\Omega)} \norm{\grad\psi}_{L_2(\Omega)} \\
+    = \int_{\Omega} \big(q \Lapl\psi + \grad q \cdot\grad\psi \big) \dd\bx \nonumber\\
+    &\leq& \norm{q}_{L_2(\Omega)}\norm{\Delta\psi}_{L_2(\Omega)} + \norm{\grad q}_{L_2(\Omega)} \norm{\grad\psi}_{L_2(\Omega)} \nonumber\\
     &\leq& C_{avg}(\prtl\Omega_2, \Omega_2) \Big(\norm{q}_{L_2(\Omega)} + \norm{\grad q}_{L_2(\Omega)}\Big)
-\end{eqnarray*}
+\end{eqnarray}
 % \begin{align*}
 %   \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \avg{q}^m_w
 %     = \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \int_{\Gamma^m_w} q (\grad\psi\cdot\vc n) \dd s \\
@@ -168,10 +168,10 @@ Further since $q_1\in H^1_0(\Omega_1)$, $q_1$ is continuous and bounded on $\Ome
 Then we obtain the final bound
 \begin{align} \label{eqn:prim_form_a_bound}
     \abs{a(p,q)} &\leq \overbar{\delta_2}\overbar{k_2}\, \norm{\grad p_2}_{L_2(\Omega_2)} \norm{\grad q_2}_{L_2(\Omega_2)}
-        + \overbar{\delta_1}\overbar{k_1}\, \norm{\grad p_1}_{L_2(\Omega_1)} \norm{\grad q_1}_{L_2(\Omega_1)} \\
+        + \overbar{\delta_1}\overbar{k_1}\, \norm{\grad p_1}_{L_2(\Omega_1)} \norm{\grad q_1}_{L_2(\Omega_1)} \nonumber\\
         &\quad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \overbar{\delta_2} \abs{\Gamma^m_w} \sigma^m_w
-            \abs{\avg{p_2}^m_w - p_1(\vc x^m_w)}\abs{\avg{q_2}^m_w - q_1(\vc x^m_w)}\\
-    &\leq C \Big( \norm{p_2}_{H^1(\Omega_2)} + \norm{p_1}_{H^1(\Omega_1)} \Big) \Big( \norm{q_2}_{H^1(\Omega_2)} + \norm{q_1}_{H^1(\Omega_1)} \Big) \\
+            \abs{\avg{p_2}^m_w - p_1(\vc x^m_w)}\abs{\avg{q_2}^m_w - q_1(\vc x^m_w)} \nonumber\\
+    &\leq C \Big( \norm{p_2}_{H^1(\Omega_2)} + \norm{p_1}_{H^1(\Omega_1)} \Big) \Big( \norm{q_2}_{H^1(\Omega_2)} + \norm{q_1}_{H^1(\Omega_1)} \Big) \nonumber\\
     &\leq \alpha_2 \norm{p}_V \norm{q}_V \quad \forall p,q\in V_0,
 \end{align}
 % \begin{multline} \label{eqn:prim_form_a_bound}
@@ -185,22 +185,93 @@ Then we obtain the final bound
 with a~constant $\alpha_2(\overbar{\delta_2},\overbar{k_2},\overbar{\delta_1},\overbar{k_1},\sigma^m_w,\abs{\Gamma^m_w},C_{avg})$.
 
 % https://www.wias-berlin.de/people/john/LEHRE/NUM_KONV_PROB_16/num_pde_fem.pdf, example 3.55, p. 15
-The bilinear form $a$ is coercive in $V_0$
-\begin{align} \label{eqn:prim_form_a_coercivity_V0}
+% The bilinear form $a$ is coercive in $V_0$
+% \begin{align} \label{eqn:prim_form_a_coercivity_V0}
+%     a(q,q) &\geq
+%           \underline{\delta_2}\,\underline{k_2} \norm{\grad q_2}^2_{L_2(\Omega_2)}
+%         + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)}\\
+%         & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2} \sigma^m_w (\avg{q_2}^m_w - q_1(\vc x^m_w))^2 \\
+%         &\geq
+%           \underline{\delta_2}\,\underline{k_2} C_{F2} \norm{q_2}^2_{H^1(\Omega_2)}
+%         + \underline{\delta_1}\,\underline{k_1} C_{F1} \norm{q_1}^2_{H^1(\Omega_1)}.\\
+%         &\geq
+%            \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
+% \end{align}
+% with a~constant $\alpha_1 = \min\{\underline{\delta_2}\,\underline{k_2}\, C_{F2}, \underline{\delta_1}\,\underline{k_1}\, C_{F1}\}$.
+% The first two terms of $a(q,q)$ are coercive in $V_0$
+% due to the Dirichlet boundary condition on the $\Gamma_{dD}$ part of the boundary and Friedrich's inequality with constants $C_{Fd}$,
+% the last term of $a$ is evidently non-negative.
+
+% If there are non-empty sets $\Gamma_dD\neq\emptyset$, $d=1,2$ then the coercivity of the bilinear form $a$
+% % \begin{equation} \label{eqn:prim_form_a_coercivity_V0}
+% %     a(q,q) &\geq \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
+% % \end{equation}
+% comes straightforward using the Friedrich's inequality:
+% \begin{align} \label{eqn:prim_form_a_coercivity_V0}
+%     a(q,q) &\geq
+%           \underline{\delta_2}\,\underline{k_2} \norm{\grad q_2}^2_{L_2(\Omega_2)}
+%         + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)}\\
+%         & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2} \sigma^m_w (\avg{q_2}^m_w - q_1(\vc x^m_w))^2 \\
+%         &\geq
+%           \underline{\delta_2}\,\underline{k_2} C_{F2} \norm{q_2}^2_{H^1(\Omega_2)}
+%         + \underline{\delta_1}\,\underline{k_1} C_{F1} \norm{q_1}^2_{H^1(\Omega_1)}.\\
+%         &\geq
+%            \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
+% \end{align}
+% with a~constant $\alpha_1 = \min\{\underline{\delta_2}\,\underline{k_2}\, C_{F2}, \underline{\delta_1}\,\underline{k_1}\, C_{F1}\}$.
+
+We now prove that the bilinear form $a$ is coercive
+\begin{equation} \label{eqn:prim_form_a_coercivity_V0}
+    a(q,q) \geq \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
+\end{equation}
+if there is Dirichlet boundary condition prescribed on any subset of $\Gamma_{dD}$, $d=1,2$,
+i.e. even if the pressure is set only at the top of a~single well.
+
+% https://en.wikipedia.org/wiki/Reflexive_space
+% https://en.wikipedia.org/wiki/Semi-continuity
+We take similar steps as in the proof of the Poincar{\'e}'s inequality by contradiction in \cite{evans_partial_2010}.
+Suppose that \eqref{eqn:prim_form_a_coercivity_V0} does not hold. 
+Then $\forall n\in\mathbb N$ exists a~function $q^n\in V_0$ satisfying
+\[  \norm{q^n}^2_V > n\cdot a(q^n, q^n).
+\]
+Without loss of generality, let us consider $\norm{q^n}_V=1$.
+Space $V_0$ is a~Hilbert space which is reflexive, then there is a~weakly convergent subsequence
+$\{q^{n_k}\}^{\infty}_{k=1}\subset\{q^{n}\}^{\infty}_{n=1}$ such that
+\[  q^{n_k} \rightharpoonup q \quad \textrm{in } V_0
+\]
+Let us denote a~space $W=L_2(\Omega_1)\times L_2(\Omega_2)$.
+Due to the compact embedding $V_0 \hookrightarrow \hookrightarrow W$,
+% which converges strongly in $W=L_2(\Omega_1)\times L_2(\Omega_2)$:
+the subsequence $q^{n_k}$ converges strongly in $W$:
+\[  q^{n_k} \rightarrow q \quad \textrm{in } W.
+\]
+The bilinear form $a$ can be bounded below
+\begin{align*} 
     a(q,q) &\geq
           \underline{\delta_2}\,\underline{k_2} \norm{\grad q_2}^2_{L_2(\Omega_2)}
-        + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)}\\
+        + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)} \\
         & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2} \sigma^m_w (\avg{q_2}^m_w - q_1(\vc x^m_w))^2 \\
         &\geq
-          \underline{\delta_2}\,\underline{k_2} C_{F2} \norm{q_2}^2_{H^1(\Omega_2)}
-        + \underline{\delta_1}\,\underline{k_1} C_{F1} \norm{q_1}^2_{H^1(\Omega_1)}.\\
-        &\geq
-           \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
-\end{align}
-with a~constant $\alpha_1 = \min\{\underline{\delta_2}\,\underline{k_2}\, C_{F2}, \underline{\delta_1}\,\underline{k_1}\, C_{F1}\}$.
-The first two terms of $a(q,q)$ are coercive in $V_0$
-due to the Dirichlet boundary condition on the $\Gamma_{dD}$ part of the boundary and Friedrich's inequality with constants $C_{Fd}$,
-the last term of $a$ is evidently non-negative.
+           C\norm{\grad q}^2_W \quad \forall q\in V_0.
+\end{align*}
+with $C = \min\{\underline{\delta_2}\,\underline{k_2}, \underline{\delta_1}\,\underline{k_1}\}$
+and with the coupling term evidently non-negative.
+Then we obtain
+\[
+    C\norm{\grad q^{n_k}}^2_W \leq a(q^{n_k}, q^{n_k}) < \frac{1}{n_k} \norm{q^{n}}^2_V = \frac{1}{n_k}.
+\]
+Under the assumption that $\norm{\grad q}_W \leq \liminf \limits_{k \to \infty} \norm{\grad q^{n_k}}_W$,
+we have
+\begin{align*}
+    \grad q^{n_k} &\rightarrow \grad q \,\quad \textrm{in } W, \quad \grad q=0, \\
+    q^{n_k} &\rightarrow q \qquad \textrm{in } V_0, \quad q=const.
+\end{align*}
+We see that pressure is supposed to be constant in each aquifer and flux is zero there.
+Since we consider $\sigma^m_w>0$, the flux between an~aquifer and a~well is zero due to pressure equilibrium
+$q_2|_{\Gamma^m_w} = \avg{q_2}^m_w = q_1(\bx^m_w)$, for each $w\in\mathcal W$ and $m\in\mathcal M$.
+Pressure in wells is constant and flux is zero there. The pressure is then identical everywhere, both in aquifers and wells.
+Finally, if we prescribe Dirichlet boundary condition on any nonempty subset of $\Gamma_{dD}$, we have $q=0$, since $q\in V_0$,
+and $\norm{q}_V=0$ which is in contradiction with the assumption.
 
 The existence and uniqueness of the solution can be shown via the Lax-Milgram theorem due to the ellipticity
 of the bilinear form $a$ and the boundedness of the problem:
@@ -221,6 +292,11 @@ $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D\i
 }
 
 %
+We point out a~practical consequence of Theorem \ref{thm:prim_lax_milgram_theorem} and the argumentation in the proof of coercivity of $a$.
+One can observe that the uniqueness of the solution can be attained by fixing the pressure at the top of a~single well
+(e.g. a~pumping well where the pressure can be measured), possibly with Neumann boundary condition at the rest of the boundary.
+This might be useful when there is limiting amount of data on aquifer and no flow boundary condition is considered.
+
 Eventually we add a~practical assumption and we approximate the pressure fluctuation $g^m_w\approx 0$.
 This assumption is based on the wells being very small in diameter, $\rho_w << |\Omega^m_2|$,
 and so that pressure is changing minimally along $\Gamma^m_w$.
