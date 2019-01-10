@@ -111,20 +111,6 @@ then we sum up the two equations together to get
 \end{multline}
 
 
-% In the definition of $V^m_0$ in \eqref{eqn:prim_weak_space_Vm0}, we assume that the wells are very small in diameter,
-% $\rho_w << |\Omega^m_2|$, and that pressure is changing minimally along $\Gamma^m_w$.
-% Thus we effectively neglect the given boundary condition for the pressure fluctuation in \eqref{eqn:prim_problem_2d_press_fluct}.
-% and we put
-% \begin{equation} \label{eqn:well_edge_fluctuation_neglect}
-%     \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq 0,
-% \end{equation}
-% thus we simplify the well edge integral
-% \begin{equation} \label{eqn:prim_avg_assumption}
-%     \int_{\Gamma^m_w} p_2q_2 \dd s %= \int_{\Gamma^m_w} \big(\avg{p}\avg{q} + \avg{p}\fluct{q} + \fluct{p}\avg{q} + \fluct{p}\fluct{q} \big)\dd s
-%     =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s
-% \end{equation}
-% Effects of this assumption on such problems are studied in details in \cite{koppl_vidotto_2018}.
-
 Considering the Dirichlet boundary conditions, we split the solution into three parts $p=p_0 + p_w + p_D$, while
 $p_0\in V_0$ and $p_w, p_D\in V$ are functions chosen such that they satisfy \eqref{eqn:prim_problem_2d_press_fluct} on the wells edges and
 \eqref{eqn:prim_problem_2d_dirichlet} on the exterior boundary, respectively.
@@ -138,8 +124,32 @@ for given $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $
 \vspace{10pt}
 }
 
-The bilinear form $a$ is continuous on $V_0$. To bound the average terms in the form $a$,
-we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ such that
+
+Next we discuss some properties of the defined problem and provide several results
+to show the existence of a~unique solution eventually.
+To this end we shall need two following results about compact mappings from \cite{necas_direct_2012}, p. 103, Corollary 6.3 and Theorem 6.2:
+\begin{lemma} \label{lem:compact_1}
+    Let $\Omega_1$ be a~closed interval in $\mathbb R^1$.
+    The identity mapping $I:H^1(\Omega_1)\rightarrow C(\overbar\Omega_1)$ is compact.
+\end{lemma}
+
+\begin{lemma} \label{lem:compact_2}
+    Let $\Omega_2 \subset \mathbb R^2$ be a~domain with Lipschitz boundary.
+    The mapping $Z\in[H^1(\Omega_2)\rightarrow L_2(\partial\Omega_2)]$, which define traces, is compact.
+\end{lemma}
+
+\vspace{10pt}
+At first we bound the bilinear form of Problem \ref{thm:problem_2d_prim_weak}.
+\begin{lemma} \label{lem:prim_form_a_continuous}
+    The bilinear form $a$, defined in \eqref{eqn:prim_weak_form}, is continuous on $V_0$:
+    \begin{equation} \label{eqn:prim_form_a_bound}
+        \abs{a(p,q)} \leq \alpha_2 \norm{p}_V \norm{q}_V \quad \forall p,q\in V_0,
+    \end{equation}
+\end{lemma}
+
+\begin{proof}
+To bound the average terms in the form $a$,
+we define an auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ such that
 \begin{equation*}
   \grad\psi\cdot\vc n =
   \begin{cases}
@@ -164,9 +174,10 @@ Then we have the upper bound
 %     \leq \norm{q}_{L_2(\Omega)}&\norm{\Delta\psi}_{L_2(\Omega)} + \norm{\grad q}_{L_2(\Omega)} \norm{\grad\psi}_{L_2(\Omega)} \\
 %     \leq &C_w\big(\prtl\Omega_2, \Omega_2) (\norm{q}_{L_2(\Omega)} + \norm{\grad q}_{L_2(\Omega)}\big)
 % \end{align*}
-Further since $q_1\in H^1_0(\Omega_1)$, $q_1$ is continuous and bounded on $\Omega_1$, and therefore $\abs{q_1(\vc x^m_w)}\leq \norm{q}_{H^1(\Omega_1)}$.
+Further, due to Lemma \ref{lem:compact_1}, $q_1\in H^1_0(\Omega_1)$ is continuous and bounded on $\Omega_1$,
+and therefore $\abs{q_1(\vc x^m_w)}\leq \norm{q}_{H^1(\Omega_1)}$.
 Then we obtain the final bound
-\begin{align} \label{eqn:prim_form_a_bound}
+\begin{align} \label{eqn:prim_form_a_bound_proof}
     \abs{a(p,q)} &\leq \overbar{\delta_2}\overbar{k_2}\, \norm{\grad p_2}_{L_2(\Omega_2)} \norm{\grad q_2}_{L_2(\Omega_2)}
         + \overbar{\delta_1}\overbar{k_1}\, \norm{\grad p_1}_{L_2(\Omega_1)} \norm{\grad q_1}_{L_2(\Omega_1)} \nonumber\\
         &\quad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}} \overbar{\delta_2} \abs{\Gamma^m_w} \sigma^m_w
@@ -183,6 +194,7 @@ Then we obtain the final bound
 %     \leq \alpha_2 \norm{p}_V \norm{q}_V \quad \forall p,q\in V_0,
 % \end{multline}
 with a~constant $\alpha_2(\overbar{\delta_2},\overbar{k_2},\overbar{\delta_1},\overbar{k_1},\sigma^m_w,\abs{\Gamma^m_w},C_{avg})$.
+\end{proof}
 
 % https://www.wias-berlin.de/people/john/LEHRE/NUM_KONV_PROB_16/num_pde_fem.pdf, example 3.55, p. 15
 % The bilinear form $a$ is coercive in $V_0$
@@ -220,68 +232,157 @@ with a~constant $\alpha_2(\overbar{\delta_2},\overbar{k_2},\overbar{\delta_1},\o
 % \end{align}
 % with a~constant $\alpha_1 = \min\{\underline{\delta_2}\,\underline{k_2}\, C_{F2}, \underline{\delta_1}\,\underline{k_1}\, C_{F1}\}$.
 
-We now prove that the bilinear form $a$ is coercive
-\begin{equation} \label{eqn:prim_form_a_coercivity_V0}
-    a(q,q) \geq \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
-\end{equation}
-if there is Dirichlet boundary condition prescribed on any subset of $\Gamma_{dD}$, $d=1,2$,
-i.e. even if the pressure is set only at the top of a~single well.
+
+%
+% % https://en.wikipedia.org/wiki/Reflexive_space
+% % https://en.wikipedia.org/wiki/Semi-continuity
+% We take similar steps as in the proof of the Poincar{\'e}'s inequality by contradiction in \cite{evans_partial_2010}.
+% Suppose that \eqref{eqn:prim_form_a_coercivity_V0} does not hold. 
+% Then $\forall n\in\mathbb N$ exists a~function $q^n\in V_0$ satisfying
+% \[  \norm{q^n}^2_V > n\cdot a(q^n, q^n).
+% \]
+% Without loss of generality, let us consider $\norm{q^n}_V=1$.
+% Space $V_0$ is a~Hilbert space which is reflexive, then there is a~weakly convergent subsequence
+% $\{q^{n_k}\}^{\infty}_{k=1}\subset\{q^{n}\}^{\infty}_{n=1}$ such that
+% \[  q^{n_k} \rightharpoonup q \quad \textrm{in } V_0
+% \]
+% Let us denote a~space $W=L_2(\Omega_1)\times L_2(\Omega_2)$.
+% Due to the compact embedding $V_0 \hookrightarrow \hookrightarrow W$,
+% % which converges strongly in $W=L_2(\Omega_1)\times L_2(\Omega_2)$:
+% the subsequence $q^{n_k}$ converges strongly in $W$:
+% \[  q^{n_k} \rightarrow q \quad \textrm{in } W.
+% \]
+% The bilinear form $a$ can be bounded below
+% \begin{align*} 
+%     a(q,q) &\geq
+%           \underline{\delta_2}\,\underline{k_2} \norm{\grad q_2}^2_{L_2(\Omega_2)}
+%         + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)} \\
+%         & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2} \sigma^m_w (\avg{q_2}^m_w - q_1(\vc x^m_w))^2 \\
+%         &\geq
+%            C\norm{\grad q}^2_W \quad \forall q\in V_0.
+% \end{align*}
+% with $C = \min\{\underline{\delta_2}\,\underline{k_2}, \underline{\delta_1}\,\underline{k_1}\}$
+% and with the coupling term evidently non-negative.
+% Then we obtain
+% \[
+%     C\norm{\grad q^{n_k}}^2_W \leq a(q^{n_k}, q^{n_k}) < \frac{1}{n_k} \norm{q^{n}}^2_V = \frac{1}{n_k}.
+% \]
+% Under the assumption that $\norm{\grad q}_W \leq \liminf \limits_{k \to \infty} \norm{\grad q^{n_k}}_W$,
+% we have
+% \begin{align*}
+%     \grad q^{n_k} &\rightarrow \grad q \,\quad \textrm{in } W, \quad \grad q=0, \\
+%     q^{n_k} &\rightarrow q \qquad \textrm{in } V_0, \quad q=const.
+% \end{align*}
+% We see that pressure is supposed to be constant in each aquifer and flux is zero there.
+% Since we consider $\sigma^m_w>0$, the flux between an~aquifer and a~well is zero due to pressure equilibrium
+% $q_2|_{\Gamma^m_w} = \avg{q_2}^m_w = q_1(\bx^m_w)$, for each $w\in\mathcal W$ and $m\in\mathcal M$.
+% Pressure in wells is constant and flux is zero there. The pressure is then identical everywhere, both in aquifers and wells.
+% Finally, if we prescribe Dirichlet boundary condition on any nonempty subset of $\Gamma_{dD}$, we have $q=0$, since $q\in V_0$,
+% and $\norm{q}_V=0$ which is in contradiction with the assumption.
+% 
+% The existence and uniqueness of the solution can be shown via the Lax-Milgram theorem due to the ellipticity
+% of the bilinear form $a$ and the boundedness of the problem:
+% \theorem{ \label{thm:prim_lax_milgram_theorem}
+% Let $a: V\times V \rightarrow \R$ be a~continuous coercive bilinear form on $V_0$, i.e.
+% \begin{align}
+%     \abs{a(p_0,q)} &\leq \alpha_2 \norm{p_0}_V \norm{q}_V && \forall p_0,q \in V_0,\\
+%     a(q,q) &\geq \alpha_1 \norm{q}^2_V && \forall q\in V_0,
+% \end{align}
+% with the constants $\alpha_2$ from \eqref{eqn:prim_form_a_bound} and $\alpha_1$ from \eqref{eqn:prim_form_a_coercivity_V0}.\\
+% Then there exists a~unique solution $p\in V$ to Problem \eqref{thm:problem_2d_prim_weak} for any
+% % $f_2\in L_2(\Omega_2)$, $f_1\in L_2(\Omega_1)$ and $g_{2N}\in L_2(\Gamma_{2N})$, $g_{1N}\in L_2(\Gamma_{1N})$
+% $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D\in V$ fixed, such that
+% \begin{equation}
+% %     \norm{p}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'}.
+%     \norm{p_0}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'} + \frac{\alpha_2}{\alpha_1}\big( \norm{p_w}_V+\norm{p_D}_V \big).
+% \end{equation}
+% }
+%
+Next we want to show that the bilinear form $a$ is coercive on $V_0$.
+We state the following lemma
+\begin{lemma} \label{lem:prim_form_a_coercivity_V0}
+    Let there be a~Dirichlet boundary condition prescribed on any nonempty subset of $\Gamma_{dD}$, $d=1,2$.
+    Then the bilinear form $a$, defined in \eqref{eqn:prim_weak_form}, is coercive on $V_0$:
+    \begin{equation} \label{eqn:prim_form_a_coercivity_V0}
+        a(q,q) \geq \alpha_1\norm{q}^2_V \quad \forall q\in V_0.
+    \end{equation}
+\end{lemma}
 
 % https://en.wikipedia.org/wiki/Reflexive_space
 % https://en.wikipedia.org/wiki/Semi-continuity
-We take similar steps as in the proof of the Poincar{\'e}'s inequality by contradiction in \cite{evans_partial_2010}.
-Suppose that \eqref{eqn:prim_form_a_coercivity_V0} does not hold. 
+\begin{proof}
+We take similar steps as in the proof of the Poincar{\'e}'s inequality by contradiction in \cite{evans_partial_2010}, p. 290,
+(also in \cite{necas_direct_2012}, p. 9).
+Suppose that \eqref{eqn:prim_form_a_coercivity_V0} does not hold.
 Then $\forall n\in\mathbb N$ exists a~function $q^n\in V_0$ satisfying
-\[  \norm{q^n}^2_V > n\cdot a(q^n, q^n).
-\]
+\begin{equation} \label{eqn:prim_coercivity_proof1}
+    \norm{q^n}^2_V > n\cdot a(q^n, q^n).
+\end{equation}
 Without loss of generality, let us consider $\norm{q^n}_V=1$.
-Space $V_0$ is a~Hilbert space which is reflexive, then there is a~weakly convergent subsequence
-$\{q^{n_k}\}^{\infty}_{k=1}\subset\{q^{n}\}^{\infty}_{n=1}$ such that
-\[  q^{n_k} \rightharpoonup q \quad \textrm{in } V_0
-\]
-Let us denote a~space $W=L_2(\Omega_1)\times L_2(\Omega_2)$.
-Due to the compact embedding $V_0 \hookrightarrow \hookrightarrow W$,
-% which converges strongly in $W=L_2(\Omega_1)\times L_2(\Omega_2)$:
-the subsequence $q^{n_k}$ converges strongly in $W$:
-\[  q^{n_k} \rightarrow q \quad \textrm{in } W.
-\]
-The bilinear form $a$ can be bounded below
-\begin{align*} 
-    a(q,q) &\geq
-          \underline{\delta_2}\,\underline{k_2} \norm{\grad q_2}^2_{L_2(\Omega_2)}
-        + \underline{\delta_1}\,\underline{k_1} \norm{\grad q_1}^2_{L_2(\Omega_1)} \\
-        & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2} \sigma^m_w (\avg{q_2}^m_w - q_1(\vc x^m_w))^2 \\
-        &\geq
-           C\norm{\grad q}^2_W \quad \forall q\in V_0.
-\end{align*}
-with $C = \min\{\underline{\delta_2}\,\underline{k_2}, \underline{\delta_1}\,\underline{k_1}\}$
-and with the coupling term evidently non-negative.
-Then we obtain
-\[
-    C\norm{\grad q^{n_k}}^2_W \leq a(q^{n_k}, q^{n_k}) < \frac{1}{n_k} \norm{q^{n}}^2_V = \frac{1}{n_k}.
-\]
-Under the assumption that $\norm{\grad q}_W \leq \liminf \limits_{k \to \infty} \norm{\grad q^{n_k}}_W$,
-we have
-\begin{align*}
-    \grad q^{n_k} &\rightarrow \grad q \,\quad \textrm{in } W, \quad \grad q=0, \\
-    q^{n_k} &\rightarrow q \qquad \textrm{in } V_0, \quad q=const.
-\end{align*}
-We see that pressure is supposed to be constant in each aquifer and flux is zero there.
-Since we consider $\sigma^m_w>0$, the flux between an~aquifer and a~well is zero due to pressure equilibrium
-$q_2|_{\Gamma^m_w} = \avg{q_2}^m_w = q_1(\bx^m_w)$, for each $w\in\mathcal W$ and $m\in\mathcal M$.
-Pressure in wells is constant and flux is zero there. The pressure is then identical everywhere, both in aquifers and wells.
+Then \eqref{eqn:prim_coercivity_proof1} implies 
+\begin{equation} \label{eqn:prim_coercivity_proof2}
+    a(q^{n}, q^{n}) < \frac{1}{n} \norm{q^{n}}^2_V = \frac{1}{n}.
+\end{equation}
+Space $V_0$ is a~Hilbert space which is reflexive, then there exists a~weakly convergent subsequence
+$\{q^{n_k}\}^{\infty}_{k=1}\subset\{q^{n}\}^{\infty}_{n=1}$ and a~function $q\in V_0$ such that
+\begin{equation} \label{eqn:prim_coercivity_proof3}
+    q^{n_k} \rightharpoonup q \quad \textrm{in } V_0.
+\end{equation}
+%
+Next the bilinear form $a$ can be bounded below
+\begin{align} 
+    a(q^{n_k},q^{n_k}) &\geq
+          \underline{\delta_2}\,\underline{k_2} \norm{\grad q^{n_k}_2}^2_{L_2(\Omega_2)}
+        + \underline{\delta_1}\,\underline{k_1} \norm{\grad q^{n_k}_1}^2_{L_2(\Omega_1)} \nonumber\\
+        & \qquad + \sum_{\substack{w\in \mathcal{W} \\ m\in \mathcal{M}}}\abs{\Gamma^m_w} \underline{\delta_2}
+            \sigma^m_w (\avg{q^{n_k}_2}^m_w - q^{n_k}_1(\vc x^m_w))^2.  \label{eqn:prim_coercivity_proof4}
+%             \nonumber\\
+%         &\geq
+%            C\norm{\grad q}^2_W \quad \forall q\in V_0.
+\end{align}
+Since all terms on the right hand side of \eqref{eqn:prim_coercivity_proof4} are non-negative,
+each term must converge to zero to satisfy \eqref{eqn:prim_coercivity_proof2}.
+The weak lower semi-continuity
+\begin{equation}
+    \norm{\grad q}_{L_2(\Omega_d)} \leq \liminf \limits_{k \to \infty} \norm{\grad q^{n_k}}_{L_2(\Omega_d)}, \qquad d=1,2
+\end{equation}
+and \eqref{eqn:prim_coercivity_proof4} with $k\rightarrow\infty$ then implies that
+\begin{equation}
+    \grad q_1 = \grad q_2 = 0.
+\end{equation}
+As a~consequence of \eqref{eqn:prim_coercivity_proof3} and Lemma \ref{lem:compact_1}, we have a~point convergence
+\begin{equation} \label{eqn:prim_coercivity_proof6}
+    q^{n_k}_1(\bx^m_w) \rightarrow q_1(\bx^m_w)
+    \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}.
+\end{equation}
+As a~consequence of \eqref{eqn:prim_coercivity_proof3} and Lemma \ref{lem:compact_2}, we have a~strong convergence
+\begin{equation} \label{eqn:prim_coercivity_proof5}
+    q^{n_k}_2|_{\Gamma^m_w} \rightarrow q_2|_{\Gamma^m_w} \implies \avg{q^{n_k}_2}^m_w \rightarrow \avg{q_2}^m_w
+    \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}
+\end{equation}
+Finally for the coupling term, we have the following pressure equality, reminding that $\sigma^m_w>0$,
+\begin{equation} \label{eqn:prim_coercivity_proof5}
+    q_2|_{\Gamma^m_w} = \avg{q_2}^m_w = q_1(\bx^m_w)
+    \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}.
+\end{equation}
+
+We see that pressure is constant in each aquifer and in each well.
+Due to the coupling term, pressure must be equal between each pair well-aquifer and thus pressure is identical everywhere.
 Finally, if we prescribe Dirichlet boundary condition on any nonempty subset of $\Gamma_{dD}$, we have $q=0$, since $q\in V_0$,
 and $\norm{q}_V=0$ which is in contradiction with the assumption.
+\end{proof}
 
-The existence and uniqueness of the solution can be shown via the Lax-Milgram theorem due to the ellipticity
-of the bilinear form $a$ and the boundedness of the problem:
-\theorem{ \label{thm:prim_lax_milgram_theorem}
+
+The existence and uniqueness of the solution can be shown via the Lax-Milgram theorem (e.g. in \cite{necas_direct_2012}, p. 29) due to the ellipticity
+of the bilinear form $a$ and the boundedness of the problem, using the results of Lemmas \ref{lem:prim_form_a_continuous}
+and \ref{lem:prim_form_a_coercivity_V0}:
+\begin{theorem} \label{thm:prim_lax_milgram_theorem}
 Let $a: V\times V \rightarrow \R$ be a~continuous coercive bilinear form on $V_0$, i.e.
 \begin{align}
     \abs{a(p_0,q)} &\leq \alpha_2 \norm{p_0}_V \norm{q}_V && \forall p_0,q \in V_0,\\
     a(q,q) &\geq \alpha_1 \norm{q}^2_V && \forall q\in V_0,
 \end{align}
-with the constants $\alpha_2$ from \eqref{eqn:prim_form_a_bound} and $\alpha_1$ from \eqref{eqn:prim_form_a_coercivity_V0}.\\
+with the constants $\alpha_2$ from \eqref{eqn:prim_form_a_bound_proof} and $\alpha_1$ from \eqref{eqn:prim_form_a_coercivity_V0}.\\
 Then there exists a~unique solution $p\in V$ to Problem \eqref{thm:problem_2d_prim_weak} for any
 % $f_2\in L_2(\Omega_2)$, $f_1\in L_2(\Omega_1)$ and $g_{2N}\in L_2(\Gamma_{2N})$, $g_{1N}\in L_2(\Gamma_{1N})$
 $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D\in V$ fixed, such that
@@ -289,7 +390,7 @@ $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D\i
 %     \norm{p}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'}.
     \norm{p_0}_V \leq \frac{1}{\alpha_1} \norm{l}_{V'} + \frac{\alpha_2}{\alpha_1}\big( \norm{p_w}_V+\norm{p_D}_V \big).
 \end{equation}
-}
+\end{theorem}
 
 %
 We point out a~practical consequence of Theorem \ref{thm:prim_lax_milgram_theorem} and the argumentation in the proof of coercivity of $a$.
