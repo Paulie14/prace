@@ -19,6 +19,24 @@ The model formulation is built from a~simple 2d Dirichlet problem to a~fully cou
 %     \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
 %     \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
 % \end{eqnarray}
+\section{Mixed formulation}
+The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
+Brezzi and Fortin~\cite{brezzi_mixed_1991}. 
+The formulation, its stability and error estimates are studied there.
+
+The actual application of the mixed-hybrid method in the model of flow in fractured porous 
+media with combined mesh dimensions is studied in several articles.
+In \cite{brezina_mixed-hybrid_2010} the weak formulation and its discretization using the lowest-order Raviart-Thomas finite 
+elements is written. The linear system is then reduced using the Schur complement (original idea in~\cite{maryska_mixed-hybrid_1995})
+and solved efficiently with preconditioned conjugate gradients method.
+In \cite{sistek_bddc_2015} the theoretic part includes the weak and the discrete formulation and also shows
+the uniqueness of the discrete solution. Further, the authors discuss application and results of BDDC 
+(Balancing Domain Decomposition by Constraints) method used for solution of the linear system.
+
+In \cite{brezina_2012} a~mortar-like method is used to deal with the discrete coupling between equations on incompatible 1D-2D meshes 
+of different dimensions. The drawback of this approach is that it uses continuous approximation of velocity, so
+it cannot approximate the discontinuity of the velocity over the fractures accurately enough.
+
 
 \section{Mixed Dirichlet Problem}
 
@@ -157,9 +175,11 @@ and the problem \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2}can be rewrit
 \end{align}
 
 
-% We will now show that the conditions in theorem \eqref{thm:brezzi_theorem} are fullfilled,
-% beginning with the continuity of the bilinear forms.
-The bilinear form $a,b$ are continuous. To bound the average terms in the form $a$,
+\begin{lemma} \label{lem:mixed_continuity_ab}
+The bilinear forms $a,b$ in Problem \ref{thm:prob_mixed_weak_simple} are continuous.
+\end{lemma}
+\begin{proof}
+To bound the average terms in the form $a$,
 we define auxiliary smooth function $\psi\in C^{\infty}(\overbar\Omega)$ with boundary values
 \begin{equation*}
   \psi(\bx) =
@@ -193,6 +213,7 @@ The continuity of $b$ is straightforward
         \leq \norm{p}_{L_2(\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall q\in Q,\;\forall \vc v\in V.
 \end{equation}
 % putting the constant $\beta_2=1$.
+\end{proof}
 
 The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v\in V: b(\vc v,q)=0\;\forall q\in Q\}$, i.e.
 a subspace of $V$ where $\div\,\vc v=0$,
@@ -203,9 +224,18 @@ a subspace of $V$ where $\div\,\vc v=0$,
 \end{multline}
 with $\alpha_1=\underline{k}$ and having the average term greater than zero.
 
-To proove the continous $\inf$-$\sup$ condition (\cite{brezzi_mixed_1991}, p. 42),
-the so-called Ladyshenskaja-Babu{\v s}ka-Brezzi (LBB) condition,
-we construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
+We now show that our problem is inf-sup stable, i.e. it satisfies 
+the so-called Ladyshenskaja-Babu{\v s}ka-Brezzi (LBB) condition, see \cite{brezzi_mixed_1991}, p. 42.
+
+\begin{lemma} \label{lem:mixed_lbb}
+The Problem \ref{thm:prob_mixed_weak_simple} satisfies the LBB condition
+\begin{equation} \label{eqn:form_b_lbb}
+    \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1 \norm{q}_{L_2(\Omega)}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
 We solve the artificial Poisson problem
 \begin{equation} \label{eqn:lbb_artificial_poisson}
 % \begin{eqnarray*}    
@@ -231,12 +261,13 @@ and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
         \leq (1+C_F^4) \norm{q}^2_{L_2(\Omega)}.
 \end{equation}
 Using it in the LBB condition, we obtain
-\begin{equation} \label{eqn:form_b_lbb}
+\begin{equation} \label{eqn:form_b_lbb_proof}
     \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq
     \frac{\norm{q}^2_{L_2(\Omega)}}{\norm{\grad\varphi}_{H(\div,\Omega)}}
     \geq \frac{1}{(1+C_F^4)^{1/2}} \norm{q}_{L_2(\Omega)} = \beta_1 \norm{q}_{L_2(\Omega)},
 \end{equation}
 and having the constant $\beta_1 = (1+C_F^4)^{-1/2}$.
+\end{proof}
 
 Using the Brezzi's theorem (\cite{brezzi_mixed_1991}, p. 42), we see that we have now
 all necessary conditions for the existence of the unique solution $\vc u$, $p$ of Problem \eqref{thm:prob_mixed_weak_simple}.
@@ -248,8 +279,8 @@ we see, that
 \]
 and so that $b(\vc v,q) = 0 \iff q=0$ and therefore $\Ker B^T=\{0\}$.
 
-We summarize this result on the continuous spaces in the following theorem
-\theorem{ \label{thm:brezzi_theorem}
+We summarize the results on the continuous spaces in Lemmas \ref{lem:mixed_continuity_ab} and \ref{lem:mixed_lbb} into the following theorem
+\begin{theorem} \label{thm:brezzi_theorem}
 Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
 \begin{eqnarray}
     \abs{a(\vc u,\vc v)} &\leq& \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,\\
@@ -265,7 +296,7 @@ and that there holds the LBB condition
 \begin{equation}
     \sup_{\vc v\in V} \frac{b(\vc v,q)}{\norm{\vc v}_{H(\div,\Omega)}} \geq \beta_1\norm{q}_{L_2(\Omega)} \quad \forall q\in Q,
 \end{equation}
-with $\beta_1$ from \eqref{eqn:form_b_lbb}.\\
+with $\beta_1$ from \eqref{eqn:form_b_lbb_proof}.\\
 Then there exists a~unique solution $\vc u$, $p$ to Problem \eqref{thm:prob_mixed_weak_simple} for any $F\in V'$ and $G\in Q'$
 such that the solution fullfills the stability estimate
 \begin{eqnarray}
@@ -273,7 +304,7 @@ such that the solution fullfills the stability estimate
     \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
             + \frac{\alpha_2}{\beta_1^2} \left( 1+ \frac{\alpha_2}{\alpha_1}\right) \norm{G}_{Q'}.
 \end{eqnarray}
-}
+\end{theorem}
 % \theorem{ \label{thm:brezzi_theorem}
 % Let $a$ be a~continuous bilinear form on $V\times V$ and $b$ be a~continuous bilinear form on $V\times Q$, i.e.
 % \begin{eqnarray}
@@ -369,12 +400,13 @@ Next, we define a~local interpolation operator into $\mathbb{RT}^0(T)$ space of 
 \end{equation}
 which satisfies
 \begin{align}
-b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h\\ 
-\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
+b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h,\\ 
+\implies \int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
 \end{align}
 
-Following the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58)
-According to Lemma 99 ('numpde.pdf'), if there exists an interpolation operator
+Following the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58),
+% According to Lemma 99 ('numpde.pdf'),
+if there exists an interpolation operator
 $\pi_h: V\rightarrow V_h$ which is continuous and satisfies
 \begin{equation}
     b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
