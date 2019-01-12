@@ -19,6 +19,7 @@ with pressure $p_d$ as the primary unknown quantity. Thus we obtain the followin
 
 \thmproblem{ \label{thm:problem_2d_prim}
 Find $[p_1,\,p_2]$ satisfying
+\begin{subequations}
 \begin{align}
 % \begin{alignat}{4}
 \div \left( -\delta_2 \vc K_2 \grad p_2 \right) &= \delta_2 f_2 && \textrm{in } \Omega_2,\;  \label{eqn:prim_problem_2d_2d} \\
@@ -30,6 +31,7 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:prim_problem_2d_d
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:prim_problem_2d_neumann}
 %   \end{alignat}
 \end{align}
+\end{subequations}
 where
 \[ 
 {\color{blue}
@@ -120,7 +122,7 @@ Find $p\in V$ such that
 \begin{align}
 a(p_0, q) &= l(q) - a(p_w, q) - a(p_D, q) && \forall q\in V_0.
 \end{align}
-for given $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$ and $p_w, p_D$ fixed.
+for given $f_d\in L_2(\Omega_d)$ and $g_{dN}\in L_2(\Gamma_{dN})$, $d=1,2$, and $p_w, p_D\in V$ fixed.
 \vspace{10pt}
 }
 
@@ -877,9 +879,13 @@ The motivation is to reduce the number of quadrature points (refinement levels) 
 precise representation of the well edge and/or increase of accuracy.
 
 We define a~circular neighborhood of a~well, i.e. a~band of width $\gamma$ (see \fig{fig:well_band}),
-\[ \mathcal{P} = \{\vc{x}: \rho_w < \abs{\vc{x} - \vc{x}_w} < \rho_w + \gamma \}.\]
+\begin{equation}
+    \mathcal{P} = \{\vc{x}: \rho_w < \abs{\vc{x} - \vc{x}_w} < \rho_w + \gamma \}.
+\end{equation} 
 Next we define a~smooth step function (see \fig{fig:smooth_step})
-\[\mu(z) = -2 z^3 +3 z^2,\quad z=\frac{r_w-\rho_w}{\gamma}.\]%
+\begin{equation}
+    \mu(z) = -2 z^3 +3 z^2,\quad z=\frac{r_w-\rho_w}{\gamma}.
+\end{equation} 
 %
 \begin{figure}[!htb]
   \vspace{-35pt}
@@ -990,6 +996,7 @@ in the original work \cite{exner_2016}.
 Then we have a~simplified problem:
 \begin{thmproblem} \label{thm:prim_simple_problem}
 Find $[p_1,\,p_2]$ satisfying
+\begin{subequations}
 \begin{align}
 -K_2 \Lapl p_2 &= f_2 && \textrm{ in } \Omega_2 \label{eqn:prim_simple_poisson}\\
 -K_2\avg{\grad p_2 \cdot \vc n}_w &= \sigma_w\big( \avg{p_2}_w - p_1(\bx_w)\big)
@@ -999,6 +1006,7 @@ p_1(\bx^w_D) &= g^w_{1D} && \forall w\in\mathcal{W} \label{eqn:prim_simple_well_
 -\frac{\delta^w_1 K^w_1}{\abs{\Omega^w_1}} \big(g^w_{1D} - p_1(\bx_w)\big) &=  \abs{\Gamma_w} \delta_2 \sigma_w\big( \avg{p_2}_w - p_1(\bx_w)\big) 
     && \forall w\in\mathcal{W}\label{eqn:prim_simple_well_flow}
 \end{align}
+\end{subequations}
 %
 %
 % Domain $\Omega$ is a~square with a~diagonal of length $2D$ an exterior boundary $\Gamma_D$. 
@@ -1174,38 +1182,41 @@ in the view of how the approximation is constructed in the vicinity of the well.
 % Thus the average decomposition $\Gamma_w$ is not necessary as in the previous cases.
 % and the average decomposition plays important role to achieve optimal convergence.
 
-The parameters used in the test cases are gathered in Table \ref{tab:test_cases_data}.
-In the first row, $l_\Omega$ determines the size of the domain: $\Omega=[-l_\Omega, l_\Omega]\times[-l_\Omega,l_\Omega]$.
-The value of the parameter $c_w$ (well permeability) is explained in \eqref{eqn:linear_pressure_in_1d}.
+We now list the input data common to all test cases.
+The permeability between the aquifer and the well is set to $10^5$.
+The value of the parameter $c_w$ (well permeability), explained in \eqref{eqn:linear_pressure_in_1d} is set to $10^{10}$,
+so the pressure in the well is nearly constant.
+The aquifer domain is a~square $\Omega=[-l_\Omega, l_\Omega]\times[-l_\Omega,l_\Omega]$, with $l_
+\Omega$ defined for each test case individually.
 As we shall see below, the approximation of the singularity by means of the standard FEM shape functions is better 
 when a~node of $\mathcal{T}_{2}$ is inside the well cross-section. Therefore the center of the singularity $\bx_w$
-is placed such that we do not take advantage of this feature and solve the worst scenario.
+is placed such that we do not take advantage of this feature and solve the worse scenario.
 See the common geometry of the test cases in \fig{fig:test_cases_geometry}.
-%
-\begin{table}
-\begin{center}
-\begin{tabular}{c|cccc}
-\toprule
-% \multicolumn{2}{c}{Item} \\
-% \cmidrule(r){1-2}
-parameter & case 1 & case 2 & case 3 & case 4 \\
-\midrule
-$l_\Omega$  & 100    & 2      & 2      & 2  \\ 
-$\bx_w$     & [5.43,5.43]  & [0.004,0.004]  & [0.004,0.004]  & [0.004,0.004] \\
-$\rho_w$    & 0.2    & 0.003  & 0.003  & 0.003 \\
-$\sigma_w$  & $10^5$ & $10^5$ & $10^5$ & $10^5$ \\
-$c_w$       & $10^{10}$ & $10^{10}$ & $10^{10}$ & $10^{10}$ \\
-$R_w$       & 50     & 0.3    & 0.3    & 0.3 \\
-$g^w_{1D}$  & 100    & 4      & 4      & 4  \\
-$\omega$    & --     & 6      & --     & 6  \\
-$U$         & --     & 4      & 0.7    & 4  \\
-\bottomrule
-\end{tabular}
-\caption{Input data for the considered test cases.}
-\label{tab:test_cases_data}
-\end{center}
-\end{table}
-%
+% %
+% \begin{table}
+% \begin{center}
+% \begin{tabular}{c|cccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% parameter & case 1 & case 2 & case 3 & case 4 \\
+% \midrule
+% $l_\Omega$  & 100    & 2      & 2      & 2  \\ 
+% $\bx_w$     & [5.43,5.43]  & [0.004,0.004]  & [0.004,0.004]  & [0.004,0.004] \\
+% $\rho_w$    & 0.2    & 0.003  & 0.003  & 0.003 \\
+% $\sigma_w$  & $10^5$ & $10^5$ & $10^5$ & $10^5$ \\
+% $c_w$       & $10^{10}$ & $10^{10}$ & $10^{10}$ & $10^{10}$ \\
+% $R_w$       & 50     & 0.3    & 0.3    & 0.3 \\
+% $g^w_{1D}$  & 100    & 4      & 4      & 4  \\
+% $\omega$    & --     & 6      & --     & 6  \\
+% $U$         & --     & 4      & 0.7    & 4  \\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for the considered test cases.}
+% \label{tab:test_cases_data}
+% \end{center}
+% \end{table}
+% %
 
 \begin{figure}[!htb]
     \centering    
@@ -1241,6 +1252,24 @@ on the unenriched elements and adaptive quadrature in the enriched area, as defi
 
 \paragraph{Test case 1}
 Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$\\
+\midrule
+100 & [5.43,5.43] & 0.2 & 50 & 100 \\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 1.}
+\label{tab:test_case_1_data}
+\end{center}
+\end{table}
+%
+The parameters are gathered in Table \ref{tab:test_case_1_data}.
 Convergence of all used methods is measured on a~set of uniformly refined meshes, 
 see the convergence graph in \fig{fig:convergence01}.
 %
@@ -1278,6 +1307,24 @@ with the shifted and the ramp function XFEM. The order of convergence in $L^2$ n
 
 \paragraph{Test case 2}
 Next we present the results in Test case 2, the convergence graph is in \fig{fig:convergence02}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $\omega$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 6 & 4\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 2.}
+\label{tab:test_case_2_data}
+\end{center}
+\end{table}
+%
+The parameters are gathered in Table \ref{tab:test_case_2_data}.
 We expect the standard FE shape functions to optimally approximate the regular part of the solution
 and the shape functions of the enrichment to capture the singularity.
 %
@@ -1309,6 +1356,24 @@ The shifted XFEM and the SGFEM converge optimally and the error is dominated by 
 The application of the standard and ramp function XFEM suffers from the same weaknesses, as we have shown above, in both Test case 3 and 4.
 Due to the fact that these two methods do not perform well in our problems, we do not deal with them any further
 and we do not present obtained results.
+The parameters are gathered in Table \ref{tab:test_case_3_data}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 0.7\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 3.}
+\label{tab:test_case_3_data}
+\end{center}
+\end{table}
+%
 
 \begin{table}[!htb]
 \begin{center}
@@ -1356,6 +1421,25 @@ by the standard FE shape functions. We also see from this figure that the approx
 
 \paragraph{Test case 4}
 The last case of our test series demonstrates the necessity of the averaged terms in the model formulation.
+The parameters are gathered in Table \ref{tab:test_case_4_data}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $\omega$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 6 & 4\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 4.}
+\label{tab:test_case_4_data}
+\end{center}
+\end{table}
+%
+
 The convergence of the considered methods is shown in Table \ref{tab:convergence_test4}, in the same manner as in Test case 3.
 We see that the convergence order of shifted XFEM and SGFEM is optimal up to the refinement level 6 and the error corresponds to
 the error of the regular problem in $\textrm{FEM}_{reg}$ column. 
@@ -1855,7 +1939,7 @@ The hydraulic conductivity of the aquifer is set $K_2=10^{-3}$ and the aquifers 
 The source term is similar to the one in Test case 5, using parameters $\omega=1$, $U=-8$.
 The solution is shown in \fig{fig:test_5w_exact}.
 %
-\begin{table}
+\begin{table}[!htb]
 \begin{center}
 \begin{tabular}{c|ccccc}
 \toprule
