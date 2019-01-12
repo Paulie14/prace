@@ -171,55 +171,8 @@ for computation of intersections of incompatible meshes.
 % conditions and source terms of the fields equations. The term strongly coupled is used because the coupling 
 % is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
 
-\section{Mixed-hybrid formulation}
-The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
-Brezzi and Fortin~\cite{brezzi_mixed_1991}. 
-The formulation, its stability and error estimates are studied there.
-
-The actual application of the mixed-hybrid method in the model of flow in fractured porous 
-media with combined mesh dimensions is studied in several articles.
-In \cite{brezina_mixed-hybrid_2010} the weak formulation and its discretization using the lowest-order Raviart-Thomas finite 
-elements is written. The linear system is then reduced using the Schur complement (original idea in~\cite{maryska_mixed-hybrid_1995})
-and solved efficiently with preconditioned conjugate gradients method.
-In \cite{sistek_bddc_2015} the theoretic part includes the weak and the discrete formulation and also shows
-the uniqueness of the discrete solution. Further, the authors discuss application and results of BDDC 
-(Balancing Domain Decomposition by Constraints) method used for solution of the linear system.
-
-In \cite{brezina_2012} a~mortar-like method is used to deal with the discrete coupling between equations on incompatible 1D-2D meshes 
-of different dimensions. The drawback of this approach is that it uses continuous approximation of velocity, so
-it cannot approximate the discontinuity of the velocity over the fractures accurately enough.
 
 
-
-\section{Flow123d} \label{sec:soa_flow123d}
-
-The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
-is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
-developed as an open source code under the versioning system Git where the eponymous project can be found, or 
-one can find it on the web page
-\begin{center}
-\url{http://flow123d.github.io/}
-\end{center}
-It has been developed at the Technical University of Liberec approximately since 2007.
-The main feature of the software is a~computation on complex compatible meshes of combined dimensions, described in
-previous section. Therefore, the continuum models and discrete fracture network models can be combined.
-%
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
-  \caption{Logo of Flow123d.}
-  \label{fig:logo_flow123d}
-\end{figure}
-%
-Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
-and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
-Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
-and simple reactions.
-
-
-Development of the software is an important practical part of the thesis. The aim is to implement support 
-of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
-Section \ref{chap:aims}.
 
 
 \newpage

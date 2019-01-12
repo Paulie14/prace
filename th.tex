@@ -207,6 +207,35 @@ geothermal problematic and gathering geothermal energy; oil and gas extraction a
 construction of safe underground nuclear waste deposits; investigation of transport of substances in human body
 and more.
 
+\section{Flow123d} \label{sec:soa_flow123d}
+
+The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
+is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
+developed as an open source code under the versioning system Git where the eponymous project can be found, or 
+one can find it on the web page
+\begin{center}
+\url{http://flow123d.github.io/}
+\end{center}
+It has been developed at the Technical University of Liberec approximately since 2007.
+The main feature of the software is a~computation on complex compatible meshes of combined dimensions, described in
+previous section. Therefore, the continuum models and discrete fracture network models can be combined.
+%
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
+  \caption{Logo of Flow123d.}
+  \label{fig:logo_flow123d}
+\end{figure}
+%
+Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
+and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
+Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
+and simple reactions.
+
+
+Development of the software is an important practical part of the thesis. The aim is to implement support 
+of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
+Section \ref{chap:aims}.
 
 %%
 % The actuality of these themes is demonstrated by the several conferences with attendants from all over the world.
