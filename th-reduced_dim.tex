@@ -111,15 +111,13 @@ The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewis
 Following the documentation of Flow123d \cite{flow123d_doc_2015} and its notation,
 for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
 is introduced that consists of
-% \begin{align}
-\begin{eqnarray}
-    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \nonumber\\
+\begin{equation}
+\begin{aligned}
+    \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \\
     \textrm{faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \}, \\
-    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}, \nonumber
-% \end{align}
-\end{eqnarray}
-% $T_{d}^{i},\, i = 1,\dots,N_{E}^{d}$,
-% with nodes $\vc x_{i},\, i\in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N}\}$.
+    \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}.
+\end{aligned}
+\end{equation}
 
 % Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
 If not specified, the simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
