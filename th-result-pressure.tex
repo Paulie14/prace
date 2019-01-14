@@ -13,6 +13,7 @@ Later several numerical experiments are computed and the results are investigate
 
 
 \subsection{Coupled 1d-2d model (Primary weak form)}
+\label{sec:primary_form}
 
 We rearrange Problem \ref{thm:problem_2d} and we substitute for $\vc u_d$ from the Darcy's law and solve the problem
 with pressure $p_d$ as the primary unknown quantity. Thus we obtain the following
@@ -44,8 +45,8 @@ where
 We add the following assumptions and notation. We consider the hydraulic conductivity tensor $\vc K_d$
 to be an invertible positive definite $d\times d$ matrix, for which we denote
 \begin{equation}
-    \underline{k_d} = \inf\limits_{\bx\in\Omega}\lambda_{\min}(\vc K_d), \quad
-    \overbar{k_d}   = \sup\limits_{\bx\in\Omega}\lambda_{\max}(\vc K_d), \qquad
+    \underline{k_d} = \inf\limits_{\bx\in\Omega_d}\lambda_{\min}(\vc K_d), \quad
+    \overbar{k_d}   = \sup\limits_{\bx\in\Omega_d}\lambda_{\max}(\vc K_d), \qquad
      0 < \underline{k_d} \leq \overbar{k_d}.
 \end{equation}
 We denote the minimal and maximal cross-section $\delta_d$ of the domains $\Omega_d$
@@ -590,7 +591,7 @@ the functions $N_{2\alpha}L_{\alpha w}$ are the local enrichment functions as in
 while $N_{2\alpha}$ are playing the role of PU.
 Thus we can write the enriched solution in the form
 \begin{equation} \label{eqn:prim_xfem_standard_form}
-  p_2(\bx) = \sum_{\alpha\in\mathcal{I}_{2N}}a_\alpha N_{2\alpha}(\bx)
+  p_{2h}(\bx) = \sum_{\alpha\in\mathcal{I}_{2N}}a_\alpha N_{2\alpha}(\bx)
     + \sum_{w\in\mathcal{W}} \sum_{\alpha\in\mathcal{J}^w_{2N}} b_{\alpha w} N_{2\alpha}(\bx) L_{\alpha w}(\bx),
 \end{equation}
 where $a_\alpha$ are the standard degrees of freedom and $b_{\alpha w}$ are the degrees of freedom coming from
