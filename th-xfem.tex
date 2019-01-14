@@ -103,7 +103,15 @@ To fix the idea of an enrichment, we list the most common global enrichment func
 
 A discontinuity at a~crack or an interface is one of the phenomena where XFEM is applied.
 We talk about a~\emph{strong} discontinuity, if the quantity of interest is discontinuous (pressure in fluid mechanics, stress in mechanics, potential in electrostatics etc.).
-The term \emph{weak} discontinuity is then used when the derivative of the quantity of interest is discontinuous (fluid velocity, strain or damage, electric current etc.).
+The term \emph{weak} discontinuity is then used when the derivative of the quantity of interest is discontinuous (fluid velocity, strain or damage, electric current etc.). See \fig{fig:types_of_discontinuities} for comparison of the two types.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.83\textwidth]{\figpath weak_strong_disc.pdf}
+  \caption[Types of discontinuities]{Types of discontinuities -- strong, weak and their combination. }
+  \label{fig:types_of_discontinuities}
+\end{figure}
 
 The discontinuity is commonly described by a~\emph{level-set} function -- a~signed function,
 that assigns positive values to one part of the domain $\Omega$, negative values to the other part and is zero at the discontinuity/interface $\Gamma_{disc}$, for example
