@@ -1,0 +1,143 @@
+
+\section{Flow123d implementation}
+
+\subsection{Adaptive quadrature}
+The adaptive quadrature implemented in Flow123d is based on the one developed for the quadrilateral meshes
+in Section \ref{sec:integration}. It is transformed for the simplicial elements and generalized for
+all three dimensions. This way we can use it in the computation of both integrals over elements and integrals
+over element faces (e.g. for accurate computation of $z^w_j$ in $\pi^{RT}_T$ interpolant \eqref{eqn:sgfem_interpolant_vel}).
+
+\begin{figure}[!htb]
+  \centering    
+  \subfloat[adaptive quadrature refinement]{\label{fig:adapt_refinement_flow123d_a} 
+    \includegraphics[height=6cm]{\figpath adaptive_refinement.pdf} }
+  \hspace{0pt}
+  \subfloat[adaptive quadrature in detail]{\label{fig:adapt_refinement_flow123d_b} 
+    \includegraphics[height=6cm]{\figpath adaptive_refinement_detail.pdf} }
+  \caption[Adaptive quadrature in Flow123d]
+  {Adaptive quadrature for triangle elements implemented in Flow123d.
+   Black lines denote enriched elements edges, red lines denote adaptive refinement (subelements edges) and the well
+   edge is blue.
+  }
+  \label{fig:adapt_refinement_flow123d}
+\end{figure}
+
+\subsection{Output Mesh}
+\label{sec:output_mesh}
+% Bey's algorithm (red refinement of tetrahedron):
+%p.29 https://www5.in.tum.de/pub/Joshi2016_Thesis.pdf
+%p.108 http://www.bcamath.org/documentos_public/archivos/publicaciones/sergey_book.pdf    - brandts_2011
+%https://www.math.uci.edu/~chenlong/iFEM/doc/html/uniformrefine3doc.html#1
+%J. Bey. Simplicial grid refinement: on Freudenthal's algorithm and the optimal number of congruence classes. Numer. Math. 85(1):1--29, 2000. p11 Algorithm: RedRefinement3D.
+%p.4 http://www.vis.uni-stuttgart.de/uploads/tx_vispublications/vis97-grosso.pdf
+
+The refinement of elements for the output mesh is done using edge splitting technique (so called red refinement).
+Since we use this only for better output visualization of non-polynomial solutions, we do not
+care for existence of hanging nodes.
+
+In 2D case, it is straightforward process: find the midpoints of all sides, connect them and generate 4 triangles.
+These triangles are congruent and have equal surface areas.
+%
+\begin{figure}[!htb]
+    \centering    
+    \includegraphics[width=0.6\textwidth]{\results output_refine.pdf} 
+    \caption[output mesh refinement]
+  {An example of an adaptive output mesh refinement in 3d.
+  A~singular function $1/r$ is displayed.}
+  \label{fig:output_refinement_flow123d}
+\end{figure}
+%
+On the other hand, the 3D case is more complicated. After splitting the edges, we obtain 4 tetrahedra at the vertices
+of the original one. The octahedron that remains in the middle can be subdivided according to one of its three diagonals.
+Only the choice of the shortest octahedron diagonal leads to a regular tetrahedra decomposition.
+This algorithm originally comes from Bey~\cite{bey_2000}, further e.g. in~\cite{brandts_2011}.
+
+
+
+
+
+\section{2d singular model}
+
+In ambient 3d space, consider 2d problem with point singularity where the pressure $P_w$ is given.
+  
+  Mixed form:
+  \begin{eqnarray}
+\vc K_2^{-1}\vc u_2 + \nabla p_2 &=& 0 \qquad \textrm{in } \Omega_2, \label{eqn:2d_darcy_law}\\
+\nabla \cdot \vc u_2 &=& f_2 \qquad \textrm{in } \Omega_2, \label{eqn:2d_continuity}\\
+\avg{\vc u_2 \cdot \vc n}_w &=& \sigma_w (\avg{p_2}_w - P_w) \qquad \textrm{on } \Gamma_w,\label{eqn:2d_well_cond}\\
+p_2 &=& g_{2D} \qquad \textrm{on } \Gamma_{2D}.
+  \end{eqnarray}
+  
+  \paragraph{Geometry:} well center at $\vc x_w=[x_w,y_w]$, domain of different shapes (square, triangle, circle) with characteristic length $D$, Dirichlet BC $g_{2D}$ on the whole boundary.
+  
+  \emph{Settings 1}: $\vc x_w=[3.33,3.33],\, P_w = 100,\, \rho_w=0.03,\, \sigma_w=10,\, \vc K_2=K_2=1,\, f_2=0,\, D=10.$
+  
+  \emph{Settings 2}: same, $f_2=KU\omega^2\sin(\omega x_w),\, U=20,\, \omega=1.$
+  
+  \paragraph{Analytic solution.} The pressure solution in Settings 1 is set in such form 
+  \begin{eqnarray}
+      p_2 &=& a\log r,\label{eqn:2d_press_sol1}\\
+      \vc u_2 &=& -\vc K_2 a \frac{\vc r}{r^2} \label{eqn:2d_vel_sol1}
+  \end{eqnarray} 
+  that it fulfills the condition \eqref{eqn:2d_well_cond} on the well edge
+  \[ -\vc K_2\nabla p_2(\rho_w) \cdot \vc n = K_2a\frac{1}{\rho_w} = \sigma_w(p_2(\rho_w) - P_w),\]
+  which results in setting
+  \[a=\frac{-\sigma_w\rho_w P_w}{K_2 - \sigma_w\rho_w\log r}\]
+  Logarithm is a harmonic function so it holds $\Delta \log(r) = 0$ and the equation in strong form is satisfied.
+  
+  Setting the nonzero source term $f_2$ in Settings 2, we obtain additional regular part of the solution
+  \begin{eqnarray}
+    p_2 &=& a\log r + U\sin(\omega x_w) \label{eqn:2d_press_sol2}\\
+    \vc u_2 &=& -\vc K_2\nabla p_2 = -K_2 a\frac{\vc r}{r^2} -K_2 U\omega\cos(\omega x_w)\vc e_x \label{eqn:2d_vel_sol2}
+  \end{eqnarray}
+  
+  With Settings 1, we can use these analytic values to observe error in our numerical model:
+  \begin{center}
+  \begin{tabular}{rl}
+    flux over $\Gamma_w$: & $\bar{b}_w \doteq 6.5628$ \\ % 6.5627733533
+    pressure $\avg{p}_w$: & $\bar{\lambda}_w \doteq 78.1241$ %78.1240888223
+  \end{tabular}
+  
+  \centering
+  \begin{tabular}{>{\centering\arraybackslash}p{4.5ex}|
+                    >{\centering\arraybackslash}p{8.3ex}|
+                    >{\centering\arraybackslash}p{9ex}|
+                    >{\centering\arraybackslash}p{12.5ex}
+                    >{\centering\arraybackslash}p{4ex}|
+                    >{\centering\arraybackslash}p{12.5ex}
+                    >{\centering\arraybackslash}p{4ex}}
+                    \multicolumn{5}{c}{$\;\;\;$ source $f=0$} & \multicolumn{2}{c}{\textcolor{OrangeRed}{source $f$}} \\
+    ref level  & $\abs{b_w-\bar{b}_w}$ & $\abs{\lambda_w - \bar{\lambda}_w}$ & $\norm{\vc u- \bar{\vc u}}_{L^2(\Omega)}$ & rate & $\norm{\vc u- \bar{\vc u}}_{L^2(\Omega)}$ & rate \\\hline
+    1  &  0.1000  &  0.0528  &  6.73  &  -   &  112.5  &  -   \\
+    2  &  0.1600  &  0.0871  &  2.96  & 1.18 &  46.1   & 1.29 \\
+    3  &  0.0290  &  0.0155  &  1.68  & 0.82 &  21.9   & 1.08 \\
+    4  &  0.0064  &  0.0034  &  0.94  & 0.84 &  10.6   & 1.05 \\
+    5  &  0.0027  &  0.0014  &  0.51  & 0.88 &  5.6    & 0.91 
+  \end{tabular}
+  \end{center}
+  
+  
+  \subsection{Multiple singularity solution}
+  Considering multiple singularities in the domain, denoted using index set $\mathcal{W}=\{1\ldots W\}$, we can obtain the solution using the superposition principle.
+  The solution is searched in the form
+  \begin{eqnarray}
+%     p_2 &=& p_{sin} + p_{reg} = \sum\limits_{j\in\mathcal{W}} a_j\log r_j + p_{reg}, \label{eqn:2d_press_sol_mult}\\
+    \vc u_2 &=& -\vc K_2\nabla p_2 = -K_2 \sum\limits_{j\in\mathcal{W}} a_j\frac{\vc r_j}{r_j^2} - K_2 \grad p_{reg}, \label{eqn:2d_vel_mult}
+  \end{eqnarray}
+  which satisfies equations \eqref{eqn:2d_continuity} and \eqref{eqn:2d_darcy_law}.
+  To find the unknowns $a_j$, we need to solve the system of linear equations given by the conditions \eqref{eqn:2d_well_cond}
+  \begin{equation}
+    \avg{\vc u_2 \cdot \vc n}_{\Gamma_i} = \sigma_i (\avg{p_2}_{\Gamma_i} - P_i) \qquad  \forall i\in\mathcal{W}. \label{eqn:2d_well_cond_mult}
+  \end{equation}
+  For an average $\avg{\cdot}_{\Gamma_i}$, it holds $\avg{u+v}_{\Gamma_i} = \avg{u}_{\Gamma_i} + \avg{v}_{\Gamma_i}$.
+  Substituing \eqref{eqn:2d_press_sol_mult} and \eqref{eqn:2d_vel_mult} into \eqref{eqn:2d_well_cond_mult}, we get
+  the linear system $\vc M\vc a = \vc b$ where
+  \begin{eqnarray}
+    M_{ii} &=& \frac{K_2}{\rho_i} - \sigma_i\log\rho_i \qquad \forall i\in\mathcal{W},\\
+    M_{ij} &=& K_2\avg{\frac{\vc r_j \cdot \vc n_i}{r_j^2}}_{\Gamma_i} - \sigma_i\avg{\log r_j}_{\Gamma_i} \qquad \forall i,j\in\mathcal{W}, i\neq j,\\
+    b_{i} &=& \sigma_i\left(\avg{p_{reg}}_{\Gamma_i} - P_i \right) - \avg{- K_2 \grad p_{reg}\cdot n_i}_{\Gamma_i} \qquad \forall i\in\mathcal{W}.
+  \end{eqnarray}
+  We evaluate all the averages $\avg{\cdot}_{\Gamma_i}$ in the linear system numerically,
+  using simple composite midpoint rule integration with 1000 equidistant intervals on $\Gamma_i$.
+  This way we obtain pseudo-analytic solution of the multi well problem, which is accurate enough
+  be used for measuring the error of our model.
