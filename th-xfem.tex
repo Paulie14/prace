@@ -138,7 +138,7 @@ where the moving interface of two-phase flow is a~solution of a~transport equati
 
 \subsubsection{Singularity} \label{sec:glob_enr_singularity}
 Another problematic phenomenon that damages the finite element approximation is singular or high gradient behavior often present in the solution.
-This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d.
+This kind of enrichment has its application at crack tips, re-entrant corners, point sources in 2d or line sources in 3d, see \fig{fig:types_of_singularities}.
 The last mentioned are important in the reduced dimensional models where they play the role in the coupling between dimensions;
 these are of our main interest.
 
@@ -149,6 +149,14 @@ is $\log(r)$ dependent. Other singular enrichment functions are typically $r^\al
 More examples not only in mechanics, namely
 \[ r^{3/2},\;r^{1/2},\;r^{-1/2},\;r^{-1},\;r^{-3/2},\; r^{-2}, \]
 are collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, in the overview table 2.3-2.5.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.83\textwidth]{\figpath singularity_types.pdf}
+  \caption{Examples of singularities. }
+  \label{fig:types_of_singularities}
+\end{figure}
 
 In three dimensional space the spherical or cylindrical coordinate systems can be applied when the singularity is concentrated in a~point or on a~line, respectively.
 For example a~crack front or a~line source in 3d has the same strength of the singularity as in 2d, thus there is no need for an enrichment in the length axis
@@ -222,7 +230,7 @@ This matter is discussed later, giving more details in section \ref{sec:enrichem
 \subsection{Enrichment Methods} \label{sec:enrichment_methods}
 We now discuss different choices of the local enrichment functions $L(\bx)$ and their particular aspects and properties.
 All the presented XFEM methods considered below are using the standard linear finite element shape 
-functions $N_\alpha(\bx)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1,\ldots,N\}$, associated with the node $x_\alpha$ of the triangulation,
+functions $N_\alpha(\bx)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1\ldots N\}$, associated with the node $x_\alpha$ of the triangulation,
 as the partition of unity.
 
 \subsubsection{Corrected XFEM} \label{sec:corrected_xfem}
