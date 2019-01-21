@@ -435,7 +435,7 @@ Effects of this assumption are studied in details there and an error estimate is
 % 
 % 
 % Let $\Theta^m\subset \Real^2$ be the domain of the $m$-th aquifer, $m=1,\ldots M$.
-% The well $w\in\mathcal{W}=\{1,\ldots,W\}$ is represented by an infinite vertical cylinder $B_w$
+% The well $w\in\mathcal{W}=\{1\ldots W\}$ is represented by an infinite vertical cylinder $B_w$
 % with center $\bx_w$ and radius $\rho_w$.  We further denote 
 % \[
 %  B^m_w = B_w \cap \Theta^m, \quad \text{and} \quad
@@ -516,13 +516,13 @@ Effects of this assumption are studied in details there and an error estimate is
 % \[ H^1_0(\Omega^m)=\{\varphi\in H^1(\Omega^m); \varphi|_{\Gamma^m_D}=0\}. \]
 % We can now introduce the weak solution $u$ and the test function $v$
 % \begin{eqnarray} \label{eqn:solution}
-%    u &=& (h^1,\ldots, h^M, H^1_1,\ldots,H^{M+1}_W)\in V, \\
-%    v &=& (\varphi^1,\ldots, \varphi^M, \Phi^1_1,\ldots,\Phi^M_W)\in V_0.
+%    u &=& (h^1\ldots  h^M, H^1_1\ldots H^{M+1}_W)\in V, \\
+%    v &=& (\varphi^1\ldots  \varphi^M, \Phi^1_1\ldots \Phi^M_W)\in V_0.
 % \end{eqnarray}
 % We understand $V_0$ as a~subspace of $V$ setting $\Phi^{M+1}_W=0$.
 % 
 % To obtain the weak form, we apply the standard Galerkin method. We multiply the equation \eqref{eqn:poisson} 
-% by a~test function $\varphi^m$ and integrate by parts over $\Omega^m$, for all $m=1,\ldots,M$, to get
+% by a~test function $\varphi^m$ and integrate by parts over $\Omega^m$, for all $m=1\ldots M$, to get
 % \begin{equation} \label{eqn:weak_form1}
 %   \int_{\Omega^m} T^m \nabla h^m \cdot \nabla \varphi^m \dd\bx
 %   + \sum_{w\in \mathcal{W}} \int_{\partial B^m_w} \sigma^m_w (\langle h^m \rangle - H_w^m) \varphi^m \dd\bx
@@ -564,7 +564,7 @@ so only the finite element space of the 2d domain is extended.
 Now we look for the finite dimensional space $V_h$ of the continuous space $V$ introduced in the weak form \eqref{eqn:prim_weak_form},
 so that $V_h\subset V$. We build the discrete space on domains of each dimension
 \begin{equation}
-    V_h = V_{1h} \times V_{2h}, \qquad V_{2h} = V_{2h}^{reg} + V_{2h}^{enr}
+    V_h = V_{1h} \times V_{2h}, \qquad V_{2h} = V_{2h}^{reg} \oplus V_{2h}^{enr}
 \end{equation}
 where $V_{2h}$ consists of the regular part and the enriched part which we define later below.
 
@@ -611,7 +611,8 @@ to one of the XFEM.
 % where the enrichment function is simply $L_{\alpha w}(\bx) = s_w(\bx)$.
 
 
-\subsubsection{Enrichment Function} \label{sec:enrichment_func}
+\subsubsection{Enrichment Function}
+\label{sec:enrichment_func}
 The enrichment function can be obtained from the solution of a~local problem on the neighborhood of the well $w$.
 Let $\Omega$ be an annulus with center $\vc x_w$, inner radius $\rho_w$ and arbitrary outer radius $D \gg \rho_w$.
 The solution of the Laplace equation $-\Delta p = 0$ on $\Omega$ with any radially symmetric boundary conditions
@@ -1084,16 +1085,16 @@ We then assemble the $2W\times 2W$ linear system $\vc M\vc a = \vc b$ where
 \begin{subequations}
 \label{eqn:2d_press_linear_system}
 \begin{align}
-M_{ij} &= \delta_{ij} K_2\avg{\frac{\vc r_j \cdot \vc n_i}{r_j^2}}_i - \sigma_i\avg{\log r_j}_i && i,j=1,\ldots,W, \\
+M_{ij} &= \delta_{ij} K_2\avg{\frac{\vc r_j \cdot \vc n_i}{r_j^2}}_i - \sigma_i\avg{\log r_j}_i && i,j=1\ldots W, \\
 %
-M_{ii} &= \abs{\Gamma_i}\delta_2\sigma_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i} && i=W+1,\ldots,2W,\\
+M_{ii} &= \abs{\Gamma_i}\delta_2\sigma_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i} && i=W+1 \ldots 2W,\\
 %
-M_{ij} &= \sigma_i && i=1,\ldots,W,\\
-    &&& j=W+1,\ldots,2W,\\
-M_{ij} &= -\abs{\Gamma_i}\delta_2\sigma_i \avg{\log r_j} && i=W+1,\ldots,2W,\\
-    &&& j=1,\ldots,W,\\
-b_{i} &= K_2 \avg{\grad p_{reg}\cdot \vc n_i}_i + \sigma_i\avg{p_{reg}}_i && i=1,\ldots,W,\\
-b_{i} &= \abs{\Gamma_i}\delta_2\sigma_i \avg{p_{reg}}_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i} && i=W+1,\ldots,2W.
+M_{ij} &= \sigma_i && i=1\ldots W,\\
+    &&& j=W+1 \ldots 2W,\\
+M_{ij} &= -\abs{\Gamma_i}\delta_2\sigma_i \avg{\log r_j} && i=W+1 \ldots 2W,\\
+    &&& j=1 \ldots W,\\
+b_{i} &= K_2 \avg{\grad p_{reg}\cdot \vc n_i}_i + \sigma_i\avg{p_{reg}}_i && i=1 \ldots W,\\
+b_{i} &= \abs{\Gamma_i}\delta_2\sigma_i \avg{p_{reg}}_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i} && i=W+1\ldots 2W.
 \end{align}
 \end{subequations}
 We evaluate all the averages $\avg{\cdot}_i$ in the linear system numerically,

@@ -179,7 +179,7 @@ A~well-aquifer model that we solve in our work is defined in this section.
 We follow the reduced dimensional concept and introduce a simplified underground waterflow model.
 
 We consider wells (or boreholes, channels) to be straight narrow tubes (cylinders) $\Omega^w_C$ of radius $\rho_w$;
-we use the index $w\in\mathcal{W}=\{1,\ldots,W\}$ when refering to a~particular well.
+we use the index $w\in\mathcal{W}=\{1\ldots W\}$ when refering to a~particular well.
 Using the reduced dimensional concept, the wells are modeled as lower dimensional objects,
 i.e. 1d manifolds $\Omega^w_1$ which represent the central lines of cylinders $\Omega^w_C$.
 The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu_w: [0,1] \rightarrow \Omega^w_1$:
@@ -270,7 +270,7 @@ we constrain ourselves to a~single aquifer in a~major part of the work.
   \label{fig:well_flows}
 \end{figure}
 
-Let $\Omega^m_2$ be the domain of an aquifer with index $m\in\mathcal{M}=\{1,\ldots,M\}$.
+Let $\Omega^m_2$ be the domain of an aquifer with index $m\in\mathcal{M}=\{1\ldots M\}$.
 We denote the aquifers' boundary $\prtl\Omega^m_2 = \Gamma^m_{ext} \cup \Gamma^m_{int}$,
 where we call $\Gamma^m_{ext} = \Gamma^m_{2D} \cup \Gamma^m_{2N}$ the exterior boundary, consisting of two parts where we prescribe
 Dirichlet and Neumann boundary condition, respectively.
@@ -398,11 +398,11 @@ and wells lateral surfaces
 \end{equation}
 On $\Gamma_w$ we define the average decomposition $w = \avg{g}_w + \{g\}_w$ in the similar manner
 as in the 1d-2d case. However, the average is computed over a circle edge, perpendicular to $\Omega^w_1$,
-with its center at a~point $\vc x\in \Omega^w_1$
+with its center at a~point $\nu_w(t)\in \Omega^w_1$
 \begin{equation} \label{eqn:average_definition_3d}
-    \avg{g}_w(\vc x) = \frac{1}{2\pi\rho_w} \int_0^{2\pi} g (\vc x + \rho_w \vc n_{\Omega^w_1}(\vc x,\theta)) \dd \theta.
+    \avg{g}_w(t) = \frac{1}{2\pi\rho_w} \int_0^{2\pi} g (t + \rho_w \vc n_{\Omega^w_1}(t,\theta)) \rho_w \dd \theta.
 \end{equation}
-with $\vc n_{\Omega^w_1}(\vc x,\theta)$ being the unit normal vector of $\Omega^w_1$ at point $\vc x$ in the direction
+with $\vc n_{\Omega^w_1}(t,\theta)$ being the unit normal vector of $\Omega^w_1$ at point $\nu_w(t)$ in the direction
 determined by the angle $\theta$.
 
 Then we can write the entire problem:
