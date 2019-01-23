@@ -72,7 +72,7 @@ positive definite 2x2 matrix, for which we denote
 \begin{equation}
     \underline{k}^{-1} = \inf\limits_{\bx\in\Omega}\lambda_{\min}(\vc K^{-1}), \quad
     \overbar{k}^{-1}   = \sup\limits_{\bx\in\Omega}\lambda_{\max}(\vc K^{-1}), \qquad
-     0 < \underline{k_d}^{-1} \leq \overbar{k_d}^{-1}.
+     0 < \underline{k}^{-1} \leq \overbar{k}^{-1}.
 \end{equation}
 % \begin{eqnarray}
 %     0 < \underline{k} &=& \inf\limits_{x\in\Omega}\lambda_{\min}(\vc K^{-1}),\\
@@ -140,14 +140,14 @@ with the bilinear forms $a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow
 \end{align}
 \end{subequations}
 }
-%
-We denote $\langle \cdot, \cdot \rangle_{V'\times V}$ duality between $V$ and its dual space $V'$.
+
+\noindent We denote $\langle \cdot, \cdot \rangle_{V'\times V}$ duality between $V$ and its dual space $V'$.
 The bilinear forms $a,b$ then define the operators
 \begin{equation}
 \begin{aligned}
-A:\;\;&   V \rightarrow V', & \langle A\vc u,\vc v \rangle_{V'\times V} =&\; a(\vc u,\vc v) && \forall \vc u \in V,\, \forall \vc v \in V\\ 
-B:\;\;&   V \rightarrow Q', & \langle B \vc v,q    \rangle_{Q'\times Q} =&\; b(\vc v,q)     && \forall \vc v\in V,\, \forall q \in Q\\
-B^T:\;\;& Q \rightarrow V', & \langle \vc v, B^T q \rangle_{V\times V'} =&\; b(\vc v,q)     && \forall \vc v\in V,\, \forall q \in Q
+A:\;\;&   V \rightarrow V', & \langle A\vc u,\vc v \rangle_{V'\times V} =&\; a(\vc u,\vc v) && \forall \vc u \in V,\, \forall \vc v \in V,\\ 
+B:\;\;&   V \rightarrow Q', & \langle B \vc v,q    \rangle_{Q'\times Q} =&\; b(\vc v,q)     && \forall \vc v\in V,\, \forall q \in Q,\\
+B^T:\;\;& Q \rightarrow V', & \langle \vc v, B^T q \rangle_{V\times V'} =&\; b(\vc v,q)     && \forall \vc v\in V,\, \forall q \in Q,
 \end{aligned}
 \end{equation}
 and \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2} can be rewritten in
@@ -187,11 +187,11 @@ Then for $\vc v\in V$ we have
 \end{align}
 with a constant $C_w(\partial\Omega)$. Then we obtain the following bound
 \begin{multline} \label{eqn:form_a_bound}
-    \abs{a(\vc u,\vc v)} \leq \overbar{k}\, \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
-        + \abs{\sigma_w} \abs{\Gamma_w} \avg{\vc u\cdot\vc n}_w \avg{\vc v\cdot\vc n}_w\\
+    \abs{a(\vc u,\vc v)} \leq \overbar{k}^{-1}\, \norm{\vc u}_{L_2(\Omega)} \norm{\vc v}_{L_2(\Omega)}
+        + \sigma_w \abs{\Gamma_w} \avg{\vc u\cdot\vc n}_w \avg{\vc v\cdot\vc n}_w\\
         \leq \alpha_2 \norm{\vc u}_{H(\div,\Omega)} \norm{\vc v}_{H(\div,\Omega)} \quad \forall \vc u,\vc v\in V,
 \end{multline}
-with a constant $\alpha_2 \left(\overbar{k}, \sigma_w, \partial\Omega\right)$.
+with a constant $\alpha_2 \left(\overbar{k}^{-1}, \sigma_w, \partial\Omega\right)$.
 %\notePE{I don't understand the last step of Theorem 90 proof, p.103, 'numpde.pdf' to bound the average terms.
 % easy: the phi terms must be <= 1 and for the result we use  (a+b)^2 <= 2(a^2+b^2)
 %}
@@ -206,11 +206,11 @@ The continuity of $b$ is straightforward
 The bilinear form $a$ is coercive on kernel space $V_0=\{\vc v\in V: b(\vc v,q)=0\;\forall q\in Q\}$, i.e.
 a subspace of $V$ where $\div\,\vc v=0$,
 \begin{multline} \label{eqn:form_a_coercivity_V0}
-    a(\vc v,\vc v) \geq \underline{k} \norm{\vc v}^2_{L_2(\Omega)}
+    a(\vc v,\vc v) \geq \underline{k}^{-1} \norm{\vc v}^2_{L_2(\Omega)}
                 + \sigma_w^{-1}\abs{\Gamma_w}\avg{\vc v\cdot\vc n}_w^2 \\
         \geq  \alpha_1 \norm{\vc v}^2_{L_2(\Omega)} = \alpha_1 \norm{\vc v}^2_{H(\div,\Omega)} \quad \forall \vc v\in V_0,
 \end{multline}
-with $\alpha_1=\underline{k}$ and having the average term greater than zero.
+with $\alpha_1=\underline{k}^{-1}$ and having the average term greater than zero.
 
 We now show that our problem is inf-sup stable, i.e. it satisfies 
 the so-called Ladyshenskaja-Babu{\v s}ka-Brezzi (LBB) condition, see \cite{brezzi_mixed_1991}, p. 42.
@@ -335,19 +335,19 @@ For the approximation of the $H(\div,\Omega)$ space, we use the lowest order Rav
 on the element $T^i$, $i\in\mathcal{I}_E$. The vector basis functions of $\mathbb{RT}^0(T^i)$
 are defined in the standard way
 \begin{equation}
-    \vc\psi_j(\bx) = \frac{\abs{F^j}}{\abs{T^i}} \left( \bx - \bx_k \right), \qquad \bx\in T^i,\, j=1,\ldots,n_F
+    \vc\psi_j(\bx) = \frac{\abs{F^j}}{\abs{T^i}} \left( \bx - \bx_k \right), \qquad \bx\in T^i,\, j=1\ldots n_F,
 \end{equation}
 with $\bx_k$ being the opposite node of face $F^j$ and $n_F$ the number of faces of the element $T^i$
-(holds in all dimensions, having $\abs{F^j}:=1$ in 1d for point faces).
+(holds in all dimensions, putting $\abs{F^j}:=1$ in 1d for point faces).
 Note that $j$ is the index in local faces numbering on the element; we assume this implicitly further in text, 
 if it is apparent from the range, e.g. $1\ldots n_F$.
 The degrees of freedom are interpreted as the fluxes over the corresponding faces
 \begin{equation} \label{eqn:rt0_delta_property}
-    \int_{F_i} \vc\psi_j \cdot \vc n \dd s = \delta_{ij} \qquad i,j=1,\ldots,n_F.
+    \int_{F_i} \vc\psi_j \cdot \vc n \dd s = \delta_{ij} \qquad i,j=1\ldots n_F.
 \end{equation}
 Let us denote the standard discrete space for velocity
 \begin{equation}
-    \tilde V_h^{reg} = \{\vc v_h\in V: \vc v_h|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
+    \tilde V_h = \{\vc v_h\in V: \vc v_h|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
 \end{equation}
 % The pressure space $Q$ is discretized using the finite dimensional space
 and the discrete space for pressure, consisting of piecewise constant functions
@@ -356,11 +356,11 @@ and the discrete space for pressure, consisting of piecewise constant functions
 \end{equation}
 One can then read the discrete counterpart of Problem \ref{thm:prob_mixed_weak_simple} as follows
 \thmproblem{ \label{thm:prob_mixed_weak_simple_discrete}
-Find $\vc u_h\in \tilde V_h^{reg}$ and $p_h\in Q_h$ satisfying
+Find $\vc u_h\in \tilde V_h$ and $p_h\in Q_h$ satisfying
 \begin{subequations}
 \begin{align}
     a(\vc u_h,\vc v_h) + b(\vc v_h, p_h) &= \langle G, \vc v_h\rangle_{V'\times V} &&
-        \forall \vc v_h\in \tilde V_h^{reg}, \label{eqn:mixed_saddle_discrete1}\\
+        \forall \vc v_h\in \tilde V_h, \label{eqn:mixed_saddle_discrete1}\\
     b(\vc u_h, q_h) &= \langle F, q_h \rangle_{Q'\times Q} &&\forall q_h \in Q_h
         \label{eqn:mixed_saddle_discrete2}.
 \end{align}
@@ -369,15 +369,15 @@ Find $\vc u_h\in \tilde V_h^{reg}$ and $p_h\in Q_h$ satisfying
 
 For the mixed problem, not all the assumptions in Theorem \ref{thm:brezzi_theorem}
 hold automatically on the discrete level and the existence of a~unique discrete solution is not straightforward.
-Particulary the coercivity of $a$ on $\tilde V_{0h}^{reg}$
-and LBB condition on discrete spaces $\tilde V_h^{reg}$ and $Q_h$ are not implied by the continuous inequalities
+Particulary the coercivity of $a$ on $\tilde V_{0h}$
+and LBB condition on discrete spaces $\tilde V_h$ and $Q_h$ are not implied by the continuous inequalities
 \eqref{eqn:form_a_coercivity_V0} and \eqref{eqn:form_b_lbb}.
 
 Considering the $\mathbb{RT}^0$ and $\mathbb P^0$ finite elements,
-we have $\div\,\tilde V_{h}^{reg}\subset Q_h$, i.e. $\div\, \tilde V_h^{reg}$ is the space of piecewise constant functions.
-Thus $\tilde V_{0h}^{reg} \subset V_0$ and the coercivity of $a$ holds:
+we have $\div\,\tilde V_{h}\subset Q_h$, i.e. $\div\, \tilde V_h$ is the space of piecewise constant functions.
+Thus $\tilde V_{0h} \subset V_0$ and the coercivity of $a$ holds:
 \begin{equation}
-a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in \tilde V_{0h}^{reg}.
+a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in \tilde V_{0h}.
 \end{equation}
 
 % \paragraph{Discrete LBB condition.}
@@ -386,7 +386,7 @@ a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in \tilde V_{0
 Next, we define a~local interpolation operator into $\mathbb{RT}^0(T)$ space of an arbitrary element $T$
 \begin{equation}
     \pi^{RT}_T\vc v = \sum_{j=1}^{n_F} \left( \int_{F^j} \vc v \cdot \vc n \dd s \right)  \vc \psi_j
-    \qquad \forall \vc v \in V, \label{eqn:local_rt_interpolator}
+    \qquad \forall \vc v \in V \label{eqn:local_rt_interpolator}
 \end{equation}
 which satisfies
 \begin{align}
@@ -399,7 +399,7 @@ According to the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58),
 we can show the inf-sup stability via the following lemma
 \begin{lemma} \label{lem:discrete_inf_sup_interpolant}
 Let us have spaces $V$ and $Q$ for which the continuous LBB condition \eqref{eqn:brezzi_theorem_lbb} holds.
-Let us choose discrete spaces $\tilde V_h\subset V$ and $Q_h\subset Q$.
+Let us choose discrete spaces $V_h\subset V$ and $Q_h\subset Q$.
 If there exists an interpolation operator
 $\pi_h: V\rightarrow V_h$ which is continuous
 \begin{equation}
@@ -434,16 +434,16 @@ and from \eqref{eqn:brezzi_theorem_lbb}
 \end{equation}
 Using this we obtain for all $q_h\in Q_h$
 \begin{align}
-    \sup_{\vc v_h\in \tilde V^{reg}_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
+    \sup_{\vc v_h\in \tilde V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
     \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div (\pi^{RT}_h \vc v_h)}{\norm{\pi^{RT}_h \vc v}_V} \geq
     \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W}
     \nonumber\\ \geq \frac{\beta_1}{C_\pi}\norm{q_h}_Q
 \end{align}
 \end{proof}
 
-Due to the coercivity of $a$ on discrete kernel space $\tilde V^{reg}_{0h}$
+Due to the coercivity of $a$ on discrete kernel space $\tilde V_{0h}$
 and inf-sup stability by Lemma \ref{lem:discrete_inf_sup_interpolant},
-dsicrete Problem \ref{thm:prob_mixed_weak_simple_discrete} has unique solution by Brezzi's Theorem \ref{thm:brezzi_theorem}.
+discrete Problem \ref{thm:prob_mixed_weak_simple_discrete} has unique solution by Brezzi's Theorem \ref{thm:brezzi_theorem}.
 
 \vspace{10pt}
 Considering the hybridization, we define a~new discrete space
@@ -451,69 +451,172 @@ Considering the hybridization, we define a~new discrete space
     V_h^{reg} = \prod\limits_{i\in\mathcal{I}_E} \mathbb{RT}^0(T^i)
 \end{equation}
 in which the functions normal components on the element faces are not continuous
-in contrast to $\tilde V_h^{reg}$.
-Further we define the space of Lagrange multipliers
-\begin{equation}
-    \Lambda^{reg} = \{\mu\in L_2(\mathcal{F}\setminus\partial\Omega): \mu=(\vc v\cdot\vc n)|_{\mathcal{F}\setminus\partial\Omega},\; \vc v\in \tilde V_h^{reg}\}.
+in contrast to $\tilde V_h$.
+Further we define a~space of traces of the normal component of $\vc v \in\tilde V_h$ on the element boundaries
+\begin{eqnarray}
+    \Lambda(\mathcal{F}) &=& \{\mu\in L_2(\mathcal{F}\setminus\partial\Omega): \mu=(\vc v\cdot\vc n)|_{\mathcal{F}\setminus\partial\Omega},\; \vc v\in \tilde V_h\} \\
+    \Lambda_h(\mathcal{F}) &=& \{\mu\in \Lambda(\mathcal{F}): \mu|_{F^i}\in\mathbb P^0(F^i),\; \forall i\in\mathcal{I}_F\}
+\end{eqnarray}
+and a~space of average traces of the normal component of the flux on the well-aquifer interface
+\begin{equation} \label{eqn:lambda_w_space}
+    \Lambda^{enr}_h = \{\mu_w\in \mathbb P^0(\Gamma_w):\;
+    \mu_w=\avg{\vc v\cdot \vc n}_w,\; \vc v\in \tilde V_h(\Omega)\}.
 \end{equation}
-
-% The discrete pressure space $Q_h$ is not enriched.
-By splitting the integrals in the bilinear forms onto elements and using the spaces above,
-Problem \ref{thm:prob_mixed_weak_simple_discrete} is then transformed to
+%
+Having the proper spaces, we now derive the mixed-hybrid form.
+We multiply the equations \eqref{eqn:mixed_form_1}-\eqref{eqn:mixed_form_3}
+by test functions and integrate them elementwise:
+\begin{subequations}
+\begin{align}
+    \sum_{i\in \mathcal I_E} \Bigg[ & \int_{T^i}
+        \vc u \vc K^{-1} \vc v \dd\bx
+        - \int_{T^i} p\,\div\,\vc v \dd\bx %\nonumber\\
+        + \int_{\partial T^i\setminus \prtl\Omega}
+            \lambda (\vc v \cdot \vc n) \dd s
+        + \int_{\Gamma_w}
+            \lambda_w \avg{\vc v\cdot\vc n}_w \dd s \Bigg] \nonumber\\
+        &= -\sum_{i\in \mathcal I_F} \int_{F^i\cap \Gamma_{D}}
+            g_{D} (\vc v \cdot \vc n) \dd s
+            -\int_{\Gamma_w} g_w \fluct{\vc v \cdot \vc n}_w \dd s
+        \qquad \forall \vc v\in V^{reg}_h,
+        \label{eqn:prob_mh_weak_simple_der1}
+\end{align}
+\begin{align}
+    -\sum_{i\in \mathcal I_E}
+        \int_{T^i} q\,\div\,\vc u \dd\bx
+    &= -\sum_{i\in \mathcal I_E}
+        \int_{T^i} f q \dd\bx
+    && \forall q \in Q_h, \label{eqn:prob_mh_weak_simple_der2} \\ 
+% \end{align}
+% \begin{align}
+    \sum_{i\in \mathcal I_F}
+        \int_{F^i\setminus \prtl\Omega}
+            (\vc u \cdot \vc n) \mu \dd s &= 0
+        && \forall \mu \in \Lambda_h(\mathcal{F}), \label{eqn:prob_mh_weak_simple_der3}\\
+% \end{align}
+% \begin{align}
+    \int_{\Gamma_w} \avg{\vc u\cdot\vc n}_w \mu_w \dd s
+    &= \int_{\Gamma_w} \sigma_w (\lambda_w - P_w)\mu_w \dd s
+    && \forall \mu_w \in \Lambda^{enr}_h. \label{eqn:prob_mh_weak_simple_der4}
+\end{align}
+\end{subequations}
+%
+We now sum up equations \eqref{eqn:prob_mh_weak_simple_der2}-\eqref{eqn:prob_mh_weak_simple_der4},
+introduce the hybridized bilinear forms
+and transform Problem \ref{thm:prob_mixed_weak_simple_discrete} into
 
 \thmproblem{ \label{thm:prob_mh_weak_simple}
-Find $[\vc u, p, \lambda] \in V_h^{reg} \times Q_h \times \Lambda^{reg}$ which satisfy
+Find $\vc u_h \in V_h^{reg}$ and $\mathring{p_h} =[p_h, \lambda, \lambda_w] \in Q_h \times \Lambda_h(\mathcal{F}) \times \Lambda^{enr}_h$
+which satisfy
+% \begin{subequations}
+% \label{eqn:prob_mh_weak_simple}
+% \begin{align}
+%     a_h(\vc{u},\vc v) + b_h(\vc v, p) + b_{\mathcal{F}}(\vc v, \lambda) &= \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} &&
+%         \forall \vc v\in V_h^{reg}, \label{eqn:prob_mh_weak_simple1}\\
+%     b_h(\vc{u}, q) - c_w(\lambda_w,\mu_w) &= \langle F, q \rangle_{Q_h'\times Q_h} &&\forall q \in Q_h,\, \forall \mu_w \in \Lambda^{enr}
+%         \label{eqn:prob_mh_weak_simple2}\\
+%     b_{\mathcal{F}}(\vc{u}, \mu) &= 0 &&\forall \mu \in \Lambda^{reg} \label{eqn:prob_mh_weak_simple3},
+% \end{align}
+% \end{subequations}
 \begin{subequations}
 \label{eqn:prob_mh_weak_simple}
-\begin{align}
-    a_h(\vc{u},\vc v) + b_h(\vc v, p) + b_{\mathcal{F}}(\vc v, \lambda) &= \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} &&
-        \forall \vc v\in V_h^{reg}, \label{eqn:prob_mh_weak_simple1}\\
-    b_h(\vc{u}, q) &= \langle F, q \rangle_{Q_h'\times Q_h} &&\forall q \in Q_h,
-        \label{eqn:prob_mh_weak_simple2}\\
-    b_{\mathcal{F}}(\vc{u}, \mu) &= 0 &&\forall \mu \in \Lambda^{reg} \label{eqn:prob_mh_weak_simple3},
-\end{align}
+    \begin{align}
+    a_h(\vc u_h,\vc v_h) + b_h(\vc v_h, \mathring{p}_h) &= \langle G, \vc v_h\rangle_{V_h^{'reg}\times V_h^{reg}} &&
+        \forall \vc v_h\in V^{reg}_h,
+        \label{eqn:prob_mh_weak_simple1}\\
+    b_h(\vc u_h, \mathring{q}_h) -c_w(\mathring{p}_h, \mathring{q}_h) &= \langle F, \mathring{q}_h \rangle_{Q_h'\times Q_h} &&
+        \forall \mathring{q}_h \in Q_h \times \Lambda_h(\mathcal{F}) \times \Lambda^{enr}_h
+%         \forall q \in Q_h,\, \forall \lambda \in \Lambda^{reg},\, \forall \lambda_w \in \Lambda^{enr}
+        \label{eqn:prob_mh_weak_simple2}
+    \end{align}
 \end{subequations}
 with the bilinear forms %$a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
 \begin{subequations}
 \label{eqn:prob_mh_weak_simple_forms}
 \begin{align}
- a_h(\vc u, \vc \psi)=&\sum_{i\in \mathcal I_E} \int_{T^i}
-   \vc u \vc K^{-1} \vc v \dd\bx
-   + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
+ a_h(\vc u_h, \vc v_h)=&\sum_{i\in \mathcal I_E} \int_{T^i}
+   \vc u \vc K^{-1} \vc v \dd\bx,\\
+%    + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
 %
- b_h(\vc v, p)=&\sum_{i\in \mathcal I_E} 
-        \int_{T^i} -p\,\div\,\vc v \dd\bx, \\
- b_{\mathcal{F}}(\vc v, \lambda)=&\sum_{i\in \mathcal I_F}        
-        \int_{F^i\setminus \prtl\Omega}
-                 \lambda (\vc v \cdot \vc n) \dd s,\\
- \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} =& \sum_{i\in \mathcal I_F}
+ b_h(\vc v_h, \mathring{p}_h)=&\sum_{i\in \mathcal I_E} \left[
+        \int_{T^i} -p_h\,\div\,\vc v_h \dd\bx
+%  b_{\mathcal{F}}(\vc v, \lambda)=&\sum_{i\in \mathcal I_F}        
+        + \int_{\partial T^i\setminus \prtl\Omega}
+                 \lambda (\vc v_h \cdot \vc n) \dd s\right]\\
+        &+ \color{blue}{ \int_{\Gamma_w}
+            \lambda_w \avg{\vc v_h\cdot\vc n}_w \dd s},\\
+ \color{blue}
+    c_w(\mathring{p}_h,\mathring{q}_h) =& \color{blue}{ \int_{\Gamma_w} \sigma_w
+    \lambda_w \mu_w \dd s},\\
+ \langle G, \vc v_h\rangle_{V_h^{'reg}\times V_h^{reg}} =& \sum_{i\in \mathcal I_F}
         \int_{F^i\cap \Gamma_{D}}
-                 - g_{D} (\vc v \cdot \vc n) \dd s \nonumber\\
-                &- P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w}
-                 -\int_{\Gamma_w} g_w \fluct{\vc v \cdot \vc n}_w \dd s,\\
- \langle F, q\rangle_{Q_h'\times Q_h} =& \sum_{i\in \mathcal I_E}
-        \int_{T^i} -f q \dd\bx.
+                 - g_{D} (\vc v_h \cdot \vc n) \dd s \nonumber\\
+                 & \color{blue} -\int_{\Gamma_w} g_w \fluct{\vc v_h \cdot \vc n}_w \dd s,\\
+ \langle F, \mathring{q}\rangle_{Q_h'\times Q_h} =& \sum_{i\in \mathcal I_E}
+        \int_{T^i} -f q_h \dd\bx\;
+        \color{blue}{ - \int_{\Gamma_w} \sigma_w P_w \mu_w \dd s}.
 \end{align}
 \end{subequations}
 }
 
-The continuity of the normal components on the element faces, which is missing in $V_h^{reg}$, is forced by the equation \eqref{eqn:prob_mh_weak_simple3},
-so that the solution $\vc u\in V$. Thus the problems \ref{thm:prob_mixed_weak_simple_discrete} and \ref{thm:prob_mh_weak_simple} are equivalent.
+% \thmproblem{ \label{thm:prob_mh_weak_simple}
+% Find $[\vc u, p, \lambda] \in V_h^{reg} \times Q_h \times \Lambda^{reg}$ which satisfy
+% \begin{subequations}
+% \label{eqn:prob_mh_weak_simple}
+% \begin{align}
+%     a_h(\vc{u},\vc v) + b_h(\vc v, p) + b_{\mathcal{F}}(\vc v, \lambda) &= \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} &&
+%         \forall \vc v\in V_h^{reg}, \label{eqn:prob_mh_weak_simple1}\\
+%     b_h(\vc{u}, q) &= \langle F, q \rangle_{Q_h'\times Q_h} &&\forall q \in Q_h,
+%         \label{eqn:prob_mh_weak_simple2}\\
+%     b_{\mathcal{F}}(\vc{u}, \mu) &= 0 &&\forall \mu \in \Lambda^{reg} \label{eqn:prob_mh_weak_simple3},
+% \end{align}
+% \end{subequations}
+% with the bilinear forms %$a: V\times V \rightarrow \R$, $b: V\times Q \rightarrow \R$
+% \begin{subequations}
+% \label{eqn:prob_mh_weak_simple_forms}
+% \begin{align}
+%  a_h(\vc u, \vc \psi)=&\sum_{i\in \mathcal I_E} \int_{T^i}
+%    \vc u \vc K^{-1} \vc v \dd\bx
+%    + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w},\\
+% %
+%  b_h(\vc v, p)=&\sum_{i\in \mathcal I_E} 
+%         \int_{T^i} -p\,\div\,\vc v \dd\bx, \\
+%  b_{\mathcal{F}}(\vc v, \lambda)=&\sum_{i\in \mathcal I_F}        
+%         \int_{F^i\setminus \prtl\Omega}
+%                  \lambda (\vc v \cdot \vc n) \dd s,\\
+%  \langle G, \vc v\rangle_{V_h^{'reg}\times V_h^{reg}} =& \sum_{i\in \mathcal I_F}
+%         \int_{F^i\cap \Gamma_{D}}
+%                  - g_{D} (\vc v \cdot \vc n) \dd s \nonumber\\
+%                 &- P_w\avg{\vc v\cdot\vc n}_w \abs{\Gamma_w}
+%                  -\int_{\Gamma_w} g_w \fluct{\vc v \cdot \vc n}_w \dd s,\\
+%  \langle F, q\rangle_{Q_h'\times Q_h} =& \sum_{i\in \mathcal I_E}
+%         \int_{T^i} -f q \dd\bx.
+% \end{align}
+% \end{subequations}
+% }
 
-If we take the equation \eqref{eqn:mixed_form_1} on a~single element $T^i$ (let it be an interior element not intersecting well for simplicity),
+The continuity of the normal components on the element faces, which is missing in $V_h^{reg}$, is forced by the equation \eqref{eqn:prob_mh_weak_simple_der3},
+so that the solution $\vc u_h\in \tilde V_h$. Thus the problems \ref{thm:prob_mixed_weak_simple_discrete} and \ref{thm:prob_mh_weak_simple} are equivalent.
+
+If we take the equation \eqref{eqn:mixed_form_1} on a~single element $T^i$ (let it be an interior element),
 multiply it by a~test function and integrate by parts, we obtain
 \begin{align} \label{eqn:lagrange_multipliers_interpretation}
     \int_{T^i} \vc u \vc K^{-1} \vc v \dd\bx
 %     + \frac{1}{\sigma_w}\avg{\vc u\cdot \vc n}_w \avg{\vc v\cdot \vc n}_w \abs{\Gamma_w}
-    + \int_{T^i} -p\,\div\,\vc v \dd\bx,
-    + \int_{\partial T^i} p (\vc v \cdot \vc n) \dd s = 0.
+    &- \int_{T^i} p\,\div\,\vc v \dd\bx,
+    + \int_{\partial T^i} p (\vc v \cdot \vc n) \dd s \nonumber\\
+    &+ \int_{\Gamma_w} \avg{p}_w \avg{\vc v\cdot\vc n}_w \dd s
+    + \int_{\Gamma_w} \fluct{p} \fluct{\vc v \cdot \vc n}_w \dd s = 0.
 \end{align}
-Comparing \eqref{eqn:lagrange_multipliers_interpretation} with \eqref{eqn:prob_mh_weak_simple1}
-it is apparent from the third term that the Lagrange multipliers $\lambda$ can be interpreted
+Comparing \eqref{eqn:lagrange_multipliers_interpretation} with \eqref{eqn:prob_mh_weak_simple_der1}
+it is apparent from the third term that the Lagrange multipliers $\lambda\in\Lambda_h(\mathcal{F})$ can be interpreted
 as the trace of pressure $p$ on element faces $\mathcal F$.
-
+Similarly we see from the forth term that the Lagrange multiplier $\lambda_w\in\Lambda^{enr}_h$ can be interpreted as
+the average of trace of pressure $p$ on well-aquifer cross-section.
 See \cite{lawrence_balancing_1995} for details.
-The model \ref{thm:prob_mh_weak_simple} is conceptually compatible with the model implemented in Flow123d, see \cite{sistek_bddc_2015, flow123d}.
+
+The mixed-hybrid problem \ref{thm:prob_mh_weak_simple} is conceptually compatible
+with the model implemented in Flow123d, see \cite{sistek_bddc_2015, flow123d}.
 
 
 \subsubsection{Velocity Enrichment}
@@ -543,31 +646,29 @@ The effective surface normalizes the function, so we have the flux
 \int_{\Gamma_w} \vc s_w\cdot \vc n \dd s = 1.
 \end{equation}
 %
-The global enrichment functions have these properties on an element $T$:
+For the global enrichment functions it holds on an element $T$
+\begin{align}
+0 = \int_{T\setminus\Omega^w_C} \div\,\vc s_w \dd\bx = & \int_{\prtl (T\setminus\Omega^w_C)} \vc s_w\cdot\vc n \dd s \nonumber\\
+    &= \sum \limits_{j=1}^{n_F} \int_{F^j\setminus \Omega^w_C} \vc s_w\cdot\vc n \dd s 
+      + \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s,
+\end{align}
+which implies two important cases
 \begin{align} \label{eqn:glob_flux_properties}
-    - \int_T \div\,\vc s_w \dd\bx = \int_{\prtl T} \vc s_w\cdot\vc n \dd s = \nonumber\\
-    = \begin{cases}
-        \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s = 0
-            & \quad T \cap \Gamma_w=\emptyset, \\
-        \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s = 
-            - \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s
-            &\quad T \cap \Gamma_w=\Gamma_w, \\
-        \sum \limits_{j=1}^{n_F} \int_{F^j\setminus \Omega^w_C} \vc s_w\cdot\vc n \dd s 
-        = - \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s &\quad T \cap \Gamma_w\subset\Gamma_w. \\
-    \end{cases}
+        \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s &= 0
+            && T \cap \Gamma_w=\emptyset, \\
+        \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s
+            &= - \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s
+            && T \cap \Gamma_w=\Gamma_w.
 \end{align}
 The first case in \eqref{eqn:glob_flux_properties} means that $\vc s_w$ has zero divergence on elements
-not intersecting with the well $w$. The second case means that flux of $\vc s_w$ over element faces
+not intersecting with the well $w$ (on most of the elements). The second case means that flux of $\vc s_w$ over element faces
 is equal the flux of $\vc s_w$ from the well, if the intersection lies inside of the element.
-The third case is when the well is intersecting an element face.
 
 Similarly for $\mathbb{RT}^0(T)$ functions it holds
 \begin{align} \label{eqn:rt0_flux_properties}
-    -\int_{T} \div\,\vc\psi_{j}\dd\bx
-    = \int_{\prtl T} \vc\psi_{j}\cdot\vc n \dd s = \nonumber\\
-%     = \int_{E_j\setminus \Omega^w_C} \vc\psi_j\cdot\vc n \dd s
-%       +\int_{\Gamma_w\cap T} \vc\psi_j\cdot\vc n \dd s \\
-    = \begin{cases}
+    \int_{T\setminus\Omega^w_C} \div\,\vc\psi_{j}\dd\bx
+    &= \int_{\prtl T} \vc\psi_{j}\cdot\vc n \dd s = \nonumber\\
+    &= \begin{cases}
         1 & \quad T \cap \Gamma_w=\emptyset, \\
         1-\abs{F^j}\abs{T}^{-1}2\pi\rho_w^2 & \quad T \cap \Gamma_w=\Gamma_w, \\
         \int_{F^j\setminus \Omega^w_C} \vc\psi_j\cdot\vc n \dd s
@@ -579,7 +680,9 @@ Similarly for $\mathbb{RT}^0(T)$ functions it holds
 % TODO
 We see in \eqref{eqn:rt0_flux_properties} that the first two cases, $\Gamma_w$ outside
 or fully inside the element, do not imply any significant changes in the numerical computation
-in system matrix assembly. Only the last case, the well intersecting an element face, means
+in system matrix assembly. In the second case, the normal flux of $\vc\psi_j$ over $\Gamma_w$
+is computed analyticaly.
+Only the last case, the well intersecting an element face, means
 numerical evaluation of the face integrals.
 
 \paragraph{Velocity Enrichment with PU}
@@ -608,7 +711,7 @@ However such $\vc\phi_{iw}$ has non zero flux over element faces, so it devalues
 the advantages of the delta property of $\mathbb{RT}^0$ functions \eqref{eqn:rt0_delta_property}.
 We would like to avoid this.
 Thus we suggest to include the PU functions into $\vc L_w$.
-The local enrichment functions for each $i=1,\ldots,n_{PU}$ then become
+The local enrichment functions for each $i=1\ldots n_{PU}$ then become
 \begin{equation}
     \vc\phi_{iw} = \vc L_{iw} = N_i\vc s_w - \sum \limits_{j=1}^{n_F} z^{iw}_j \vc\psi_j,
     \quad z^{iw}_j=\int_{F^j} N_i (\vc s_w\cdot \vc n)\dd s \label{eqn:local_enr_vel_PU}.
@@ -647,7 +750,7 @@ Finally we need to choose a~partition of unity. Since the hybrization decoupled 
 the simplest choice is $\mathbb P^0$, 
 the enriched velocity then has the form:
 \begin{equation}
-    \vc u = 
+    \vc u_h = 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
     \sum \limits_{w\in\mathcal{W}} \sum \limits_{i\in\mathcal{J}^w_E} b_{iw} \vc \phi_{iw}.
 \end{equation}
@@ -658,7 +761,7 @@ There is a~single local enrichment function per element.
 Choosing $\mathbb P^1$ as a~partition of unity,
 the enriched velocity then has the form:
 \begin{equation}
-    \vc u = 
+    \vc u_h = 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
     \sum \limits_{w\in\mathcal{W}} \sum \limits_{i\in\mathcal{J}^w_N} b_{iw} \vc \phi_{iw}.
 \end{equation}
@@ -708,12 +811,13 @@ For such enrichment it holds:
 %
 Finally we define the enriched velocity in the form:
 \begin{equation}
-    \vc u = 
+    \vc u_h = 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
     \sum \limits_{w\in\mathcal{W}} b_w \vc \phi_w.
     \label{eqn:velocity_enriched_approximation}
 \end{equation}
 
+We use this kind of enrichment later on, in our implementation in Flow123d and in all our test cases.
 
 \notePE{Below following the proof in 'numpde.pdf' from page 108, 'Brezzi' p.42}
 \paragraph{Coercivity of $a$ on $V_{0h}=\ker B_h$.}
@@ -735,6 +839,43 @@ we need to check the coercivity
     \end{eqnarray}
     (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
 }
+
+\paragraph{Numeric verification of LBB condition.}
+\notePE{We can do the LBB numericaly but we must somehow show that the form $a_h$ is coercive on kernel of $B$.}
+
+Proving the discrete LBB condition for such enrichment is non-trivial,
+therefore we use a~kind of numeric indicator on the inf-sup stability on our test cases.
+The numeric validation is done on the discrete level, inspecting the eigenvalues of the system matrix.
+We rewrite equations \eqref{eqn:prob_mh_weak_simple} using the matrix notation
+\begin{align}
+    \mat A \mat u + \mat B^T\mat p &= \mat f, \\
+    \mat B \mat u - \mat C  \mat p &= \mat g.
+\end{align}
+The matrix $\mat C$ is zero in this case, although later it will represent the coupling terms between dimensions.
+We derive the Schur complement of $\mat A$ by elimination of velocity $\mat u$ from the system:
+\begin{equation}
+    (\mat C + \mat B\mat A^{-1}\mat B^T) \mat p = \mat B \mat A^{-1} \mat f - \mat g.
+\end{equation}
+We construct a~generalized eigenvalue problem
+\begin{equation}
+%     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
+    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat C \mat v_i
+\end{equation}
+where $\eta_i$ are the singular values of $\mat B$.
+The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
+according to \cite{brezzi_mixed_1991}, p.76.
+
+%
+\begin{figure}[!htb]
+    \centering    
+    \includegraphics[width=0.85\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
+    \caption[numerical verification of inf-sup condition]
+  {Graph representing numerical verification of inf-sup condition of Dirichlet problem.
+  The red line is for the case without singularity, the blue line is for the case including the singularity.
+  The smallest eigenvalue $\eta$ does not decrease with mesh refinement, indicating the problem is inf-sup stable.}
+  \label{fig:enrichment_zone_in_3d}
+\end{figure}
+%
 
 \section{Coupled 1d-2d model (Mixed Hybrid model)}
 \label{sec:coupled_12d}
@@ -772,8 +913,8 @@ and its discrete subset
 % \end{equation}
 Considering the hybridization, the disconnected spaces are defined
 \begin{align}
-    V^{reg}_{h}(\Omega_d) &= \{\vc \psi \in \prod_{i\in\mathcal{I}_{dE}} \mathbb{RT}^0(T^i_d):\;
-        \vc \psi \cdot \vc n = 0 \textrm{ on } \Gamma_{dN}\}, \\
+    V^{reg}_{h}(\Omega_d) &= \{\vc v_d \in \prod_{i\in\mathcal{I}_{dE}} \mathbb{RT}^0(T^i_d):\;
+        \vc v_d \cdot \vc n = 0 \textrm{ on } \Gamma_{dN}\}, \\
     Q_h(\Omega_d) &= \prod_{i\in\mathcal{I}_{dE}} \mathbb{P}^0(T^i_d).
 \end{align}
 It holds $\tilde V_h(\Omega_d) \subset \tilde V(\Omega_d)$ and $\tilde V_h(\Omega_d) \subset V^{reg}_h(\Omega_d)$.
@@ -798,7 +939,7 @@ and its discrete subset
 \end{equation}
 For handling the coupling terms, let us define a~space of average traces of fluxes normal components on well edges
 \begin{equation} \label{eqn:lambda_w_space_2d}
-    \Lambda^{enr} = \{\mu^m_w\in \mathbb P^0(\Gamma^m_w):\;
+    \Lambda^{enr}_h = \{\mu^m_w\in \mathbb P^0(\Gamma^m_w):\;
     \mu^m_w=\avg{\vc v\cdot \vc n}^m_w,\; m\in\mathcal{M}, w\in\mathcal{W},\, \vc v\in V_h(\Omega_2)\}.
 \end{equation}
 %
@@ -806,44 +947,44 @@ Finally let us denote the discretization spaces for the 1d-2d coupled problem:
 \begin{align}
     V_h &= V^{reg}_h(\Omega_1) \times V_h(\Omega_2), \label{eqn:vel_h_space}\\
     Q_h &= Q_h(\Omega_1) \times Q_h(\Omega_2) \label{eqn:press_h_space} \\
-    \Lambda_h &= \Lambda_h(\mathcal{F}_1)\times \Lambda_h(\mathcal{F}_2) \times \Lambda^{enr}, \label{eqn:lambda_h_space}
+    \Lambda_h &= \Lambda_h(\mathcal{F}_1)\times \Lambda_h(\mathcal{F}_2) \times \Lambda^{enr}_h, \label{eqn:lambda_h_space}
 \end{align}
 
 % The third equation is obtained by testing the equation \eqref{eqn:problem_2d_flux_avg} by $\mu^m_w$
 % and integrating over $\Gamma^m_w$.
 \thmproblem{ \label{thm:prob_saddle_12d}
-Find $\vc u=[\vc u_d] \in V_h$ and $p = [p_d, \lambda_d, \lambda^m_w] \in Q_h \times \Lambda_h$, 
+Find $\vc u_h=[\vc u_d] \in V_h$ and $p_h = [p_d, \lambda_d, \lambda^m_w] \in Q_h \times \Lambda_h$, 
 $d=1,2,\, m\in\mathcal{M},\, w\in\mathcal{W}$ which satisfy
 \begin{subequations}
 \label{eqn:prob_saddle_coupled_12d}
     \begin{align}
-    a_h(\vc{u},\vc v) + b_h(\vc v, p) &= \langle G, \vc v\rangle_{V_h'\times V_h} &&
-        \forall \vc v\in V_h,
+    a_h(\vc u_h,\vc v_h) + b_h(\vc v_h, p_h) &= \langle G, \vc v_h\rangle_{V_h'\times V_h} &&
+        \forall \vc v_h\in V_h,
         \label{eqn:prob_saddle_coupled_12d_1}\\
-    b_h(\vc{u}, q) -c_w(p,q) &= \langle F, q \rangle_{Q_h'\times Q_h} &&
-        \forall q \in Q_h \times \Lambda_h
+    b_h(\vc u_h, q_h) -c_w(p_h,q_h) &= \langle F, q_h \rangle_{Q_h'\times Q_h} &&
+        \forall q_h \in Q_h \times \Lambda_h
         \label{eqn:prob_saddle_coupled_12d_2}
     \end{align}
 \end{subequations}
 where the forms are
 \begin{align*}
-a_h(\vc u, \vc v)=& \sum_{\substack{d=1,2 \\ i\in \mathcal I_{dE}}} \int_{T_d^i}
+a_h(\vc u_h, \vc v_h)=& \sum_{\substack{d=1,2 \\ i\in \mathcal I_{dE}}} \int_{T_d^i}
    \delta_d^{-1} \vc u_d \vc K_d^{-1} \vc v_d \dd\bx, \\
 %
-b_h(\vc v, p)=&\sum_{\substack{d=1,2 \\ i\in \mathcal I_{dE}}}\left[
+b_h(\vc v_h, p_h)=&\sum_{\substack{d=1,2 \\ i\in \mathcal I_{dE}}}\left[
         \int_{T_d^i} -p_d\,\div\,\vc v_d \dd\bx, 
-        + \int_{F^i_d\setminus \prtl\Omega}
+        + \int_{\partial T^i_d\setminus \prtl\Omega}
                  \lambda_d (\vc v_d \cdot \vc n) \dd s\right]\\
         &\color{blue}{ + \sum_{\substack{w\in \mathcal{W} \\ m\in\mathcal{M}}}
             \int_{\Gamma^m_w} \lambda^m_w \avg{\vc v_2 \cdot \vc n}^m_w \dd s},\\
 %
 \color{blue}
- c_w(p,q) =& \color{blue}{ \sum_{\substack{w\in \mathcal{W} \\ m\in\mathcal{M}}} \int_{\Gamma^m_w} \delta_2(\bx^m_w)\sigma^m_w
+ c_w(p_h,q_h) =& \color{blue}{ \sum_{\substack{w\in \mathcal{W} \\ m\in\mathcal{M}}} \int_{\Gamma^m_w} \delta_2(\bx^m_w)\sigma^m_w
     \big(p_1(\bx^m_w)-\lambda_w\big) \big(q_1(\bx^m_w)-\mu_w\big) \dd s},\\
- \langle G, \vc \psi\rangle_{V_h'\times V_h} =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
+ \langle G, \vc v_h\rangle_{V_h'\times V_h} =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}
         \int_{\prtl T_d^i\cap \Gamma_{dD}}
-                 - g_{dD} (\vc \psi_d \cdot \vc n) \dd s,\\
- \langle F, q\rangle_{Q_h'\times Q_h} =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}%\left(
+                 - g_{dD} (\vc v_d \cdot \vc n) \dd s,\\
+ \langle F, q_h\rangle_{Q_h'\times Q_h} =& \sum_{d=1,2}\sum_{i\in \mathcal T_d}%\left(
         \int_{T_d^i} - \delta_d f_d q_d \dd\bx,
 %         - \int_{\prtl T_d^i\cap \Gamma_{dN}}
 %                  g_{dN} \mu_d\right),
@@ -892,15 +1033,18 @@ The coupling terms are again emphasized in blue color.
 %                  g_{dN} \mu_d\right),
 % \end{align*}
 
-We note that the nonzero Neumann boundary condition is also implemented and it
-technically means dismissing the zero flux condition from the space $V^{reg}_h(\Omega_d)$
-and changing the right hand side to
+We note that the nonzero Neumann boundary condition is also implemented.
+It technically means changing the right hand side to
 \begin{equation} \label{eqn:saddle_point_2d_nonzero_neumann}
  \langle F, q\rangle = \sum_{d=1,2}\sum_{i\in \mathcal T_d}\left(
         \int_{T_d^i} - \delta_d f_d q_d
         - \int_{\prtl T_d^i\cap \Gamma_{dN}}
                  g_{dN} \mu_d\right) \dd s.
 \end{equation}
+and searching for $\vc u_h = \vc u_{0h} + \vc u_{hN}$,
+where $\vc u_h, \vc u_{hN}$ are from larger space than $V_h$,
+dismissing the zero flux condition, $\vc u_{hN}$ satisfying the Neumann condition
+and $\vc u_{0h} \in V_h$.
 % In the Dirichlet problem (setting constant pressure $P_w$ in 1d and supposing only 2d mesh, Dirichlet boundary condition, the thickness $\delta_2=1$) we replace
 % \begin{align*}
 % \color{blue}
@@ -925,10 +1069,41 @@ how the enriched elements are selected and what is the actual support of the enr
 We define the velocity global enrichment function in the same form as in 2d case in \eqref{eqn:global_enr_vel}
 \begin{equation}
     \vc s_w(\bx) = -\frac{1}{S_e} \frac{\vc r_w}{r_w^2}, \qquad S_e = 2\pi\rho_w z
-    %, \qquad \div \vc s_w = 0
+    , \qquad \div \vc s_w = \frac{1}{r_w^2}.
     \label{eqn:global_enr_vel_3d}
 \end{equation}
-where the effective surface $S_e$ is the lateral surface of a~cylinder of lenght $z$
+%
+where the effective surface $S_e$ is the lateral surface of a~cylinder of lenght $z$.
+The global enrichment functions have these properties on an element $T$:
+\begin{align} \label{eqn:glob_flux_properties_3d}
+    \int_{T\setminus \Omega^w_C} \div\,\vc s_w \dd\bx
+    &= \int_{\prtl T\setminus\Omega^w_C} \vc s_w\cdot\vc n \dd s = \nonumber\\
+    &= \begin{cases}
+        \sum \limits_{j=1}^{n_F} \int_{F^j\setminus\Omega^w_C} \vc s_w\cdot\vc n \dd s = 
+            \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s
+            &\quad T \cap \Gamma_w=\emptyset, \\
+        \sum \limits_{j=1}^{n_F} \int_{F^j\setminus \Omega^w_C} \vc s_w\cdot\vc n \dd s 
+        = \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s &\quad T \cap \Gamma_w\subset\Gamma_w. \\
+    \end{cases}
+\end{align}
+% The first case in \eqref{eqn:glob_flux_properties} means that $\vc s_w$ has zero divergence on elements
+% not intersecting with the well $w$. The second case means that flux of $\vc s_w$ over element faces
+% is equal the flux of $\vc s_w$ from the well, if the intersection lies inside of the element.
+% The third case is when the well is intersecting an element face.
+% 
+Similarly for $\mathbb{RT}^0(T)$ functions it holds
+\begin{align} \label{eqn:rt0_flux_properties}
+    \int_{T\setminus \Omega^w_C} \div\,\vc\psi_{j}\dd\bx
+    &= \int_{\prtl T\setminus \Omega^w_C} \vc\psi_{j}\cdot\vc n \dd s = \nonumber\\
+    &= \begin{cases}
+        1 & \quad T \cap \Gamma_w=\emptyset, \\
+        \int_{F^j\setminus \Omega^w_C} \vc\psi_j\cdot\vc n \dd s
+            +\int_{\Gamma_w\cap T} \vc\psi_j\cdot\vc n \dd s
+            &\quad T \cap \Gamma_w\subset\Gamma_w. \\
+        \end{cases}
+\end{align}
+%
+%
 The evaluation of the global enrichment function $\vc s_w$ in 3d is little bit more involved than in the 2d case.
 The logarithmic (in pressure) and hyperbolic (in velocity) singularity is concentrated along a~1d line,
 so $r_w$ in \eqref{eqn:global_enr_vel_3d} is the distance function from the line.
@@ -982,7 +1157,7 @@ The enrichment zones $Z^i_w$ can have different enrichment radii, but we do not 
 
 Finally we define the enriched velocity solution
 \begin{align}
-    \vc u &= 
+    \vc u_h &= 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
     \sum \limits_{w\in\mathcal{W}} \sum \limits_{\substack{i\in\mathcal{I}_{1E} \\ T^i_1\subset\Omega^w_1}}
     b_{iw} \vc \phi_{iw} \label{eqn:velocity_enriched_approximation_3d}
@@ -1041,46 +1216,47 @@ Using the spaces
 \end{align}
 we formulate the saddle point problem for 1d-3d coupling
 \thmproblem{ \label{thm:prob_saddle_13d}
-Find $\vc u=[\vc u_d] \in V_h$ and $p = [p_d, \lambda_d, \lambda_w] \in Q_h \times \Lambda_h$, 
+Find $\vc u_h=[\vc u_d] \in V_h$ and $p_h = [p_d, \lambda_d, \lambda_w] \in Q_h \times \Lambda_h$, 
 $d=1,3,\, w\in\mathcal{W}$ which satisfy
 \begin{subequations}
 \label{eqn:prob_saddle_coupled_12d}
     \begin{align}
-    a_h(\vc{u},\vc v) + b_h(\vc v, p) &= \langle G, \vc v\rangle_{V_h'\times V_h} &&
-        \forall \vc v\in V_h,
+    a_h(\vc u_h,\vc v_h) + b_h(\vc v_h, p_h) &= \langle G, \vc v_h\rangle_{V_h'\times V_h} &&
+        \forall \vc v_h\in V_h,
         \label{eqn:prob_saddle_coupled_13d_1}\\
-    b_h(\vc{u}, q) -c_w(p,q) &= \langle F, q \rangle_{Q_h'\times Q_h} &&
-        \forall q \in Q_h \times \Lambda_h
+    b_h(\vc u_h, q_h) -c_w(p_h,q_h) &= \langle F, q_h \rangle_{Q_h'\times Q_h} &&
+        \forall q_h \in Q_h \times \Lambda_h
         \label{eqn:prob_saddle_coupled_13d_2}
     \end{align}
 \end{subequations}
 where the forms are
 \begin{align*}
-a_h(\vc u, \vc v)=& \sum_{\substack{d=1,3 \\ i\in \mathcal I_{dE}}} \int_{T_d^i}
+a_h(\vc u_h, \vc v_h)=& \sum_{\substack{d=1,3 \\ i\in \mathcal I_{dE}}} \int_{T_d^i}
    \delta_d^{-1} \vc u_d \vc K_d^{-1} \vc v_d \dd\bx, \\
 %
-b_h(\vc v, p)=&\sum_{\substack{d=1,3 \\ i\in \mathcal I_{dE}}}\left[
+b_h(\vc v_h, p_h)=&\sum_{\substack{d=1,3 \\ i\in \mathcal I_{dE}}}\left[
         \int_{T_d^i} -p_d\,\div\,\vc v_d \dd\bx, 
-        + \int_{F^i_d\setminus \prtl\Omega}
+        + \int_{\partial T^i_d\setminus \prtl\Omega}
                  \lambda_d (\vc v_d \cdot \vc n) \dd s\right]\\
         &\color{blue}{ + \sum_{w\in \mathcal{W}} \Bigg[ 2\pi\rho_w\abs{\Omega^w_1} \sum_{\substack{i\in\mathcal{I}_{1E} \\ T^i_1\subset\Omega^w_1}}
             \int_{T^i_1} \lambda_w(t) \avg{\vc v_3\cdot \vc n}_w(t) \dd t \Bigg]},\\
 %             \int_{\Gamma_w} \lambda_w \avg{\vc v_3 \cdot \vc n}_w \dd s\Bigg]},\\
 %
 \color{blue}
- c_w(p,q) =& \color{blue}{ \sum_{w\in \mathcal{W}}
+ c_w(p_h,q_h) =& \color{blue}{ \sum_{w\in \mathcal{W}}
         \Bigg[ 2\pi\rho_w\abs{\Omega^w_1} \sum_{\substack{i\in\mathcal{I}_{1E} \\ T^i_1\subset\Omega^w_1}}
-        \int_{T^i_1} \sigma_w \big(p_1(t)-\lambda_w\big) \big(q_1(t)-\mu_w\big) \dd t} \Bigg],\\
- \langle G, \vc \psi\rangle_{V_h'\times V_h} =& \sum_{d=1,3}\sum_{i\in \mathcal T_d}
+        \int_{T^i_1} \sigma_w \big(p_1(t)-\lambda_w(t)\big) \big(q_1(t)-\mu_w(t)\big) \dd t} \Bigg],\\
+ \langle G, \vc v_h\rangle_{V_h'\times V_h} =& \sum_{d=1,3}\sum_{i\in \mathcal T_d}
         \int_{\prtl T_d^i\cap \Gamma_{dD}}
-                 - g_{dD} (\vc \psi_d \cdot \vc n) \dd s,\\
- \langle F, q\rangle_{Q_h'\times Q_h} =& \sum_{d=1,3}\sum_{i\in \mathcal T_d}%\left(
+                 - g_{dD} (\vc v_d \cdot \vc n) \dd s,\\
+ \langle F, q_h\rangle_{Q_h'\times Q_h} =& \sum_{d=1,3}\sum_{i\in \mathcal T_d}%\left(
         \int_{T_d^i} - \delta_d f_d q_d \dd\bx.
 %         - \int_{\prtl T_d^i\cap \Gamma_{dN}}
 %                  g_{dN} \mu_d\right),
 \end{align*}
 }
-%
+
+\noindent
 The coupling terms are again emphasized in blue color.
 Analogically to the 1d-2d model, see \eqref{eqn:saddle_point_2d_nonzero_neumann}, nonzero
 Neumann boundary condition can be prescribed.
