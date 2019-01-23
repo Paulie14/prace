@@ -864,6 +864,7 @@ We construct a~generalized eigenvalue problem
 where $\eta_i$ are the singular values of $\mat B$.
 The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
 according to \cite{brezzi_mixed_1991}, p.76.
+In regular case the singular value decreases linearly with mesh refinement $\eta_{min}(h)$.
 
 %
 \begin{figure}[!htb]
@@ -872,7 +873,8 @@ according to \cite{brezzi_mixed_1991}, p.76.
     \caption[numerical verification of inf-sup condition]
   {Graph representing numerical verification of inf-sup condition of Dirichlet problem.
   The red line is for the case without singularity, the blue line is for the case including the singularity.
-  The smallest eigenvalue $\eta$ does not decrease with mesh refinement, indicating the problem is inf-sup stable.}
+  The fraction of the smallest eigenvalue $\eta_{min}/h$ and element size is nearly constant with mesh refinement,
+  indicating the problem is inf-sup stable.}
   \label{fig:enrichment_zone_in_3d}
 \end{figure}
 %
