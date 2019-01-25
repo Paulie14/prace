@@ -819,7 +819,7 @@ Finally we define the enriched velocity in the form:
 
 We use this kind of enrichment later on, in our implementation in Flow123d and in all our test cases.
 
-\notePE{Below following the proof in 'numpde.pdf' from page 108, 'Brezzi' p.42}
+% Below following the proof in 'numpde.pdf' from page 108, 'Brezzi' p.42
 \paragraph{Coercivity of $a$ on $V_{0h}=\ker B_h$.}
 Since we enriched space $V_h$, we no longer have $\div\,V_{h}\subset Q_h$
 ($\div\,V_{h}$ is not the space of piecewise constant functions anymore).
@@ -840,8 +840,9 @@ we need to check the coercivity
     (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
 }
 
-\paragraph{Numeric verification of LBB condition.}
-\notePE{We can do the LBB numericaly but we must somehow show that the form $a_h$ is coercive on kernel of $B$.}
+\subsubsection{Numeric verification of LBB condition.}
+\notePE{We can do the LBB numericaly but we must somehow show that the form $a_h$
+is coercive on kernel of $B$. That is a prerequisite.}
 
 Proving the discrete LBB condition for such enrichment is non-trivial,
 therefore we use a~kind of numeric indicator on the inf-sup stability on our test cases.
@@ -861,13 +862,114 @@ We construct a~generalized eigenvalue problem
 %     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
     (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat C \mat v_i
 \end{equation}
+\notePE{ Or is it rather this form correct? In the simple Dirichlet case both provide similarly satisfying results.
+\begin{equation}
+%     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
+    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i (\mat I+ \mat C) \mat v_i
+\end{equation}
+}
 where $\eta_i$ are the singular values of $\mat B$.
 The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
 according to \cite{brezzi_mixed_1991}, p.76.
 In regular case the singular value decreases linearly with mesh refinement $\eta_{min}(h)$.
 
+
+\subsection{Numerical Test for Dirichlet Problem.}
+We provide the first numerical results for the Dirichlet problem \ref{thm:prob_mixed_simple}.
+We consider a~serie of simple structured meshes of a~triangle domain with nodes $[0,0],\,[10,0]$ and $[0,10]$.
+The well-aquifer cross-section is inside of an element for all refinement levels of the mesh.
+The input parameters for the test are gathered in Table \ref{tab:test_case_10_data}.
+%
+\begin{table}[!hb]
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$\vc K$ & $\bx_w$  & $\rho_w$ & $R_w$ & $P_w$ & $\omega$ & $U$ \\
+\midrule
+$10^{-3}$ & {}[3.33,3.33] & 0.03 & 1.5 & 100 & 1 & 20\\
+\bottomrule
+\end{tabular}
+\caption{Input data for the Dirichlet problem.}
+\label{tab:test_case_10_data}
+\end{center}
+\end{table}
+%
+Two cases are computed similarly as in Section \ref{sec:res_comparison},
+the first setting a~zero source term $f=0$,
+the second considering the source term $f=U\sin(\omega x)$.
+
+The solution error is computed against a~pseudo-analytic solution determined according to Section \ref{sec:prim_analytic_solution},
+while setting the pressure in the well to constant $P_w$. The pseudo-analytic solution is used to set the Dirichlet boundary condition
+on the exterior boudary $g_D$, velocity is derived from the pressure $\vc u= -\vc K \grad p$.
+
 %
 \begin{figure}[!htb]
+    \centering
+    \subfloat[velocity solution (magnitude)]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel.pdf} }
+    %\hspace{5pt}
+    \subfloat[$L_2$ elementwise error in velocity]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_error.pdf} }
+    \caption
+    {Results of the Dirichlet problem for $f=0$. The velocity solution is displayed at refinement level 4,
+    the green circle indicates the enrichment radius $R_w$.}
+    \label{fig:mh_dirichlet_zero_source}
+\end{figure}
+The results of the Dirichlet problem with zero source term can be seen in \fig{fig:mh_dirichlet_zero_source}.
+Similarly to the pressure model, the error is mainly concentrated on the edge of the enriched zone.
+We can see that the error is higher in $y=x$ direction than in $y=6.66-x$ direction which is caused by the shape of the
+elements in the structured mesh.
+The first column of Table \ref{tab:convergence_mh_dirichlet} shows the convergence results in this case.
+The convergence rate is nearly optimal.
+\begin{figure}[!htb]
+    \centering
+    \subfloat[velocity solution (magnitude)]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f.pdf} }
+    %\hspace{5pt}
+    \subfloat[$L_2$ elementwise error in velocity]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f_error.pdf} }
+    \caption
+    {Results of the Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
+    the green circle indicates the enrichment radius $R_w$.}
+    \label{fig:mh_dirichlet_source}
+\end{figure}
+%
+Analogically the results of the Dirichlet problem with the sinusoidal source term can be seen in \fig{fig:mh_dirichlet_source}.
+The highest error is again concentrated on the edge of the enriched zone but higher error also appears
+inside the enrichment zone. 
+
+
+The first column of Table \ref{tab:convergence_mh_dirichlet} shows the convergence results in this case.
+The convergence rate is nearly optimal.
+%
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+% \begin{tabular}{r|c|c|c|c|c|r|r}
+\begin{tabular}{rc|cc|cc|cc}
+\toprule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ SGFEM, $f=0$} & \multicolumn{2}{c|}{SGFEM} & \multicolumn{2}{c}{$\textrm{FEM}_{reg}$}\\ [3pt] %\midrule
+i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$
+    & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+1 & 0.625 &  7.12 $\cdot10^{-3}$  &  -   &  2.42 $\cdot10^{-1}$  &  -   & 2.42 $\cdot10^{-1}$  &   -   \\
+2 & 0.312 &  4.10 $\cdot10^{-3}$  & 0.80 &  1.25 $\cdot10^{-1}$  & 0.96 & 1.25 $\cdot10^{-1}$ &  0.96 \\
+3 & 0.156 &  2.21 $\cdot10^{-3}$  & 0.89 &  6.40 $\cdot10^{-2}$  & 0.96 & 6.41 $\cdot10^{-2}$ &  0.96 \\
+4 & 0.078 &  1.14 $\cdot10^{-3}$  & 0.96 &  3.11 $\cdot10^{-2}$  & 1.04 & 3.11 $\cdot10^{-2}$ &  1.04 \\
+5 & 0.039 &  0.57 $\cdot10^{-3}$  & 0.96 &  1.58 $\cdot10^{-2}$  & 0.97 & 1.56 $\cdot10^{-2}$ &  0.99 \\
+\bottomrule
+\end{tabular}
+\caption{Convergence table of SGFEM in Test case.}
+\label{tab:convergence_mh_dirichlet}
+\egroup
+\end{center}
+\end{table}
+
+%
+\begin{figure}[!hb]
     \centering    
     \includegraphics[width=0.85\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
     \caption[numerical verification of inf-sup condition]
@@ -878,6 +980,7 @@ In regular case the singular value decreases linearly with mesh refinement $\eta
   \label{fig:enrichment_zone_in_3d}
 \end{figure}
 %
+
 
 \section{Coupled 1d-2d model (Mixed Hybrid model)}
 \label{sec:coupled_12d}
@@ -1309,5 +1412,6 @@ Neumann boundary condition can be prescribed.
 %         Not so important. (integral of flux of RT functions over the well edge is zero,
 %         if the well edge is included in a single element)
 %   \end{enumerate}
+
 
 
