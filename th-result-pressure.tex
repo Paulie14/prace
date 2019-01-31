@@ -1094,7 +1094,7 @@ M_{ij} &= \sigma_i && i=1\ldots W,\\
 M_{ij} &= -\abs{\Gamma_i}\delta_2\sigma_i \avg{\log r_j} && i=W+1 \ldots 2W,\\
     &&& j=1 \ldots W,\\
 b_{i} &= K_2 \avg{\grad p_{reg}\cdot \vc n_i}_i + \sigma_i\avg{p_{reg}}_i && i=1 \ldots W,\\
-b_{i} &= \abs{\Gamma_i}\delta_2\sigma_i \avg{p_{reg}}_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i} && i=W+1\ldots 2W.
+b_{i} &= \abs{\Gamma_i}\delta_2\sigma_i \avg{p_{reg}}_i + \frac{\delta^i_1 K^i_1}{\bx^i_D-\bx_i}g^i_{1D} && i=W+1\ldots 2W.
 \end{align}
 \end{subequations}
 We evaluate all the averages $\avg{\cdot}_i$ in the linear system numerically,
@@ -1851,6 +1851,7 @@ This value roughly matches a~point in the plots of the error as a~function of $R
 
 
 \subsection{Test Cases with Multiple Wells}
+\label{sec:2d_results_multiple}
 In this section, more complex test cases are solved, including more than one well cross-secting the aquifer.
 We test the enrichment methods, shifted XFEM and SGFEM in particular, whether they
 still have such good convergence properties when the wells influence each other and when the enrichment zones coincide with each other.

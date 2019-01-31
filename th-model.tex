@@ -2,8 +2,10 @@
 % \include{snippet_preamble}
 % \usepackage{enumitem}
 
-In this chapter we develop mathematical background for our model.
+In this chapter we derive the mixed-hybrid model for solving both velocity and pressure and we develop a~mathematical background.
 The model formulation is built from a~simple 2d Dirichlet problem to a~fully coupled 1d-2d and 1d-3d problem.
+We introduce an~SGFEM like enrichment for the velocity approximation.
+At the end we provide several numerical tests computed using our implementation in Flow123d.
 
 % We start with some general notation and considerations. 
 
@@ -937,7 +939,7 @@ The convergence rate is nearly optimal.
 \end{figure}
 %
 Analogically the results of the Dirichlet problem with the sinusoidal source term can be seen in \fig{fig:mh_dirichlet_source}.
-The highest error is again concentrated on the edge of the enriched zone but higher error also appears
+The highest error is again concentrated on the edge of the enriched zone but it also appears
 inside the enrichment zone. 
 
 
@@ -1412,6 +1414,3 @@ Neumann boundary condition can be prescribed.
 %         Not so important. (integral of flux of RT functions over the well edge is zero,
 %         if the well edge is included in a single element)
 %   \end{enumerate}
-
-
-
