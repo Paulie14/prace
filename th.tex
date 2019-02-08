@@ -59,8 +59,8 @@
 \pdfsuppresswarningpagegroup=1
 
 % deklarace pro titulní stránku
-\TULthesisType{Disertační práce}{Thesis}
-\TULtitle{Rozšířené metody konečných prvků na sítích kombinovaných dimenzích}{Extended Finite Element Methods on Meshes of Combined Dimensions}
+\TULthesisType{Disertační práce}{Doctoral Thesis}
+\TULtitle{Rozšířené metody konečných prvků pro aproximaci singularit}{Extended Finite Element Methods for Approximation of Singularities}
 % Extended finite elements for mixed-hybrid model of Darcy flow
 \TULprogramme{P3901}{Aplikované vědy v~inženýrství}{Applied Sciences in Engineering}
 \TULbranch{3901V055}{Aplikované vědy v~inženýrství}{Scientific Engineering (Mathematical Modelling)}
@@ -91,27 +91,64 @@
 
 
 \begin{abstractCZ}
-Doktorská práce je zaměřena na modelování proudění podzemní vody pomocí metody konečných prvků na sítích, 
-které obsahují {ele\-men\-ty} různých dimenzí. 
-V takových modelech je často celková zájmová oblast rozsáhlá a~aproximace konečnými prvky není schopná dostatečně přesně zachytit
-lokální jevy. 
-Použití některé z technik adaptivního zjemňování sítě vede v takovém případě na systémy s enormním počtem neznámých, obzvláště ve 3D.
-Oproti tomu jsou dnes moderní tzv. rozšířené metody konečných (XFEM) prvků. Jejich aplikace do modelů se sítěmi obsahujícími
-elementy různých dimenzí je však v raném vývoji a~je zde mnoho otevřených problémů.
-Hlavním cílem této práce je návrh a~implementace vhodného obohacení pro metodu XFEM v modelu podzemního proudění,
-založeném na Darcyho zákonu, a~umožnění výpočtu na tzv. nekompatibilních sítích.
+Tato doktorská práce je zaměřena na řešení problému proudění podzemní vody v~porézním prostředí, které
+je ovlivněno přítomností vrtů či studní. Model proudění je sestaven na základě konceptu redukce dimenzí,
+který je hojně využíván při modelování rozpukaného porézního přostředí, především granitů.
+Vrty jsou modelovány jako 1d objekty, které protínají blok horniny. 
+Propojení těchto domén v redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
+Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k výpočetním sítím kombinujícím elementy
+různých dimenzí.
+
+Jádrem doktorské práce je pak vývoj specializované metody konečných prvků pro výše popsaný model. 
+Pro umožnění propojení sítí různých dimenzí a pro zpřesnění aproximace singularit v okolí vrtů je 
+použita rozšířená metoda konečných prvků (XFEM), v~rámci níž jsou navrženy nové typy obohacení
+konečně-prvkové aproximace.
+Metoda XFEM je nejprve aplikována v~modelu pro tlak, dále je navrženo obohacení pro rychlost a metoda
+je použita ve smíšeném modelu, jehož řešením jsou rychlost i~tlak.
+
+Doktorská práce se dále detailně věnuje numerickým aspektům v metodě XFEM, a~to především 
+adaptivním kvadraturám, volbě velikosti obohacené oblasti nebo podmíněnosti výsledného lineárního systému.
+Vlastnosti navržené XFEM metody a~optimální konvergence jsou ověřeny na sérii numerických experimentů.
+Praktickým výstupem doktorské práce je implementace metody XFEM jako součásti open-source softwaru Flow123d.
+
+\vspace{1cm}
+\textbf{Klíčová slova: } Rozšířená metoda konečných prvků (XFEM), singularita, sítě kombinovaných dimenzí,
+                         Darcyho proudění, rozpukané porézní prostředí
+
 \end{abstractCZ}
 
 \vspace{2cm}
 
 \begin{abstractEN}
-This doctoral thesis is aimed at modelling of groundwater flow with the finite element method on meshes of combined dimensions. 
-A~general problem of such models is impossibility to capture small-scale 
-phenomena in large domains. Instead of using adaptive meshing approach to obtain better approximation, 
-extended finite element methods (XFEM) are very popular today. However, their usage in models with combined dimensions
-is still developing and has many open questions. The main goal is to propose and possibly 
-implement a~proper XFEM enrichment in a~model of groundwater flow, governed by Darcy's law, to enable 
-coupling between incompatible meshes of combined dimensions.
+In this doctoral thesis, a~model of groundwater flow in porous media intersected with wells (boreholes, channels) is developed.
+The model is motivated by the reduced dimension approach which is being often used in fractured porous media problems, especially in granite rocks.
+The wells are modeled as lower dimensional 1d objects and they intersect the surrounding bulk rock domains.
+The coupling between the wells and the rock then causes a~singular behaviour of the solution in the higher dimensional domains
+in the vicinity of the cross-sections. The domains are discretized separately resulting in an~incompatible mesh of combined dimensions.
+
+The core contribution of this work is in the developement of a~specialized finite element method for such model.
+Different Extended finite element methods (XFEM) are studied and new enrichments are suggested to better
+approximate the singularities and to enable the coupling of the wells with the higher dimensional domains.
+At first the XFEM is applied in a~pressure model, later an enrichment for velocity
+is suggested and the XFEM is used in a~mixed model, solving both velocity and pressure.
+
+Different numerical aspects of the XFEM is studied in details, including an adaptive quadrature strategy,
+a~proper choice of the enrichment zone or a~conditioning of the resulting linear system.
+The properties of the suggested XFEM are validated on a~set of numerical tests and the optimal convergence
+rate is demonstrated. The XFEM is implemented as a~part of the open-source software Flow123d.
+
+\vspace{1cm}
+\textbf{Klíčová slova: } Extended Finite Element Method (XFEM), Singularity, Meshes of combined dimensions,
+                         Darcy flow, Fractured porous media
+                         
+% Darcy’s law
+% reduced dimension approach
+% meshes of combined dimensions
+% singularity
+% Extended finite element method (XFEM)
+% mixed form
+% implemented in software Flow123d
+
 \end{abstractEN}
 
 \clearpage
@@ -408,7 +445,13 @@ The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \large\textsc{Publications}
 % \begin{itemize}[label={}]
-% 
+%
+% \item
+% Hokr, M., B{\v r}ezina, J., Kr{\' a}lovcov{\' a}, J., {\v R}{\' i}ha, J., Exner, P., Han{\v c}ilov{\' a}, I., & Balv{\' i}n, A.,
+% \href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}
+% {Multidimensional Model of Flow and Transport in Fractured Rock for Support of Czech Deep Geological Repository Program},
+% \emph{Proceedings of 2nd International Discrete Fracture Network Engineering Conference, Seattle}, ARMA-DFNE-18-1386,
+% American Rock Mechanics Association. November 2018.
 % \item
 % J. B{\v r}ezina, P. Exner, \href{http://www.sciencedirect.com/science/article/pii/S0898122117300792}{Fast algorithms for intersection of non-matching grids using Plücker coordinates},
 % \emph{Computers and Mathematics with Applications}, Volume 74, July 2017, pp. 174-187, ISSN 0898-1221, \href{https://doi.org/10.1016/j.camwa.2017.01.028}{doi.org/10.1016/j.camwa.2017.01.028}.
