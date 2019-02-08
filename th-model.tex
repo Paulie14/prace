@@ -617,6 +617,10 @@ Similarly we see from the forth term that the Lagrange multiplier $\lambda_w\in\
 the average of trace of pressure $p$ on well-aquifer cross-section.
 See \cite{lawrence_balancing_1995} for details.
 
+The bilinear form $c_w$ in \eqref{eqn:prob_mh_weak_simple2} is positive semidefinite.
+Considering the necessary conditions for unique solvability of Problem \ref{thm:prob_mixed_weak_simple_discrete},
+Theorem 1.2, p. 47 in \cite{brezzi_mixed_1991}, implies the existence of a~unique solution of Problem \ref{thm:prob_mh_weak_simple}.
+
 The mixed-hybrid problem \ref{thm:prob_mh_weak_simple} is conceptually compatible
 with the model implemented in Flow123d, see \cite{sistek_bddc_2015, flow123d}.
 
@@ -1238,7 +1242,7 @@ From there we use $\abs{\vc d_p}$ to obtain the projection of $(\bx-\vc a)$ onto
 \vc d_p = \abs{\vc d_p}\frac{\vc d}{\abs{\vc d}} = \frac{(\bx - \vc a)\cdot\vc d}{\abs{\vc d}^2} \vc d.
 \]
 Then the distance vector is
-\begin{equation}
+\begin{equation} \label{eqn:distance_vector_in_3d}
   \vc r_w(\bx) = (\bx - \vc a) - \vc d_p = (\bx - \vc a) - \frac{(\bx - \vc a)\cdot\vc d}{\abs{\vc d}^2} \vc d.
 \end{equation}
 
