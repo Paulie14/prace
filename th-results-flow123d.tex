@@ -294,14 +294,13 @@ the middle one is for the model including the source term,
 the last column shows the convergence of the regular problem without the singularity solved with MHFEM.
 We see that the convergence of velocity is nearly optimal, closing to 1.0, in all three situations.
 Comparing the magnitude of the approximation error between TC1-b and TC1-c,
-we see that the singularity has only minor influence on the error.
+we see that the singularity is only minimally affecting the error.
 
 
 \subsubsection{Test Case 2}
 In the second test case we consider a~square shaped domain $\Omega_2=[0,10]\times[0,10]$,
 with two wells perpendicular to the domain $\Omega_2$.
-Similarly to the previous case, two situations are simulated: without any source term and
-including the source term $f=U\sin(\omega x)$, $U=80$, $\omega=1.0$.
+Similarly to the previous case, the source term is set to zero or defined as $f=U\sin(\omega x)$, $U=80$, $\omega=1.0$.
 The pressure inside the wells is fixed to a~constant value in the same way as in the previous case 
 by setting high conductivity $\vc K_1$ and constant Dirichlet boundary condition $g_{1D}$ on both ends of the well.
 The input parameters for the wells are gathered in Table \ref{tab:tc2_data}.
@@ -323,15 +322,15 @@ $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $R_w$ & $g_{1D}$\\
 \end{center}
 \end{table}
 
-We solved the model with two different enrichment radii. Let us denote the 4 different settings:
+We solved the model with two different enrichment radii. Let us denote four different settings:
 \begin{itemize}
     \item TC2-a: $f=0$, $R_w=0.6$
     \item TC2-b: $f=0$, $R_w=2.0$
     \item TC2-c: $f=U\sin(\omega x)$, $R_w=0.6$
     \item TC2-d: $f=U\sin(\omega x)$, $R_w=2.0$
-%     \item TC2-e: $f=U\sin(\omega x)$, no singularity
+    \item TC2-e: $f=U\sin(\omega x)$, no singularity (regular case)
 \end{itemize}
-Setting the larger enrichment radius leads to enrichment zones overlapping.
+Setting the larger enrichment radius leads to enrichment zones overlap.
 % The last situation, the regular problem, is computed only as a~reference as in Test Case 1.
 
 The approximation error of velocity is displayed in \fig{fig:mh_tc2_error}. We can again observe
@@ -397,26 +396,34 @@ to a~slightly increased accuracy while the convergence order is the same.
 The model with TC2-b setting is converging also optimally, but we do not present all the results for the sake of brevity.
 The larger enrichment radius in TC2-b leads to decrease of the magnitude of the overall error,
 approximately with factor of 3.0 to the TC2-a setting.
-Similarly to Test case 1, the regular problem without singularities is also computed with MHFEM.
+Similarly to Test case 1, the regular problem without singularities TC2-e is also computed.
 The convergence results correspond to the setting TC2-d,
 the magnitude of the approximation error and the convergence order are almost identical.
 
-%
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=0.85\textwidth]{\results tc_26_inf-sup.pdf}
-    \caption[numerical verification of inf-sup condition TC2]
-    {Graph representing numerical verification of the inf-sup condition in Test Case 2.}
-    \label{fig:mh_tc2_inf_sup}
-\end{figure}
-%
+% %
+% \begin{figure}[!htb]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{\results tc_26_inf-sup.pdf}
+%     \caption[numerical verification of inf-sup condition TC2]
+%     {Graph representing numerical verification of the inf-sup condition in Test Case 2.}
+%     \label{fig:mh_tc2_inf_sup}
+% \end{figure}
+% %
 
 
 
 \subsubsection{Test Case 3}
-This test has a~similar setting as Test case 2, however it includes five wells.
+This test copies the setting of Test case 2, however it includes five wells.
 The input parameters for the wells are gathered in Table \ref{tab:tc3_data}.
 The wells 1,2 and 4 can be seen as the pumping wells, the others the injection wells.
+Let us again denote 4 different settings:
+\begin{itemize}
+    \item TC3-a: $f=0$, $R_w=0.8$,
+    \item TC3-b: $f=0$, $R_w=2.0$,
+    \item TC3-c: $f=U\sin(\omega x)$, $R_w=0.8$,
+    \item TC3-d: $f=U\sin(\omega x)$, $R_w=2.0$.
+%     \item TC3-e: $f=U\sin(\omega x)$, no singularity
+\end{itemize}
 %
 \begin{table}[!htb]
 \begin{center}
@@ -437,16 +444,6 @@ $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $g_{1D}$\\
 \label{tab:tc3_data}
 \end{center}
 \end{table}
-
-Let us again denote 4 different settings:
-\begin{itemize}
-    \item TC3-a: $f=0$, $R_w=0.8$,
-    \item TC3-b: $f=0$, $R_w=2.0$,
-    \item TC3-c: $f=U\sin(\omega x)$, $R_w=0.8$,
-    \item TC3-d: $f=U\sin(\omega x)$, $R_w=2.0$.
-%     \item TC3-e: $f=U\sin(\omega x)$, no singularity
-\end{itemize}
-
 %
 \begin{figure}[!htb]
     \centering
@@ -463,6 +460,21 @@ Let us again denote 4 different settings:
     The green circle indicates the enrichment radius $R_w$. }
     \label{fig:mh_tc3_error}
 \end{figure}
+%
+
+The distribution of the velocity error is shown in \fig{fig:mh_tc3_error}. 
+We can see in setting TC3-a that the error is again concentrated on the edges of the enrichment zones of
+the strongest singularities. In setting TC3-b, the error is largest in the central area, 
+which is affected by all the singularities. The solution is well approximated inside the four enrichment zones
+of the wells 1,3,4,5, we see only small effects of the other singularities there.
+
+In the subfigures for settings TC3-c and TC3-d, we see the same behaviour of the error as in previous test case.
+The error of the regular part is significant in TC3-d while the error of the singular part is not apparent.
+
+The convergence for the selected settings is displayed in Table \ref{tab:mh_tc3_convergence}.
+We see nearly optimal convergence order in all three columns. It is again apparent that
+the larger enrichment radius pushes the approximation error down a~bit but it does not effect the
+convergence order.
 
 \begin{table}[!htb]
 \begin{center}
@@ -490,13 +502,13 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \end{table}
 
 %
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=0.85\textwidth]{\results tc_51_inf-sup.pdf}
-    \caption[numerical verification of inf-sup condition TC3]
-    {Graph representing numerical verification of the inf-sup condition in Test Case 3.}
-    \label{fig:mh_tc3_inf_sup}
-\end{figure}
+% \begin{figure}[!htb]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{\results tc_51_inf-sup.pdf}
+%     \caption[numerical verification of inf-sup condition TC3]
+%     {Graph representing numerical verification of the inf-sup condition in Test Case 3.}
+%     \label{fig:mh_tc3_inf_sup}
+% \end{figure}
 %
 
 \subsubsection{Test Case 4}
@@ -516,8 +528,9 @@ Let us have three different settings:
 \begin{itemize}
     \item TC4-a: $f=0$,
     \item TC4-b: $f=U\sin(\omega x)$,
-    \item TC4-c: $f=U\sin(\omega x)$, no singularity (solved with MHFEM).
+    \item TC4-c: $f=U\sin(\omega x)$, no singularity (regular case).
 \end{itemize}
+We use the same parameters for the nonzero source terms as before: $U=80$, $\omega=1.0$.
 The rest of the input parameters are gathered in Table \ref{tab:tc4_data}.
 %
 \begin{table}[!htb]
@@ -535,14 +548,6 @@ $10^{-3}$ & 0.03 & 10.0 & 2.0 & 100 & 1.0 & 80\\
 \label{tab:tc4_data}
 \end{center}
 \end{table}
-
-The approximation error of velocity is displayed in \fig{fig:mh_tc4_error}. We can see that higher
-error is acummulated outside the edge of the enriched zone in TC4-4a. However we observe significant error also
-along the edges of the cylinder bases where the two boundaries with the Dirichlet boundary condition and the zero Neumann condition
-are adjacent. The velocity shape functions on the elements with sides on both types of boundaries are obviously unable to approximate
-the solution correctly. This error on the boundary also slows down the convergence rate, as we will see in Table \ref{tab:mh_tc4_convergence} below.
-Considering the source term in TC4-b, the error of the singular part is inferior to the error of the regular part, as it is apparent
-in the right subfigure. The error along the edges of the cylinder bases is negligible in contrast to TC4-a.
 %
 \begin{figure}[!htb]
     \centering
@@ -559,7 +564,7 @@ in the right subfigure. The error along the edges of the cylinder bases is negli
     The green cylinders indicates the enrichment zone. }
     \label{fig:mh_tc4_error}
 \end{figure}
-%
+
 \begin{table}[!htb]
 \begin{center}
 \bgroup
@@ -585,6 +590,16 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \end{center}
 \end{table}
 
+The approximation error of velocity is displayed in \fig{fig:mh_tc4_error}. We can see that higher
+error is acummulated outside the edge of the enriched zone in TC4-a. However we observe significant error also
+along the edges of the cylinder bases where the two boundaries with the Dirichlet boundary condition and the zero Neumann condition
+are adjacent. The velocity shape functions on the elements with sides on both types of boundaries are obviously unable to approximate
+the solution correctly there. This error on the boundary also slows down the convergence rate, as it can be seen in Table \ref{tab:mh_tc4_convergence}.
+Considering the source term in TC4-b, the error of the singular part is inferior to the error of the regular part, as it is apparent
+in the right subfigure. The error along the edges of the cylinder bases is negligible in contrast to TC4-a.
+
+
+
 
 \subsubsection{Test Case 5}
 In the second 3d test case, the domain $\Omega_3$ is a~block with the bottom base in $xy$ plane,
@@ -609,11 +624,9 @@ $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $g_{1D}$\\
 \end{center}
 \end{table}
 
-Similarly to the 2d case, we set high conductivity $\vc K_1$ inside the well and constant Dirichlet boundary condition $g_{1D}$ on both ends of the well,
-to have constant pressure there.
-Homogenous Neumann boundary condition is applied on both bases of the cylinder. The flow is then governed 
-by the well and the boundary condition on the lateral surface of the cylinder.
-Therefore we can still use the pseudo-analytic solution from Section \ref{sec:prim_analytic_solution}.
+Analogically to the previous test case, the constant pressure inside the wells is enforced
+and zero normal flux is prescribed on both bases of the block..
+We use again the pseudo-analytic solution to determine the approximation error.
 
 Let us have three different settings: 
 \begin{itemize}
@@ -621,6 +634,7 @@ Let us have three different settings:
     \item TC5-b: $f=U\sin(\omega x)$, $R_w=1.0$,
     \item TC5-c: $f=U\sin(\omega x)$, $R_w=2.0$.
 \end{itemize}
+We use the same parameters for the nonzero source terms as before: $U=80$, $\omega=1.0$.
 %
 \begin{figure}[!htb]
     \centering
@@ -663,10 +677,16 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \end{center}
 \end{table}
 
+We show the distribution of the error in \fig{tab:mh_tc5_convergence} and the convergence results in Table \ref{fig:mh_tc4_error}.
+In case of settings TC5-a and TC5-b, a~significant error can be again observed on the edges of the block bases as in the previous case.
+Due to this error the convergence rate is sub-optimal.
+On the other hand for the settings TC5-c and TC5-d, the results are satisfying and the approximation error behaves similarly
+as in the 2 cases. The error of the regular part is dominating as it can be seen in the subfigures. The convergence order 
+is optimal.
 
 \subsubsection{Test Case 6}
 This test case is analogic to the previous test case, however it includes 5 wells.
-The wells are perpendicular to the $xy$ plane and they have the same parameters as in Test Case 3.
+The wells are perpendicular to the $xy$ plane and they have the same parameters as in the 2d Test Case 3.
 
 The following settings are used:
 \begin{itemize}
@@ -674,7 +694,6 @@ The following settings are used:
     \item TC6-b: $f=U\sin(\omega x)$, $R_w=1.0$,
     \item TC6-c: $f=U\sin(\omega x)$, no singularity.
 \end{itemize}
-
 %
 \begin{figure}[!htb]
     \centering
@@ -685,10 +704,9 @@ The following settings are used:
     \caption
     {Results of Test case 6. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
     The green cylinders indicates the enrichment zone. }
-    \label{fig:mh_tc4_error}
+    \label{fig:mh_tc6_error}
 \end{figure}
 %
-
 
 \begin{table}[!htb]
 \begin{center}
@@ -709,17 +727,23 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 6 & 0.416 &  $1.85\cdot10^{-2}$  & 0.64 &  $7.75\cdot10^{-2}$  & 0.97 &  $7.54\cdot10^{-2}$ &  0.98 \\
 \bottomrule
 \end{tabular}
-\caption{Convergence table in Test case 4.}
+\caption{Convergence table in Test case 6.}
 \label{tab:mh_tc6_convergence}
 \egroup
 \end{center}
 \end{table}
 
+The distribution of the error is displayed in \fig{tab:mh_tc6_convergence}
+and the convergence results are summarized in Table \ref{fig:mh_tc6_error}.
+Setting the zero source term in the setting TC6-a, the optimal convergence rate is again corrupted by the error on the edges of the bases of the block,
+although it is not that significant as in previous cases.
+Considering the model with the setting TC6-b, we see that the singularities are well approximated
+and the dominant error is in the regular part of the solution. The optimal convergence is comparable to the regular case TC6-c.
 
 \section{Summary}
 In this chapter we developed a~new XFEM method for approximation of singularities both in 2 and 3 dimensions.
 The model was formulated in the mixed-hybrid form following the concept of the software Flow123d.
-We learned from the results in Chapter \ref{chap:xfem_pressure} and transfered our experience into creating
+We used what we have learned in Chapter \ref{chap:xfem_pressure} and transfered our experience into creating
 an SGFEM like enrichment of velocity in the vicinity of the singularities to improve the approximation.
 
 Regarding the reduced dimensional modeling, our approach enables coupling of non-coplanar 1d and 2d domains

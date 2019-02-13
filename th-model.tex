@@ -2,10 +2,11 @@
 % \include{snippet_preamble}
 % \usepackage{enumitem}
 
-In this chapter we derive the mixed-hybrid model for solving both velocity and pressure and we develop a~mathematical background.
+In this chapter we derive a~mixed-hybrid model for velocity and pressure and we develop a~mathematical background.
 The model formulation is built from a~simple 2d Dirichlet problem to a~fully coupled 1d-2d and 1d-3d problem.
 We introduce an~SGFEM like enrichment for the velocity approximation.
-At the end we provide several numerical tests computed using our implementation in Flow123d.
+At the end we provide results of several numerical experiments to demonstrate the properties and usability of our model,
+implemented in the software Flow123d.
 
 % We start with some general notation and considerations. 
 
@@ -152,7 +153,7 @@ B:\;\;&   V \rightarrow Q', & \langle B \vc v,q    \rangle_{Q'\times Q} =&\; b(\
 B^T:\;\;& Q \rightarrow V', & \langle \vc v, B^T q \rangle_{V\times V'} =&\; b(\vc v,q)     && \forall \vc v\in V,\, \forall q \in Q,
 \end{aligned}
 \end{equation}
-and \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2} can be rewritten in
+and \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2} can be rewritten as
 \begin{subequations}
 \begin{align}
  A\vc{u} + B^Tp &= G \;\textrm{  in } V', \label{eqn:mixed_saddle_operator1} \\
@@ -161,9 +162,9 @@ and \eqref{eqn:mixed_saddle1}-\eqref{eqn:mixed_saddle2} can be rewritten in
 \end{subequations}
 
 % TODO: move to discretization, comment on neglecting the term on rhs and NONCONFORMITY
-In the space $V$, notice the assumption on the normal trace where the fluctuation part is neglected: $\{\vc v\cdot \vc n\}_w \approx 0$.
-This comes with the idea of a real situation where the well radius is considered very small and the pressure, and so the flux,
-is considered nearly constant along the well edge.
+% In the space $V$, notice the assumption on the normal trace where the fluctuation part is neglected: $\{\vc v\cdot \vc n\}_w \approx 0$.
+% This comes with the idea of a real situation where the well radius is considered very small and the pressure, and so the flux,
+% is considered nearly constant along the well edge.
 
 \begin{lemma} \label{lem:mixed_continuity_ab}
 The bilinear forms $a,b$ in Problem \ref{thm:prob_mixed_weak_simple} are continuous.
@@ -225,8 +226,8 @@ The Problem \ref{thm:prob_mixed_weak_simple} satisfies the LBB condition
 \end{lemma}
 
 \begin{proof}
-We construct for given $q\in Q$ function $\vc v$, satisfying the inequality.
-We solve the artificial Poisson problem
+For the given $q\in Q$, we construct a~function $\vc v$, satisfying the inequality.
+This is done through solving an auxiliary Poisson problem
 \begin{equation} \label{eqn:lbb_artificial_poisson}  
 \begin{aligned}
     -\Delta\varphi &= q && \textrm{in } \Omega\\
@@ -234,15 +235,15 @@ We solve the artificial Poisson problem
     \grad\varphi\cdot\vc n &= 0 && \textrm{on } \Gamma_w
 \end{aligned}
 \end{equation}
-with homogenous Dirichlet b.c. on $\Gamma_D$ and homogenous Neumann b.c. on $\Gamma_w$.
+with homogenous Dirichlet b. c. on $\Gamma_D$ and homogenous Neumann b. c. on $\Gamma_w$.
 From the ellipticity of the artificial problem we get
 \begin{equation}
     \norm{\grad\varphi}_{L_2(\Omega)} \leq \norm{\varphi}_{H^1(\Omega)}
         \leq C_F^2 \norm{q}_{L_2(\Omega)},
 \end{equation}
 with $C_F(\Omega,\Gamma_D)$ from Friedrich's inequality.
-Next we set $\vc v = -\grad \varphi$, holding $\fluct{\vc v\cdot\vc n}=0$ for this particular $\varphi$,
-and so $\div\,\vc v = -\Delta\varphi=q$. Then we can bound the norm
+Next we set $\vc v = -\grad \varphi$ for which it holds $\fluct{\vc v\cdot\vc n}_w=0$
+and $\div\,\vc v = -\Delta\varphi=q$ for this particular $\varphi$. Then we can bound the norm
 \begin{equation}
     \norm{\vc v}^2_{H(\div,\Omega)} = \norm{\vc v}^2_{L_2(\Omega)} 
         + \norm{\div\,\vc v}^2_{L_2(\Omega)}
@@ -339,7 +340,7 @@ are defined in the standard way
 \begin{equation}
     \vc\psi_j(\bx) = \frac{\abs{F^j}}{\abs{T^i}} \left( \bx - \bx_k \right), \qquad \bx\in T^i,\, j=1\ldots n_F,
 \end{equation}
-with $\bx_k$ being the opposite node of face $F^j$ and $n_F$ the number of faces of the element $T^i$
+with $\bx_k$ being the opposite node of the face $F^j$ and $n_F$ the number of faces of the element $T^i$
 (holds in all dimensions, putting $\abs{F^j}:=1$ in 1d for point faces).
 Note that $j$ is the index in local faces numbering on the element; we assume this implicitly further in text, 
 if it is apparent from the range, e.g. $1\ldots n_F$.
@@ -351,8 +352,9 @@ Let us denote the standard discrete space for velocity
 \begin{equation}
     \tilde V_h = \{\vc v_h\in V: \vc v_h|_{T^i} \in \mathbb{RT}^0(T^i),\; i\in\mathcal{I}_E \},
 \end{equation}
+where the fluxes over faces are continuous,
 % The pressure space $Q$ is discretized using the finite dimensional space
-and the discrete space for pressure, consisting of piecewise constant functions
+and the discrete space for pressure consisting of piecewise constant functions
 \begin{equation}
     Q_h=\{q_h\in L_2(\Omega):\; q_h|_{T^i}\in \mathbb{P}^0(T^i),\; i\in\mathcal{I}_E\}.
 \end{equation}
@@ -370,15 +372,15 @@ Find $\vc u_h\in \tilde V_h$ and $p_h\in Q_h$ satisfying
 }
 
 For the mixed problem, not all the assumptions in Theorem \ref{thm:brezzi_theorem}
-hold automatically on the discrete level and the existence of a~unique discrete solution is not straightforward.
-Particulary the coercivity of $a$ on $\tilde V_{0h}$
+hold automatically at the discrete level and the existence of a~unique discrete solution is not straightforward.
+In particular the coercivity of $a$ on $\tilde V_{0h}$
 and LBB condition on discrete spaces $\tilde V_h$ and $Q_h$ are not implied by the continuous inequalities
 \eqref{eqn:form_a_coercivity_V0} and \eqref{eqn:form_b_lbb}.
 
 Considering the $\mathbb{RT}^0$ and $\mathbb P^0$ finite elements,
 we have $\div\,\tilde V_{h}\subset Q_h$, i.e. $\div\, \tilde V_h$ is the space of piecewise constant functions.
 Thus $\tilde V_{0h} \subset V_0$ and the coercivity of $a$ holds:
-\begin{equation}
+\begin{equation} \label{eqn:form_a_discrete_coercivity}
 a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in \tilde V_{0h}.
 \end{equation}
 
@@ -391,37 +393,49 @@ Next, we define a~local interpolation operator into $\mathbb{RT}^0(T)$ space of 
     \qquad \forall \vc v \in V \label{eqn:local_rt_interpolator}
 \end{equation}
 which satisfies
+% \begin{align}
+% b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h,\\ 
+% \implies \int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
+% \end{align}
 \begin{align}
-b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h,\\ 
-\implies \int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0 \qquad \textrm{since } q|_T\in \mathbb{P}^0.
+\int_T \div(\pi^{RT}_T\vc v- \vc v) &= 0, \\
+b(\pi^{RT}_T\vc v- \vc v, q)_T &= 0 \qquad \forall q\in Q_h, \label{eqn:b_loc_operator_orthogonality}
 \end{align}
+since $q|_T\in \mathbb{P}^0$.
 
 % According to Lemma 99 ('numpde.pdf'),
-According to the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58),
-we can show the inf-sup stability via the following lemma
-\begin{lemma} \label{lem:discrete_inf_sup_interpolant}
-Let us have spaces $V$ and $Q$ for which the continuous LBB condition \eqref{eqn:brezzi_theorem_lbb} holds.
-Let us choose discrete spaces $V_h\subset V$ and $Q_h\subset Q$.
-If there exists an interpolation operator
-$\pi_h: V\rightarrow V_h$ which is continuous
-\begin{equation}
-    \norm{\pi_h \vc v}_V \leq C_\pi \norm{\vc v}_V \qquad \forall \vc v\in V,
-\end{equation}
-with $C_\pi$ being independent of $h$, and which satisfies
-\begin{equation}
-    b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
-\end{equation}
-then the discrete LBB condition holds:
-\begin{equation}
-    \sup_{\vc v_h\in V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V}
-    \geq \beta_{1h}\norm{q_h}_Q \qquad \forall q_h\in Q_h.
-\end{equation}
-\end{lemma}
+% According to the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58),
+% we can show the inf-sup stability via the following lemma
+% \begin{lemma} \label{lem:discrete_inf_sup_interpolant}
+% Let us have spaces $V$ and $Q$ for which the continuous LBB condition \eqref{eqn:brezzi_theorem_lbb} holds.
+% Let us choose discrete spaces $V_h\subset V$ and $Q_h\subset Q$.
+% If there exists an interpolation operator
+% $\pi_h: V\rightarrow V_h$ which is continuous
+% \begin{equation}
+%     \norm{\pi_h \vc v}_V \leq C_\pi \norm{\vc v}_V \qquad \forall \vc v\in V,
+% \end{equation}
+% with $C_\pi$ being independent of $h$, and which satisfies
+% \begin{equation}
+%     b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h,\\ 
+% \end{equation}
+% then the discrete LBB condition holds:
+% \begin{equation}
+%     \sup_{\vc v_h\in V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V}
+%     \geq \beta_{1h}\norm{q_h}_Q \qquad \forall q_h\in Q_h.
+% \end{equation}
+% \end{lemma}
 
-\begin{proof}
-We provide the standard proof for the chosen finite element spaces $\mathbb{RT}^0\times\mathbb{P}^0$.
+According to the proposition 2.8 in (\cite{brezzi_mixed_1991}, p. 58),
+we can show the inf-sup stability if we find a~continuous interpolation operator
+$\pi_h: V\rightarrow V_h$ which satisfies %$b(\pi_h\vc v- \vc v, q) = 0\;\forall q\in Q_h$
+\begin{equation} \label{eqn:b_operator_orthogonality}
+    b(\pi_h\vc v- \vc v, q) = 0 \quad \forall q\in Q_h. 
+\end{equation}
+%
+% \begin{proof}
+% For the chosen finite element spaces $\mathbb{RT}^0\times\mathbb{P}^0$.
 We define an interpolation operator 
-\begin{equation}
+\begin{equation} 
     (\pi^{RT}_h \vc v)|_T = \pi^{RT}_T \vc v
 \end{equation}
 using the local interpolation operator from \eqref{eqn:local_rt_interpolator}.
@@ -434,18 +448,26 @@ and from \eqref{eqn:brezzi_theorem_lbb}
 \begin{equation}
     \sup_{\vc v\in W} \frac{(\div\,\vc v, q)}{\norm{\vc v}_W} \geq \beta_1 \norm{q}_Q \qquad \forall q\in Q.
 \end{equation}
+The orthogonality of $\pi^{RT}_h$ \eqref{eqn:b_operator_orthogonality} comes as a~consequence of \eqref{eqn:b_loc_operator_orthogonality}.
 Using this we obtain for all $q_h\in Q_h$
-\begin{align}
+\begin{align} \label{eqn:form_b_discrete_inf_sup}
     \sup_{\vc v_h\in \tilde V_h} \frac{b(\vc v_h,q_h)}{\norm{\vc v_h}_V} \geq
     \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div (\pi^{RT}_h \vc v_h)}{\norm{\pi^{RT}_h \vc v}_V} \geq
-    \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W}
-    \nonumber\\ \geq \frac{\beta_1}{C_\pi}\norm{q_h}_Q
+    \frac{1}{C_\pi} \sup_{\vc v_h\in W} \frac{\int_{\Omega} q_h \div\,\vc v}{\norm{\vc v}_W} \nonumber\\
+    \geq \frac{\beta_1}{C_\pi}\norm{q_h}_Q = \beta_{1h}\norm{q_h}_Q
 \end{align}
-\end{proof}
+% \end{proof}
+%
+We summarize the results above into the following lemma.
+\begin{lemma}
+Let us have spaces $V$ and $Q$ for which the continuous LBB condition \eqref{eqn:brezzi_theorem_lbb} holds.
+Let us choose discrete spaces $\tilde V_h\subset V$ and $Q_h\subset Q$ and let us
+have the continuous interpolation operator $\pi^{RT}_h: V\rightarrow V_h$, defined in \ref{eqn:b_operator_orthogonality}.
 
-Due to the coercivity of $a$ on discrete kernel space $\tilde V_{0h}$
-and inf-sup stability by Lemma \ref{lem:discrete_inf_sup_interpolant},
-discrete Problem \ref{thm:prob_mixed_weak_simple_discrete} has unique solution by Brezzi's Theorem \ref{thm:brezzi_theorem}.
+Due to the coercivity of $a$ on discrete kernel space $\tilde V_{0h}$ by \eqref{eqn:form_a_discrete_coercivity}
+and discrete inf-sup stability \eqref{eqn:form_b_discrete_inf_sup},
+the discrete Problem \ref{thm:prob_mixed_weak_simple_discrete} has unique solution by Brezzi's Theorem \ref{thm:brezzi_theorem}.
+\end{lemma}
 
 \vspace{10pt}
 Considering the hybridization, we define a~new discrete space
@@ -613,7 +635,7 @@ multiply it by a~test function and integrate by parts, we obtain
 Comparing \eqref{eqn:lagrange_multipliers_interpretation} with \eqref{eqn:prob_mh_weak_simple_der1}
 it is apparent from the third term that the Lagrange multipliers $\lambda\in\Lambda_h(\mathcal{F})$ can be interpreted
 as the trace of pressure $p$ on element faces $\mathcal F$.
-Similarly we see from the forth term that the Lagrange multiplier $\lambda_w\in\Lambda^{enr}_h$ can be interpreted as
+Similarly we see from the fourth term that the Lagrange multiplier $\lambda_w\in\Lambda^{enr}_h$ can be interpreted as
 the average of trace of pressure $p$ on well-aquifer cross-section.
 See \cite{lawrence_balancing_1995} for details.
 
@@ -652,21 +674,21 @@ The effective surface normalizes the function, so we have the flux
 \int_{\Gamma_w} \vc s_w\cdot \vc n \dd s = 1.
 \end{equation}
 %
-For the global enrichment functions it holds on an element $T$
+For the global enrichment functions it holds on an element $T$ arbitrarily intersected by a~well
 \begin{align}
 0 = \int_{T\setminus\Omega^w_C} \div\,\vc s_w \dd\bx = & \int_{\prtl (T\setminus\Omega^w_C)} \vc s_w\cdot\vc n \dd s \nonumber\\
     &= \sum \limits_{j=1}^{n_F} \int_{F^j\setminus \Omega^w_C} \vc s_w\cdot\vc n \dd s 
-      + \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s,
+      + \int_{\Gamma_w\cap T} \vc s_w\cdot\vc n \dd s. \label{eqn:glob_flux_properties}
 \end{align}
-which implies two important cases
-\begin{align} \label{eqn:glob_flux_properties}
+which implies two special cases
+\begin{align} \label{eqn:glob_flux_properties_cases}
         \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s &= 0
             && T \cap \Gamma_w=\emptyset, \\
         \sum \limits_{j=1}^{n_F} \int_{F^j} \vc s_w\cdot\vc n \dd s
             &= - \int_{\Gamma_w} \vc s_w\cdot\vc n \dd s
             && T \cap \Gamma_w=\Gamma_w.
 \end{align}
-The first case in \eqref{eqn:glob_flux_properties} means that $\vc s_w$ has zero divergence on elements
+The first case in \eqref{eqn:glob_flux_properties_cases} means that $\vc s_w$ has zero divergence on elements
 not intersecting with the well $w$ (on most of the elements). The second case means that flux of $\vc s_w$ over element faces
 is equal the flux of $\vc s_w$ from the well, if the intersection lies inside of the element.
 
@@ -704,6 +726,7 @@ Let us suppose a~partition of unity
 \begin{equation}
     \sum\limits_{i=1}^{n_{PU}} N_i(\bx) = 1 \qquad \forall \bx\in T.
 \end{equation}
+The functions $N_i$ will be specified later, but one can consider functions from $\mathbb P^1(T)$ to fix the following ideas.
 Since velocity is being enriched, we interpolate $\vc s_w$ using $\pi^{RT}_T$ on an element $T$ in the SGFEM:
 \begin{equation}
     \pi^{RT}_T(\vc s_w)(\bx) = \sum \limits_{j=1}^{n_F} z^w_j \vc\psi_j(\bx),
@@ -715,8 +738,9 @@ Following Section \ref{sec:stable_gfem} we then obtain the local enrichment func
 \end{equation}
 However such $\vc\phi_{iw}$ has non zero flux over element faces, so it devalues
 the advantages of the delta property of $\mathbb{RT}^0$ functions \eqref{eqn:rt0_delta_property}.
-We would like to avoid this.
-Thus we suggest to include the PU functions into $\vc L_w$.
+This property is important to retain the standard implementation of boundary conditions
+and possibly the coupling scheme for fractures in the mixed-hybrid model in Flow123d.
+Thus we would like to preserve this property and we suggest to include the PU functions into $\vc L_w$.
 The local enrichment functions for each $i=1\ldots n_{PU}$ then become
 \begin{equation}
     \vc\phi_{iw} = \vc L_{iw} = N_i\vc s_w - \sum \limits_{j=1}^{n_F} z^{iw}_j \vc\psi_j,
@@ -852,7 +876,7 @@ is coercive on kernel of $B$. That is a prerequisite.}
 
 Proving the discrete LBB condition for such enrichment is non-trivial,
 therefore we use a~kind of numeric indicator on the inf-sup stability on our test cases.
-The numeric validation is done on the discrete level, inspecting the eigenvalues of the system matrix.
+The numeric validation is done at the discrete level, inspecting the eigenvalues of the system matrix.
 We rewrite equations \eqref{eqn:prob_mh_weak_simple} using the matrix notation
 \begin{align}
     \mat A \mat u + \mat B^T\mat p &= \mat f, \\
@@ -863,18 +887,22 @@ We derive the Schur complement of $\mat A$ by elimination of velocity $\mat u$ f
 \begin{equation}
     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat p = \mat B \mat A^{-1} \mat f - \mat g.
 \end{equation}
-We construct a~generalized eigenvalue problem
+% We construct a~generalized eigenvalue problem
+% \begin{equation}
+%     (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat C \mat v_i
+% \end{equation}
+% \notePE{ Or is it rather this form correct? In the simple Dirichlet case both provide similarly satisfying results.
+% \begin{equation}
+% %     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
+%     (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i (\mat I+ \mat C) \mat v_i
+% \end{equation}
+% }
+
+According to \cite{brezzi_mixed_1991}, p.76, we can construct a~generalized eigenvalue problem
 \begin{equation}
-%     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
-    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat C \mat v_i
+    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat S \mat v_i
 \end{equation}
-\notePE{ Or is it rather this form correct? In the simple Dirichlet case both provide similarly satisfying results.
-\begin{equation}
-%     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat v_i = k_i \mat v_i
-    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i (\mat I+ \mat C) \mat v_i
-\end{equation}
-}
-where $\eta_i$ are the singular values of $\mat B$.
+where $\mat S$ is associated with the scalar product of $Q_h$ and $\eta_i$ are the singular values of $\mat B$.
 The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
 according to \cite{brezzi_mixed_1991}, p.76.
 In regular case the singular value decreases linearly with mesh refinement $\eta_{min}(h)$.
@@ -882,7 +910,7 @@ In regular case the singular value decreases linearly with mesh refinement $\eta
 
 \subsection{Numerical Test for Dirichlet Problem.}
 We provide the first numerical results for the Dirichlet problem \ref{thm:prob_mixed_simple}.
-We consider a~serie of simple structured meshes of a~triangle domain with nodes $[0,0],\,[10,0]$ and $[0,10]$.
+We consider a~sequence of simple structured meshes of a~triangle domain with nodes $[0,0],\,[10,0]$ and $[0,10]$.
 The well-aquifer cross-section is inside of an element for all refinement levels of the mesh.
 The input parameters for the test are gathered in Table \ref{tab:test_case_10_data}.
 %
@@ -1203,7 +1231,7 @@ The global enrichment functions have these properties on an element $T$:
 % The third case is when the well is intersecting an element face.
 % 
 Similarly for $\mathbb{RT}^0(T)$ functions it holds
-\begin{align} \label{eqn:rt0_flux_properties}
+\begin{align} \label{eqn:rt0_flux_properties_3d}
     \int_{T\setminus \Omega^w_C} \div\,\vc\psi_{j}\dd\bx
     &= \int_{\prtl T\setminus \Omega^w_C} \vc\psi_{j}\cdot\vc n \dd s = \nonumber\\
     &= \begin{cases}
