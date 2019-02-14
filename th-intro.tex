@@ -69,7 +69,7 @@ and resolving arisen singularities.
 Our research scope is focused at modeling of the underground processes in porous media
 and in this work we address ourselves to a~groundwater flow model in particular.
 The model fits in the reduced dimension concept in the software Flow123d, which is being developed at the
-Technical University in Liberec, and the model is implemented as an additional feature of this software.
+Technical University of Liberec (TUL), and the model is implemented as an additional feature of this software.
 
 Apart from the groundwater flow, there are various applications where our model might be employed or to which it might be extended.
 We list a few: transport in fractured porous media, enhanced geothermal systems and extraction of geothermal energy,
@@ -80,16 +80,22 @@ transport of substances in human body.
 \section{Flow123d}
 \label{sec:soa_flow123d}
 
-The software Flow123d (latest stable version 2.2.1 in 2018, online documentation in \cite{flow123d_doc_2015}) 
-is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
+The practical outcome of this thesis is a~new model and its solver implemented as a~part of the software Flow123d.
+% It is an open-source software which is being actively developed at TUL.
+Flow123d is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
 developed as an open source code under the versioning system Git where the eponymous project can be found, or 
-one can find it on the web page
+one can reach it via the web page %\url{http://flow123d.github.io/}.
+%
 \begin{center}
 \url{http://flow123d.github.io/}
 \end{center}
-It has been developed at the Technical University of Liberec approximately since 2007.
-The main feature of the software is a~computation on complex compatible meshes of combined dimensions, described in
-previous section. Therefore, the continuum models and discrete fracture network models can be combined.
+
+It has been developed at the TUL approximately since 2007.
+The latest stable version 2.2.1 was released in 2018~\cite{flow123d}.
+The main feature of the software is the ability to compute on complex compatible meshes of combined dimensions,
+where the continuum models and discrete fracture network models can be coupled. Only the coupling of co-dimension 1
+is considered, i.e. coplanar 1d-2d and 2d-3d cases.
+This thesis extends the groundwater flow model to non-planar 1d-2d and 1d-3d coupling.
 %
 \begin{figure}[!htb]
   \centering
@@ -97,16 +103,21 @@ previous section. Therefore, the continuum models and discrete fracture network 
   \caption{Logo of Flow123d.}
   \label{fig:logo_flow123d}
 \end{figure}
-%
-Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
-and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
-Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
-and simple reactions.
+
+Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, non-linear solver for unsaturated flow (Richards equation),
+finite volume method and discontinuous Galerkin method for solute transport of several substances and heat transfer model. 
+Using the operator splitting technique, models for various local processes are supported with the solute transport simulation
+including dual porosity, sorption, decays and first order reactions.
+
+The experimental branch of Flow123d based on version 3.0.x, which is about to be officialy released,
+includes a~module for computation of intersections of incompatible meshes,
+a~rock mechanics model and also the XFEM model based on this thesis.
 
 
-Development of the software is an important practical part of the thesis. The aim is to implement support 
-of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
-Section \ref{chap:aims}.
+
+% Development of the software is an important practical part of the thesis. The aim is to implement support 
+% of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
+% Section \ref{chap:aims}.
 
 %%
 % The actuality of these themes is demonstrated by the several conferences with attendants from all over the world.
@@ -183,18 +194,31 @@ can be visualized properly. A~kind of adaptive refinement of the output mesh wou
 
 \section{Document Structure} \label{sec:structure}
 
-Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of art
-on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
-survey on the XFEM is presented in Section \ref{sec:soa_xfem} and works regarding the usage of the XFEM on
-meshes of combined dimensions are commented in Section \ref{sec:soa_xfem_combined}. Then 
-the software Flow123d is described briefly in Section \ref{sec:soa_flow123d}.
+% Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of art
+% on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
+% survey on the XFEM is presented in Section \ref{sec:soa_xfem} and works regarding the usage of the XFEM on
+% meshes of combined dimensions are commented in Section \ref{sec:soa_xfem_combined}. Then 
+% the software Flow123d is described briefly in Section \ref{sec:soa_flow123d}.
+% 
+% Chapter \ref{chap:aims} summarizes the aims of the thesis.
+% 
+% The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
+% covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
+% Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
+% of different dimensions using Pl{\"u}cker coordinates.
 
-Chapter \ref{chap:aims} summarizes the aims of the thesis.
+% Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
+The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the bibliography.
 
-The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
-covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
-Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
-of different dimensions using Pl{\"u}cker coordinates.
 
-Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
-The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the literature.
+
+
+
+
+
+
+
+
+
+
+

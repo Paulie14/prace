@@ -89,71 +89,7 @@
 % \ThesisTitle{CZ}
 % \ThesisTitle{EN}
 
-
-\begin{abstractCZ}
-Tato doktorská práce je zaměřena na řešení problému proudění podzemní vody v~porézním prostředí, které
-je ovlivněno přítomností vrtů či studní. Model proudění je sestaven na základě konceptu redukce dimenzí,
-který je hojně využíván při modelování rozpukaného porézního přostředí, především granitů.
-Vrty jsou modelovány jako 1d objekty, které protínají blok horniny. 
-Propojení těchto domén v redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
-Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k výpočetním sítím kombinujícím elementy
-různých dimenzí.
-
-Jádrem doktorské práce je pak vývoj specializované metody konečných prvků pro výše popsaný model. 
-Pro umožnění propojení sítí různých dimenzí a pro zpřesnění aproximace singularit v okolí vrtů je 
-použita rozšířená metoda konečných prvků (XFEM), v~rámci níž jsou navrženy nové typy obohacení
-konečně-prvkové aproximace.
-Metoda XFEM je nejprve aplikována v~modelu pro tlak, dále je navrženo obohacení pro rychlost a metoda
-je použita ve smíšeném modelu, jehož řešením jsou rychlost i~tlak.
-
-Doktorská práce se dále detailně věnuje numerickým aspektům v metodě XFEM, a~to především 
-adaptivním kvadraturám, volbě velikosti obohacené oblasti nebo podmíněnosti výsledného lineárního systému.
-Vlastnosti navržené XFEM metody a~optimální konvergence jsou ověřeny na sérii numerických experimentů.
-Praktickým výstupem doktorské práce je implementace metody XFEM jako součásti open-source softwaru Flow123d.
-
-\end{abstractCZ}
-
-\begin{keywordsCZ}
-Rozšířená metoda konečných prvků (XFEM), singularita, sítě kombinovaných dimenzí,
-Darcyho proudění, rozpukané porézní prostředí
-\end{keywordsCZ}
-
-\vspace{2cm}
-
-\begin{abstractEN}
-In this doctoral thesis, a~model of groundwater flow in porous media intersected with wells (boreholes, channels) is developed.
-The model is motivated by the reduced dimension approach which is being often used in fractured porous media problems, especially in granite rocks.
-The wells are modeled as lower dimensional 1d objects and they intersect the surrounding bulk rock domains.
-The coupling between the wells and the rock then causes a~singular behaviour of the solution in the higher dimensional domains
-in the vicinity of the cross-sections. The domains are discretized separately resulting in an~incompatible mesh of combined dimensions.
-
-The core contribution of this work is in the developement of a~specialized finite element method for such model.
-Different Extended finite element methods (XFEM) are studied and new enrichments are suggested to better
-approximate the singularities and to enable the coupling of the wells with the higher dimensional domains.
-At first the XFEM is applied in a~pressure model, later an enrichment for velocity
-is suggested and the XFEM is used in a~mixed model, solving both velocity and pressure.
-
-Different numerical aspects of the XFEM is studied in details, including an adaptive quadrature strategy,
-a~proper choice of the enrichment zone or a~conditioning of the resulting linear system.
-The properties of the suggested XFEM are validated on a~set of numerical tests and the optimal convergence
-rate is demonstrated. The XFEM is implemented as a~part of the open-source software Flow123d.
-
-
-% Darcy’s law
-% reduced dimension approach
-% meshes of combined dimensions
-% singularity
-% Extended finite element method (XFEM)
-% mixed form
-% implemented in software Flow123d
-
-\end{abstractEN}
-
-\begin{keywordsEN}
-Extended Finite Element Method (XFEM), Singularity, Meshes of combined dimensions,
-Darcy flow, Fractured porous media
-\end{keywordsEN}
-
+\input th-abstract.tex
 \clearpage
 
 \begin{acknowledgement}
@@ -165,8 +101,16 @@ Darcy flow, Fractured porous media
 
 %% \linenumbers
 
-\begin{abbrList}
-$d$ & dimension: 1d, 2d, 3d \\
+% \begin{abbrList}
+\section*{Seznam zkratek}\addcontentsline{toc}{section}{Seznam zkratek}
+
+\noindent\emph{Acronyms}
+\vspace{0.5cm}
+
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+DFN & Discrete Fracture Network \\
+FVM & Finite Volume Method \\
+FDM & Finite Difference Method \\
 FEM & Finite Element Method \\
 MHFEM & Mixed Hybrid Finite Element Method \\
 PUM & Partition of Unity Method \\
@@ -174,6 +118,47 @@ XFEM & Extended Finite Element Method \\
 GFEM & Generalized Finite Element Method \\
 SGFEM & Stable Generalized Finite Element Method \\
 TUL & Technical University in Liberec
+\end{tabularx}
+\vspace{1cm}
+
+\noindent\emph{Mathematical notation}
+\vspace{0.5cm}
+
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+$d$ & dimension: 1d, 2d, 3d \\
+$\Omega_d$ & domain of dimension $d$ \\
+$\Gamma_{dN}$ & part of boundary of $\Omega_d$ with Neumann boundary condition \\
+$\Gamma_{dD}$ & part of boundary of $\Omega_d$ with Dirichlet boundary condition \\
+$\mathcal T_d$ & mesh consisting of elements of dimension $d$ \\
+$T^i_d, F^i_d$  & element and face of $\mathcal T_d$ \\
+$\vc x_i$ & node \\
+$\mathcal I_{d,E}, \mathcal I_{d,F}, \mathcal I_{d,N}$ & indices of elements faces and nodes of element of dimension $d$ \\
+$\Omega^w_C$ & domain (cylinder) of a well $w$ \\
+$\Omega^w_1$ & reduced domain (line) of a well $w$ \\
+$\mathcal W$ & index set of wells \\
+$\mathcal M$ & index set of aquifers \\
+$p_d$ & pressure in $d$-dimensional domain \\
+$\vc u_d$ & velocity in $d$-dimensional domain \\
+$r_w, \rho_w, R_w$ & distance function, radius and enrichment radius of a~well $w$ \\
+$s_w, \vc s_w$ & scalar and vector global enrichment function\\
+$a(\cdot, \cdot)$ & bilinear form \\
+$l(\cdot)$ & linear form \\
+$\avg{\cdot}$ & average operator \\
+$\fluct{\cdot}$ & fluctuation operator \\
+\end{tabularx}
+\vspace{1cm}
+
+\noindent\emph{Spaces}
+\vspace{0.5cm}
+
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+$\R$ & space of real numbers  \\
+$\mathbb N$ & space of unsigned integers \\
+$\mathbb P^k$ & space of polynomials of order $k$  \\
+$\mathbb RT^k$ & space of Raviart-Thomas shape functions of order $k$  \\
+$L_2$ & Lebesque space \\
+$H^k, H(\div)$ & Hilbert spaces \\
+\end{tabularx}
 
 % TODO:
 % FVM, FDM, FEM
@@ -185,7 +170,7 @@ TUL & Technical University in Liberec
 % \textbf{TUL} & Technická univerzita v~Liberci \\
 % \textbf{FM} & Fakulta mechatroniky, informatiky a mezioborových studií
 % Technické univerzity v~Liberci
-\end{abbrList}
+% \end{abbrList}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -266,76 +251,13 @@ TUL & Technical University in Liberec
 \input th-intersections.tex
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \chapter{Author's Publication Activity} \label{chap:publications}
-% % presentations at conferences, sborniky z nich
-% % article
-% % Flow123d
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \large\textsc{Publications}
-% \begin{itemize}[label={}]
-%
-% \item
-% M. Hokr, J. B{\v r}ezina, J. Kr{\' a}lovcov{\' a}, J. {\v R}{\' i}ha, P. Exner, I. Han{\v c}ilov{\' a}, A. Balv{\' i}n,
-% \href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}
-% {Multidimensional Model of Flow and Transport in Fractured Rock for Support of Czech Deep Geological Repository Program},
-% \emph{Proceedings of 2nd International Discrete Fracture Network Engineering Conference, Seattle}, ARMA-DFNE-18-1386,
-% American Rock Mechanics Association. November 2018.
-% \item
-% J. B{\v r}ezina, P. Exner, \href{http://www.sciencedirect.com/science/article/pii/S0898122117300792}{Fast algorithms for intersection of non-matching grids using Plücker coordinates},
-% \emph{Computers and Mathematics with Applications}, Volume 74, July 2017, pp. 174-187, ISSN 0898-1221, \href{https://doi.org/10.1016/j.camwa.2017.01.028}{doi.org/10.1016/j.camwa.2017.01.028}.
-% 
-% \item
-% P. Exner, J. B{\v r}ezina, \href{http://www.sciencedirect.com/science/article/pii/S0096300315012862}{Partition of unity methods for approximation of point water sources in porous media},
-% \emph{Applied Mathematics and Computation}, Volume 273, January 2016, pp. 21-32, ISSN 0096-3003, \href{http://dx.doi.org/10.1016/j.amc.2015.09.048}{doi:10.1016/j.amc.2015.09.048}.
-
-% O. Sever{\' y}n, J. Stebel, P. Exner, Applied mathematics -- methodical handbook for AP course,
-% project Education For Effective Transfer Of Technology And Knowledge In Science And Engineering (EE2.3.45.0011),
-% Technical University in Liberec, 2015
-
-% \item
-% P. Exner, J. B{\v r}ezina, \href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{Adaptive integration of singularity in partition of unity methods},
-% in proceedings of \emph{Seminar on Numerical Analysis 2015}, Institute of Geonics AS CR, Ostrava, 2015, pp. 29-32, ISBN 978-80-86407-55-5, \\
-% \href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}.
-% 
-% \item
-% P. Exner, \href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{Partition of unity methods for approximation of point water sources in porous media},
-% in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Computer Science AS CR, Prague, 2014, pp. 29-32, ISBN 978-80-87136-16-4, \\
-% \href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{http://www.cs.cas.cz/sna2014/sbornik.pdf}.
-% 
-% 
-% \end{itemize}
-% %
-% \vspace{0.5cm}
-% %
-% \large\textsc{Conferences}
-% %
-% \begin{itemize}[label={}]
-% \item DFNE '18, Seattle (US) \\ Multidimensional model of flow and transport in fractured
-% rock for support of Czech DGR program (presentation)
-% \item CMWR '18, Saint Malo (FR) \\ Darcy Flow on Incompatible Meshes of
-% Combined Dimensions (presentation)
-% \item X-DMS '17, Ume{\o a} (SE) \\ Singular Enrichment of XFEM on Meshes of
-% Combined Dimensions (presentation)
-% \item FEM Symposium '16, Chemnitz (DE) \\ Extended Finite Element Methods Dealing with Singularities on Meshes of Combined Dimensions (presentation)
-% \item X-DMS '15, Ferrara, (IT) \\ eXtended Discretization Methods (presentation, short course attendance)
-% \item MAMERN VI '15, Pau, (FR) \\ The International Conference on Approximation Methods and Numerical Modelling in Environment and Natural Resources (presentation)
-% \item SNA '15, Ostrava, (CZ) \\ Seminar on Numerical Analysis (presentation)
-% \item ESCO '14, Plze{\v n}, (CZ) \\ European Seminar on Computing (presentation)
-% \item Stanford, (US) \\ 40th Stanford Geothermal Workshop (attendance only)
-% \item SNA '14, Nymburk, CZ \\ Seminar on Numerical Analysis (presentation)
-% \item Student conference 2013, Liberec, CZ \\ Student conference at the Faculty of Mechatronics, Informatics and Interdisciplinary Studies, TUL (poster)
-% \end{itemize}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Conclusion} \label{chap:summary}
 % closure - what is done, further plan, mention traineeship
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Based on the research of the related works and the experience gained at the conferences
 (in particular MAMERN VI '15, X-DMS '15-17 and CMWR '18),
@@ -353,10 +275,12 @@ lead by Prof. Barbara Wholmuth. Mainly the theoretical aspects of the work and n
 We got also familiarized with a~different approach for modeling singularities without using XFEM, which is being developed there.
 
 
+% Multi-level Monte Carlo methods - computation on coarse meshes - can include non-planar 1d-2d or 1d-3d intersections 
+% on coarse meshes using the XFEM.
 
-So far, we studied the well-aquifer model (Section \ref{sec:model_aquifer}). We compared several different XFEM methods, 
-dealt with the integration accuracy and investigated some other aspects of the XFEM usage. The results
-of our work were presented at several conferences and concluded in an article (list in Chapter \ref{chap:publications}).
+% So far, we studied the well-aquifer model (Section \ref{sec:model_aquifer}). We compared several different XFEM methods, 
+% dealt with the integration accuracy and investigated some other aspects of the XFEM usage. The results
+% of our work were presented at several conferences and concluded in an article (list in Chapter \ref{chap:publications}).
 
 A 6 months long traineeship is planned for the second half of the year 2016. A cooperation with the team lead
 by professor Barbara Wohlmuth at the Technical University in Munich is to be established. They are experts
