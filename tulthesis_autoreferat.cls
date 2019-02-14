@@ -109,18 +109,19 @@
 % podpurne prikazy
 \newcommand{\@ddel}{\hspace{0.5em}\rule[-0.2em]{0.75pt}{1.2em}\hspace{0.5em}}
 
-\newenvironment{uzky@text}{\begin{center}\begin{minipage}{0.80\textwidth}
+\newenvironment{uzky@text}{\begin{center}\begin{minipage}{1.0\textwidth}
 \setlength{\parskip}{0.5\baselineskip}}{\end{minipage}\end{center}}
 
 
 % rozmery stranky a styl zapati
-\setlength{\oddsidemargin}{10mm}
+%A5:  148 × 210 mm 
+\setlength{\oddsidemargin}{0mm}
 \setlength{\evensidemargin}{0mm}
-\setlength{\textwidth}{150mm}
+\setlength{\textwidth}{118mm}
 \setlength{\topmargin}{0mm}
 \setlength{\headheight}{0mm}
 \setlength{\headsep}{0mm}
-\setlength{\textheight}{230mm}
+\setlength{\textheight}{180mm}
 \setlength{\footskip}{15mm}
 \fancyfoot{}
 \fancyfootoffset{0pt}
