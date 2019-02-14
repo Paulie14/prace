@@ -354,17 +354,17 @@ and \eqref{eqn:prim_coercivity_proof4} with $k\rightarrow\infty$ then implies th
     \grad q_1 = \grad q_2 = 0.
 \end{equation}
 As a~consequence of \eqref{eqn:prim_coercivity_proof3} and Lemma \ref{lem:compact_1}, we have a~point convergence
-\begin{equation} \label{eqn:prim_coercivity_proof6}
+\begin{equation} \label{eqn:prim_coercivity_proof5}
     q^{n_k}_1(\bx^m_w) \rightarrow q_1(\bx^m_w)
     \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}.
 \end{equation}
 As a~consequence of \eqref{eqn:prim_coercivity_proof3} and Lemma \ref{lem:compact_2}, we have a~strong convergence
-\begin{equation} \label{eqn:prim_coercivity_proof5}
+\begin{equation} \label{eqn:prim_coercivity_proof7}
     q^{n_k}_2|_{\Gamma^m_w} \rightarrow q_2|_{\Gamma^m_w} \implies \avg{q^{n_k}_2}^m_w \rightarrow \avg{q_2}^m_w
     \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}
 \end{equation}
 Finally for the coupling term, we have the following pressure equality, reminding that $\sigma^m_w>0$,
-\begin{equation} \label{eqn:prim_coercivity_proof5}
+\begin{equation} \label{eqn:prim_coercivity_proof8}
     q_2|_{\Gamma^m_w} = \avg{q_2}^m_w = q_1(\bx^m_w)
     \qquad \forall w\in\mathcal{W}, \forall m\in\mathcal{M}.
 \end{equation}
@@ -642,8 +642,8 @@ see \fig{fig:enrich_func}, and its gradient
 \begin{equation} \label{eqn:enrich_grad}
 \grad s_w(\bx) = 
   \begin{cases}  
-    \frac{1}{r_w^2(\bx)}(\bx - \bx_w) & r_w>R_w, \\
-    0 & r_w \leq R_w.
+    \frac{1}{r_w^2(\bx)}(\bx - \bx_w) & r_w > \rho_w, \\
+    0 & r_w \leq \rho_w.
   \end{cases}
 \end{equation}
 In case of more aquifers in the model, it is natural to use the same $s_w$ on each aquifer 
@@ -1882,13 +1882,13 @@ The solution is shown in \fig{fig:test_2w_exact}.
         \includegraphics[width=0.48\textwidth]{\results error_2w_2,0.pdf} }
   \caption[Error distribution in Test case 5]{$L^2$ error distribution in Test case 5 for two different $R_w$,
   represented by green circles.}
-  \label{fig:error_distribution_test4}
+  \label{fig:error_distribution_test5}
 \end{figure}
 %
 At first we solve the problem using the enrichment radius $R_w=0.6$ for both wells. The results are as expected:
 optimal convergence order is observed and CG iterations count increases reasonably as in Section \ref{sec:res_conditioning}.
 Next we enlarge the enrichment radius $R_w=2.0$ such that the two circular enrichment zones overlap and
-the elements are enriched from both singularities there. We plot the error distribution in \fig{fig:error_distribution_test4}, 
+the elements are enriched from both singularities there. We plot the error distribution in \fig{fig:error_distribution_test5}, 
 comparing the difference between $R_w=0.6$ on the left and $R_w=2.0$ on the right. We see a~higher approximation error 
 accumulating outside the smaller enrichment zones, in case of larger enrichment radii only the error of the regular part is apparent.
 %
