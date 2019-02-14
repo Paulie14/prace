@@ -1,0 +1,63 @@
+\begin{abstractCZ}
+Tato doktorská práce je zaměřena na řešení problému proudění podzemní vody v~porézním prostředí, které
+je ovlivněno přítomností vrtů či studní. Model proudění je sestaven na základě konceptu redukce dimenzí,
+který je hojně využíván při modelování rozpukaného porézního přostředí, především granitů.
+Vrty jsou modelovány jako 1d objekty, které protínají blok horniny. 
+Propojení těchto domén v redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
+Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k výpočetním sítím kombinujícím elementy
+různých dimenzí.
+
+Jádrem doktorské práce je pak vývoj specializované metody konečných prvků pro výše popsaný model. 
+Pro umožnění propojení sítí různých dimenzí a pro zpřesnění aproximace singularit v okolí vrtů je 
+použita rozšířená metoda konečných prvků (XFEM), v~rámci níž jsou navrženy nové typy obohacení
+konečně-prvkové aproximace.
+Metoda XFEM je nejprve aplikována v~modelu pro tlak, dále je navrženo obohacení pro rychlost a metoda
+je použita ve smíšeném modelu, jehož řešením jsou rychlost i~tlak.
+
+Doktorská práce se dále detailně věnuje numerickým aspektům v metodě XFEM, a~to především 
+adaptivním kvadraturám, volbě velikosti obohacené oblasti nebo podmíněnosti výsledného lineárního systému.
+Vlastnosti navržené XFEM metody a~optimální konvergence jsou ověřeny na sérii numerických experimentů.
+Praktickým výstupem doktorské práce je implementace metody XFEM jako součásti open-source softwaru Flow123d.
+
+\end{abstractCZ}
+
+\begin{keywordsCZ}
+Rozšířená metoda konečných prvků (XFEM), singularita, sítě kombinovaných dimenzí,
+Darcyho proudění, rozpukané porézní prostředí
+\end{keywordsCZ}
+
+\vspace{2cm}
+
+\begin{abstractEN}
+In this doctoral thesis, a~model of groundwater flow in porous media intersected with wells (boreholes, channels) is developed.
+The model is motivated by the reduced dimension approach which is being often used in fractured porous media problems, especially in granite rocks.
+The wells are modeled as lower dimensional 1d objects and they intersect the surrounding bulk rock domains.
+The coupling between the wells and the rock then causes a~singular behaviour of the solution in the higher dimensional domains
+in the vicinity of the cross-sections. The domains are discretized separately resulting in an~incompatible mesh of combined dimensions.
+
+The core contribution of this work is in the developement of a~specialized finite element method for such model.
+Different Extended finite element methods (XFEM) are studied and new enrichments are suggested to better
+approximate the singularities and to enable the coupling of the wells with the higher dimensional domains.
+At first the XFEM is applied in a~pressure model, later an enrichment for velocity
+is suggested and the XFEM is used in a~mixed model, solving both velocity and pressure.
+
+Different numerical aspects of the XFEM is studied in details, including an adaptive quadrature strategy,
+a~proper choice of the enrichment zone or a~conditioning of the resulting linear system.
+The properties of the suggested XFEM are validated on a~set of numerical tests and the optimal convergence
+rate is demonstrated. The XFEM is implemented as a~part of the open-source software Flow123d.
+
+
+% Darcy’s law
+% reduced dimension approach
+% meshes of combined dimensions
+% singularity
+% Extended finite element method (XFEM)
+% mixed form
+% implemented in software Flow123d
+
+\end{abstractEN}
+
+\begin{keywordsEN}
+Extended Finite Element Method (XFEM), Singularity, Meshes of combined dimensions,
+Darcy flow, Fractured porous media
+\end{keywordsEN}
