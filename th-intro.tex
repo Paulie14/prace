@@ -15,7 +15,7 @@ There are several ways one can follow to increase the accuracy of the standard F
 
 Adaptive meshes can be used in such cases, but it can cost a~lot of computational power to build a~very fine mesh,
 and then solve the problem with increasing number of degrees of freedom.
-It requires very robust meshing techniques when complex geometries are in question.
+It requires very robust meshing algorithms when complex geometries are in question.
 There can be other constraints on mesh generation in specific applications, which the meshing tool must obey.
 To work optimaly, the FEM demands mesh elements of a~particular quality -- there are different criteria
 for edges, angles between the edges or radii of inscribed and circumscribed balls.
@@ -39,13 +39,13 @@ On the other hand, incompatible meshes with arbitrary intersections are easier t
 but bring a~whole new set of problems in the coupling.
 
 
-Next there are the so called Extended finite element methods (XFEM); or Partition of unity methods (PUM) or Generalized
-finite element methods (GFEM). Their names are sometimes used interchangeably if one talks generally about these types of methods. 
-These methods enable us to take advantage of an a~priori knowledge of the model solution character
+Finally there are the so called Extended finite element methods (XFEM); or Partition of unity methods (PUM) or Generalized
+finite element methods (GFEM). These names are often used interchangeably if one talks generally about these types of methods. 
+The XFEM enable us to take advantage of an a~priori knowledge of the model solution character
 such as discontinuity or singularity of searched quantities.
 The key aspect of the XFEM is that it allows to locally incorporate non-polynomial functions, like a~jump or a~singular function,
 into the finite element solution in places, where these features are expected to appear.
-This way the standard approximation finite element space is extended and it is able to approximate the small scale phenomena
+This way the standard finite element approximation space is extended (enriched) and it is able to approximate the small scale phenomena
 more accurately.
 See an example of XFEM usage in 1d-2d coupling with point intersections in \fig{fig:aquifers}.
 %\newline{}
@@ -68,13 +68,8 @@ and resolving arisen singularities.
 
 Our research scope is focused at modeling of the underground processes in porous media
 and in this work we address ourselves to a~groundwater flow model in particular.
-The model fits in the reduced dimension concept in the software Flow123d, which is being developed at the
-Technical University of Liberec (TUL), and the model is implemented as an additional feature of this software.
-
-Apart from the groundwater flow, there are various applications where our model might be employed or to which it might be extended.
-We list a few: transport in fractured porous media, enhanced geothermal systems and extraction of geothermal energy,
-oil and gas extraction, CO$_2$ sequestration, safety assesment of an underground nuclear waste repository,
-transport of substances in human body.
+We look for a~model that fits in the reduced dimension concept in the software Flow123d, which is being developed at the
+Technical University of Liberec (TUL), and we put our effort into implementing the model with XFEM as an additional feature of this software.
 
 
 \section{Flow123d}
@@ -130,69 +125,123 @@ a~rock mechanics model and also the XFEM model based on this thesis.
 \section{Aims of the Thesis}\label{chap:aims}
 % define aims, characterize and briefly explain solution
 
-The research aims of the thesis can be summarized in two major points
+We are motivated by several applications where this approach provides a~new solution of problems with singular behaviour
+and where it extends possibilities of currently available models and methods.
+Apart from the already mentioned groundwater flow, in which we focus in this work, there are various other applications
+where our model might be employed or to which it might be extended.
+We list a few that are closely related: enhanced geothermal systems and extraction of geothermal energy,
+oil and gas extraction, CO$_2$ sequestration, safety assesment of an underground nuclear waste repository,
+transport of substances in human body or transport in fractured porous media in general.
+% Of course the motivation for using our model can be also viewed in more direct way,
+% since the (groundwater) flow is just one of procceses that is modeled in some of the listed applications.
+
+Considering what we have preceded in the introduction, we see an open space for our research in further development of reduced dimensional FEM models,
+especially of co-dimension 2, in combination with the XFEM and incompatible meshes, where the XFEM provides
+a~way for coupling the domains of different dimensions together and to significantly improve the finite element approximation accuracy.
+
+The research aims of this work can be summarized in two major points
 \begin{itemize}
-  \item Propose suitable enrichments for the pressure and the velocity that are stable (satisfy inf-sup condition). 
-        If possible, emphasise a~good approximation of the velocity field which is necessary for the transport equation.
+    \item Propose suitable XFEM enrichments for the pressure and the velocity in Darcy flow model. 
+        If possible, emphasise a~good approximation of the velocity field.% which is necessary for the transport equation.
         
-  \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
+    \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
 \end{itemize}
+The accuracy of the velocity field, in particular the fluxes across the elements edges, 
+is in the main focus in most applications, e.g. when the flow model is coupled with a~transport equation.
 
-\subsection{Research aims}
 
-The following types of enrichments can be considered: wells (point source in 2D, line source in 3D), 
-fractures (discontinuity in velocity), boundary of 1D and 2D fractures. 
-To narrow the ambitious plan, we will focus on the enrichment for 0D-2D and 1D-3D interactions.
+We briefly sketch the steps that we take to successfully reach these goals.
+We inspire ourselves by the work of Gracie and Craig~\cite{gracie_modelling_2010,craig_using_2011},
+and we start from a~similar 1d-2d model with XFEM resolving point singularities in pressure.
+We compare different XFEMs~\cite{fries_corrected_2008, fries_xfem_overview_2010, babuska_stable_2012,gupta_stable_2013},
+investigate the properties of the methods and we suggest some improvements.
 
-The model with the mixed-hybrid formulation as in \cite{brezina_mixed-hybrid_2010, sistek_bddc_2015} will be followed.
-The enrichment will be chosen and incorporated in the formulation so that the singularities in 0D-2D and
-1D-3D are better approximated and incompatible meshes can be used. 
-We shall start by enriching the pressure field with a~logarithmic function like we
-do in Section \ref{sec:model_aquifer} and investigate the consequences in the mixed and mixed-hybrid formulation.
+Then we transform the model to the mixed-hybrid form based on~\cite{brezina_mixed-hybrid_2010, sistek_bddc_2015}.
+We suggest an enrichment for velocity and a~discretization with mixed finite elements.
+We implement this XFEM enrichment in Flow123d and we run several numerical experiments.
+We further extend these results into 1d-3d coupled model.
 
-Secondly the velocity field will be enriched. We will look for a~proper vectorial enrichment functions.
-The accuracy of the velocity field, in particular the flow across the elements edges, is very important for
-the transport equation which is in the main focus in most of the applications.
+To be able to apply the XFEM on the incompatible meshes, it is necessary to determine the intersections
+between the meshes of different dimensions. We do not restraint us only to 1d-2d and 1d-3d cases, but we suggest
+a~robust algorithm for finding intersections of simplicial meshes in arbitrary 3d space.
+Considering a~broader scope, this algorithm can be used also for fractures and cracks in other applications.
 
-In a consequence of the enrichment, the discrete spaces will be extended. The influence of the enrichment on the inf-sup 
-condition will be investigated and the proof of stability for the enriched formulation should be provided.
-The aim is to understand the stability condition good enough so that some constraints on the choice of the enrichment 
-functions can be defined. 
 
-The realization of the model in the means of code implementation will require several non-standard techniques.
-Efficient data structure must be provided for the enrichment implementation in finite element classes.
-The intersections of the mesh domains of different dimensions must be computed. A specialized integration
-on the intersected elements is needed to assembly the integrals in the system matrix. 
-Solving the final linear algebraic system will require an efficient numerical method.
+% In a consequence of the enrichment, the discrete spaces will be extended. The influence of the enrichment on the inf-sup 
+% condition will be investigated and the proof of stability for the enriched formulation should be provided.
+% The aim is to understand the stability condition good enough so that some constraints on the choice of the enrichment 
+% functions can be defined. 
+
+Regarding the implementation and the code design, there are several non-standard techniques required
+in comparison to standard FEM codes.
+Efficient data structure must be provided for the enriched finite elements.
+Handling of the additional degrees of freedom of the enrichment must be considered.
+% The intersections of the mesh domains of different dimensions must be computed.
+An accurate integration on the intersected (and enriched) elements is needed to assembly the integrals correctly. 
+Solving the final linear algebraic system requires an efficient numerical method.
+A~reasonable output post-processing must be developed, so that the XFEM solution (piecewise non-polynomial solution)
+can be visualized properly.
 Each of these sub-problems is not trivial and requires a new approach or at least extending the existing one.
-The steps of the realization are summarized below in Section \ref{sec:realization}.
 
-\subsection{Realization} \label{sec:realization}
-The suggested numerical model will be implemented and tested in the software Flow123d.
-The following upgrades and changes are to be considered.
 
-The enrichment functions need to be defined and support for the enrichment in the finite element classes must be implemented. 
-A class that handles the degrees of freedom must be then updated to include the additional enriched degrees of freedom
-and the structure of the linear system must be reorganized accordingly.
+% \subsection{Realization} \label{sec:realization}
+% The suggested numerical model will be implemented and tested in the software Flow123d.
+% The following upgrades and changes are to be considered.
+% 
+% The enrichment functions need to be defined and support for the enrichment in the finite element classes must be implemented. 
+% A class that handles the degrees of freedom must be then updated to include the additional enriched degrees of freedom
+% and the structure of the linear system must be reorganized accordingly.
+% 
+% The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
+% of different dimensions is now being finished (see Chapter \ref{chap:intersections}). The enrichment will propagate from the intersected 3D elements.
+% The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
+% near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
+% the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
+% a~constant parameter.
 
-The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
-of different dimensions is now being finished (see Chapter \ref{chap:intersections}). The enrichment will propagate from the intersected 3D elements.
-The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
-near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
-the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
-a~constant parameter.
+% Then the assembly routines of the enriched terms into the linear system must be provided.
+% Since the enrichment function would not be polynomial, accurate integration on the enriched elements is required. 
+% The adaptive elements sub-refinement approach can be used to obtain more precise quadrature, 
+% or quadrature points defined in cylindrical coordinate system in the vicinity of 1D elements intersections
+% might be suitable in this case.
 
-Then the assembly routines of the enriched terms into the linear system must be provided.
-Since the enrichment function would not be polynomial, accurate integration on the enriched elements is required. 
-The adaptive elements sub-refinement approach can be used to obtain more precise quadrature, 
-or quadrature points defined in cylindrical coordinate system in the vicinity of 1D elements intersections
-might be suitable in this case.
+% Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
+% can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
 
-Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
-can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
+
 
 
 \section{Document Structure} \label{sec:structure}
+
+The text is divided into four main parts.
+In the first chapter~\ref{chap:reduced}, the reduced dimension concept is described in details and the meshes of combined dimensions are defined.
+The models of groundwater flow, coupling non-planar 1d-2d and 1d-3d domains, are formulated and put in the context of the software Flow123d 
+and other works.
+
+The background research on various XFEMs is provided in the first part of Chapter~\ref{chap:xfem_pressure}.
+It is then followed by a~well aquifer pressure model in which the singular enrichment is applied by the means of XFEM.
+Various aspects and properties of the model and the method are studied, different enrichment strategies are compared. 
+
+%TODO
+%restructure the chapter 3
+% xfem research
+% well aquifer model
+% Numerical tests
+%   single well tests
+%   conditioning
+%   enrichment radius
+%   Multi-well tests
+% summary
+
+Next the mixed model for pressure and velocity is formulated in Chapter~\ref{chap:xfem_mh}.
+A~new enrichment for velocity is proposed in the mixed form.
+The coupled models both for non-planar 1d-2d and 1d-3d are defined and followed by several
+numerical tests demonstrating the properties of the new enrichment in XFEM.
+
+Chapter~\ref{chap:intersections} is dedicated to the intersection algorithms.
+The concept of Pl\"ucker coordinates is introduced and algorithms for various intersection cases
+of simplicial elements is described. Numerical experiments are provided for demonstration.
+
 
 % Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of art
 % on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
@@ -208,7 +257,8 @@ can be visualized properly. A~kind of adaptive refinement of the output mesh wou
 % of different dimensions using Pl{\"u}cker coordinates.
 
 % Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
-The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the bibliography.
+The thesis is closed with the conclusions in the last Chapter \ref{chap:summary}
+which is followed by the list of figures and tables and the bibliography.
 
 
 
