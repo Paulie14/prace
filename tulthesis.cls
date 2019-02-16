@@ -55,6 +55,9 @@
 \RequirePackage{tabularx}
 \RequirePackage{pdfpages}
 
+% amsmath must be used before hyperref to get rid of warnings of undefined destination on equations
+\include{math_defs}
+
 \ifTUL@pdf
  \RequirePackage{hyperref}
  \hypersetup{colorlinks=true, linkcolor=tul, urlcolor=tul, citecolor=tul}
