@@ -871,7 +871,7 @@ as in the quadrature used by Gracie and Craig in \cite{gracie_modelling_2010}. U
 see \fig{fig:adapt_ref_b}. 
 
 By implementing this approach, all the variants of the XFEM enrichment methods converge with optimal order.
-as the results of the numerical tests will show in section \ref{sec:results}.
+as the results of the numerical tests will show in section \ref{sec:pressure_results}.
 
 \subsubsection{Quadrature in polar coordinates}
 
@@ -1104,9 +1104,8 @@ to be used for measuring the error of our model.
 The analytical solution \eqref{eqn:2d_press_sol_mult} is then used 
 to define the boundary function $g_{2D} = p_2|_{\Gamma_D}$ in \eqref{eqn:prim_simple_dirichlet}.
 
-
-\subsection{Test Cases with Single Well}
-\label{sec:results}
+\section{Numerical Tests}
+\label{sec:pressure_results}
 
 In this section we suggest several numerical tests and provide comparison of different enrichments
 as suggested in Section \ref{sec:enrichment_func}.
@@ -1123,13 +1122,16 @@ distribution and handling of the enriched degrees of freedom, adaptive quadratur
 must have been implemented on our own.
 
 
+\subsection{Test Cases with Single Well}
+\label{sec:2d_results_single}
+
 % We consider a~single well model with the following common input data.
 % The domain $\Omega_2$ is a~square $(-2,2)\times(-2,2)$ and the well is characterized by 
 % $\bx_w=[0.004,0.004]$,  $\rho_w=0.003$, $g^w_{1D}=9$, $\sigma_w=10^5$ and $c_w=10^{10}$, see geometry in \fig{fig:geometry}. 
 % The enrichment radius is set $R_w=0.3$.
 % The test cases differ by the regular part $p_{reg}$ and the source term $f_2$:
 
-\subsubsection{Comparison of Enrichment Methods} \label{sec:res_comparison}
+% \subsubsection{Comparison of Enrichment Methods} \label{sec:res_comparison}
 
 Let us now define four test cases on which we investigate the behavior of the methods, mainly their convergence properties.
 We suggest four analytic solutions which differ by the regular part $p_{reg}$ 
@@ -1252,7 +1254,7 @@ Thus we measure the convergence of the methods only inside the aquifer.
 The error of the solution is measured in $L^2$ norm, which is evaluated using higher order quadrature
 on the unenriched elements and adaptive quadrature in the enriched area, as defined in Section \ref{sec:adaptive_quad_rules}.
 
-\paragraph{Test case 1}
+\subsubsection{Test case 1}
 Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
 %
 \begin{table}[!htb]
@@ -1307,7 +1309,7 @@ We only mention that the SGFEM saves small amount of degrees of freedom on blend
 with the shifted and the ramp function XFEM. The order of convergence in $L^2$ norm closing to 2.0 is optimal.
 
 
-\paragraph{Test case 2}
+\subsubsection{Test case 2}
 Next we present the results in Test case 2, the convergence graph is in \fig{fig:convergence02}.
 %
 \begin{table}[!htb]
@@ -1354,7 +1356,7 @@ disallows computing on finer meshes in case of the standard and ramp function XF
 The shifted XFEM and the SGFEM converge optimally and the error is dominated by the error of the regular part.
 
 
-\paragraph{Test case 3}
+\subsubsection{Test case 3}
 The application of the standard and ramp function XFEM suffers from the same weaknesses, as we have shown above, in both Test case 3 and 4.
 Due to the fact that these two methods do not perform well in our problems, we do not deal with them any further
 and we do not present obtained results.
@@ -1421,7 +1423,7 @@ by the standard FE shape functions. We also see from this figure that the approx
 \end{figure}
 %
 
-\paragraph{Test case 4}
+\subsubsection{Test case 4}
 The last case of our test series demonstrates the necessity of the averaged terms in the model formulation.
 The parameters are gathered in Table \ref{tab:test_case_4_data}.
 %
@@ -1558,7 +1560,7 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
 % \end{center}
 % \end{table}
 
-\paragraph{Test cases summary}
+\subsubsection{Test cases summary}
 We solved four single well-aquifer problems with different solutions on the well-aquifer intersection and different source terms.
 We showed that the enrichment methods can sufficiently approximate the singularity and that the $L^2$ error of the approximation
 can be pushed as low as the error of the regular part of the solution. The optimal convergence order 2.0 has been reached for all
@@ -1578,7 +1580,7 @@ quadrature and the convergence order is always close to the optimum of 2.0.
 
 
 
-\subsubsection{Conditioning of System Matrix} \label{sec:res_conditioning}
+\subsection{Conditioning of System Matrix} \label{sec:res_conditioning}
 A~problem with ill-conditioning of the linear system coming from the XFEM methods is mentioned in Section \ref{sec:soa_xfem}
 and are encountered also in our test cases in the section above. We do not inspect the matrices of the linear system in details, 
 but we use some general results on the conjugate gradients method and the Laplace equation to have an insight on this problem.
@@ -1756,7 +1758,7 @@ Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calcu
 \end{equation}
 on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm.
 %
-\begin{table}[!h]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{crr}
 \toprule
@@ -1864,7 +1866,7 @@ still have such good convergence properties when the wells influence each other 
   \caption{Solution of Test case 5 with 2 wells. }
   \label{fig:test_2w_exact}
 \end{figure}
-\paragraph{Test case 5}
+\subsubsection{Test case 5}
 At first we consider two wells intersecting a~square aquifer $\Omega_2 = [0,10]\times[0, 10]$ at points $\bx_1 = [4.1, 4.3]$ and $\bx_2 = [5.7, 5.9]$.
 The pressure at the top of the wells is set $g^1_{1D}=150$ and $g^2_{1D}=100$ respectively.
 Remaining parameters are set the same for both wells: $\rho_w = 0.003$, $\sigma_w = 100$, $c_w = 10^{10}$ for $w=1,2$.
@@ -1933,7 +1935,7 @@ This is due to the enrichment of elements by multiple enrichment functions causi
 
 
 
-\paragraph{Test case 6}
+\subsubsection{Test case 6}
 In this test case, five wells are cross-secting the aquifer $\Omega_2 = [0,10]\times[0, 10]$.
 The well specific data are gathered in Table \ref{tab:test_case6_wells_data}.
 The wells 3 and 5 can be seen as injection wells with a~positive flux to the aquifer, the others as pumping wells with a~positive flux from the aquifer.
@@ -2022,14 +2024,14 @@ In addition to our article \cite{exner_2016}, the model was formulated correctly
 cross-section. Then the discretization by means of the XFEM was thoroughly described.
 The range of the numerical tests was narrowed to problems with a~single aquifer for which the pseudo-analytic solution was derived.
 
-All the implemented methods were compared in \ref{sec:res_comparison}. Regarding the XFEM, we saw that at 
+All the implemented methods were compared in \ref{sec:2d_results_single}. Regarding the XFEM, we saw that at 
 least the ramp function must be used in order to optimize the error on the blending elements. 
 The shifted XFEM and the SGFEM converged optimally and did not show any difference in the solution precision.
 For the last two methods we also showed that the precision is not dependent on the relative position of a~singularity to a~node.
 
 The issue of a~suboptimal convergence order reported in \cite{gracie_modelling_2010} was investigated. 
 We revealed the problem and we suggested a~better strategy for the adaptive quadrature. 
-The improvement was confirmed by the numerical tests in \ref{sec:res_comparison} where we obtained the optimal 
+The improvement was confirmed by the numerical tests in \ref{sec:pressure_results} where we obtained the optimal 
 order of convergence in $L^2$ norm.
 An alternative quadrature for integration of enriched functions in polar coordinates was also suggested.
 % The quadrature was implemented but the numerical results were not satisfying. This would need a~deeper 
