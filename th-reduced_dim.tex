@@ -34,7 +34,7 @@ but they cannot capture the local effects accurately.
 \includegraphics[width=10cm]{\figpath ground_fractures}
 \caption{
     \label{fig:multi-dim}
-    Scheme of a~problem with domains of multiple dimensions, (used from Flow123d documentation~\cite{flow123d_doc_2018}).
+    Scheme of a~problem with domains of multiple dimensions, (taken from the Flow123d documentation~\cite{flow123d_doc_2018}).
 }
 \end{figure}
 
@@ -49,13 +49,11 @@ but they cannot capture the local effects accurately.
 The other approach considers the disruptions in a~discrete sense, keeping its sizes and properties explicitly in the model.
 This brings more demanding work on the geometric level, where the disruptions have to be represented so that a~suitable computational mesh can be built.
 A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible,
-and represent these as lower dimensional objects. This means on the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
+and to represent these as lower dimensional objects. This means on the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
 This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
 
-
-
-There is a~world-wide community around the DFN (Discrete Fracture Network) problematics. The people are solving a~wide range of topics on DFN,
+There is a~world-wide community around the Discrete Fracture Network (DFN) problematics, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview. The people are dealing with a~wide range of topics on DFN,
 from the definition and measurement of the geological parameters, stochastic generation of DFN and its discretization for FVM/FEM methods,
 to solving multi-physic problems on such geometries. We may differentiate between two types of fracture network models. One is strictly considering only
 the fracture network itself, without considering the bulk domain between fractures. Such model can predict for example the so called \emph{preferential paths}
@@ -64,7 +62,6 @@ into account, so it needs to solve the communication between the fracture and bu
 coupling conditions and solution of the underlying linear system.
 Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN on the most refined level and only the most influential
 parts of the DFN (or none) on the coarsest level.
-\notePE{DFNE (some references)}
 
 In this work we build and expanse a reduced dimensional model on top of the existing one being developed at TUL.
 It combines both the equivalent continuum and DFN approach including the communication with bulk domains.
