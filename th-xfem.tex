@@ -5,12 +5,16 @@
 % orthogonalization processes (Loehnert, or Babuska et al. LOT)
 % level set methods
 
-In the first part of this chapter, we provide a~background research on the XFEM,
+In this chapter we provide a~background research on the XFEM,
 describing the fundamentals and giving an overview on the evolution of the XFEM.
-Later we apply the XFEM on a~well-aquifer pressure model and study various numerical aspects.
-The results presented here are partially covered in our article \cite{exner_2016}.
+Different enrichment methods and various types of enrichments are discussed.
 
-\section{eXtended Finite Element Method (XFEM)} \label{sec:soa_xfem}
+% In the first part of this chapter, we provide a~background research on the XFEM,
+% describing the fundamentals and giving an overview on the evolution of the XFEM.
+% Later we apply the XFEM on a~well-aquifer pressure model and study various numerical aspects.
+% The results presented here are partially covered in our article \cite{exner_2016}.
+
+\section{Basic Concept of XFEM} \label{sec:soa_xfem}
 
 The main feature of this method is the extension of a~space of polynomial shape functions of the finite element
 method with a~special function, that enables to better approximate some local effects. This is called \emph{enrichment}.
@@ -227,13 +231,13 @@ in the unenriched part of the domain. This error should be then balanced with th
 This matter is discussed later, giving more details in section \ref{sec:enrichemnt_radius}.
 
  
-\subsection{Enrichment Methods} \label{sec:enrichment_methods}
+\section{Enrichment Methods} \label{sec:enrichment_methods}
 We now discuss different choices of the local enrichment functions $L(\bx)$ and their particular aspects and properties.
 All the presented XFEM methods considered below are using the standard linear finite element shape 
 functions $N_\alpha(\bx)$, $N_\alpha(x_\alpha)=1$, $\alpha\in\mathcal{I}=\{1\ldots N\}$, associated with the node $x_\alpha$ of the triangulation,
 as the partition of unity.
 
-\subsubsection{Corrected XFEM} \label{sec:corrected_xfem}
+\subsection{Corrected XFEM} \label{sec:corrected_xfem}
 The Corrected XFEM was introduced by T. P. Fries in \cite{fries_corrected_2008} and put in broad context of different XFEMs in the detailed overview \cite{fries_xfem_overview_2010}.
 He recognizes the \emph{reproducing} and \emph{blending} elements.
 The former are the elements where all the nodes are enriched, therefore the complete partition of unity is present
@@ -293,7 +297,7 @@ as special types of the weighted XFEM.
 % and the \textbf{shifted XFEM} for the purpose of this article, as we shall reference to them later.
 
 
-\subsubsection{Stable Generalized FEM} \label{sec:stable_gfem}
+\subsection{Stable Generalized FEM} \label{sec:stable_gfem}
 
 % TODO:
 % sgfem - scaled condition number

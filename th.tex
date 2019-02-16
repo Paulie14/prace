@@ -87,10 +87,24 @@
 % \ThesisTitle{CZ}
 % \ThesisTitle{EN}
 
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+% \begin{flushright}
+\emph{
+Dedicated to the memory of my late father, \\
+Zden{\v e}k Exner. \\
+}
+% \end{flushright}
+\end{center}
+\vspace*{\fill}
+\clearpage
+
 \input th-abstract.tex
 \clearpage
 
 \begin{acknowledgement}
+Tato práce by nevznikla bez podpory mého nejbližšího pracovního a rodinného okolí.
 
 \end{acknowledgement}
 
@@ -153,7 +167,7 @@ $\fluct{\cdot}$ & fluctuation operator \\
 $\R$ & space of real numbers  \\
 $\mathbb N$ & space of unsigned integers \\
 $\mathbb P^k$ & space of polynomials of order $k$  \\
-$\mathbb RT^k$ & space of Raviart-Thomas shape functions of order $k$  \\
+$\mathbb {RT}^k$ & space of Raviart-Thomas shape functions of order $k$  \\
 $L_2$ & Lebesque space \\
 $H^k, H(\div)$ & Hilbert spaces \\
 \end{tabularx}
@@ -198,9 +212,18 @@ $H^k, H(\div)$ & Hilbert spaces \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{XFEM in Pressure Model with Singularities} \label{chap:xfem_pressure}
+\chapter{Extended Finite Element Method} \label{chap:xfem_soa}
 
 % XFEM - state of the art
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input th-xfem.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{XFEM in Pressure Model with Singularities} \label{chap:xfem_pressure}
+
 % well aquifer model
 % singular enrichment
 % numerical results
@@ -208,9 +231,9 @@ $H^k, H(\div)$ & Hilbert spaces \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input th-xfem.tex
+\input th-pressure-model.tex
 
-\input th-result-pressure.tex
+\input th-pressure-results.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -222,9 +245,9 @@ $H^k, H(\div)$ & Hilbert spaces \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input th-model.tex
+\input th-mh-model.tex
 
-\input th-results-flow123d.tex
+\input th-mh-results.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

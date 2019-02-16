@@ -1,0 +1,963 @@
+\section{Numerical Tests}
+\label{sec:pressure_results}
+
+In this section we suggest several numerical tests and provide comparison of different enrichments
+as suggested in Section \ref{sec:enrichment_func}.
+
+The implementation has been done in C++ language using the Deal II~\cite{bangerth_deal.ii_2007}, version 8.0, 
+an open source finite element library. This library provides a well-documented code for high range of operations one needs
+for solving partial differential equation: mesh generation, quadratures, different scalar and vector finite elements,
+linear algebra, $h$ and $p$ adaptivity, error estimators, postprocessing and output to various formats.
+However, it does not support any enrichment techniques like XFEM in the version 8.0.0,
+and so it does not in the actual version 9.0.0, released in May, 2018, up to our best knowledge.
+
+We use as much as possible of the relevant library code, although the enrichment functions, well intersections,
+distribution and handling of the enriched degrees of freedom, adaptive quadrature and some output routines
+must have been implemented on our own.
+
+
+\subsection{Test Cases with Single Well}
+\label{sec:2d_results_single}
+
+% We consider a~single well model with the following common input data.
+% The domain $\Omega_2$ is a~square $(-2,2)\times(-2,2)$ and the well is characterized by 
+% $\bx_w=[0.004,0.004]$,  $\rho_w=0.003$, $g^w_{1D}=9$, $\sigma_w=10^5$ and $c_w=10^{10}$, see geometry in \fig{fig:geometry}. 
+% The enrichment radius is set $R_w=0.3$.
+% The test cases differ by the regular part $p_{reg}$ and the source term $f_2$:
+
+% \subsubsection{Comparison of Enrichment Methods} \label{sec:res_comparison}
+
+Let us now define four test cases on which we investigate the behavior of the methods, mainly their convergence properties.
+We suggest four analytic solutions which differ by the regular part $p_{reg}$ 
+and the corresponding source term $f_2$. Thus the quality of the approximation
+of both the singular and the regular part can be later inspected to make a conclusion whether
+it behaves as expected.
+The list of $p_{reg}$ and $f_2$ follows:
+%
+\begin{itemize}
+\item case 1: $p_{reg} = 0$, $f_2 = 0$,
+\item case 2: $p_{reg} = U\sin(\omega x)(r_w-\rho_w)^2$,
+    \begin{multline*}
+        \qquad\;\, f_2 = -K_2 U\bigg[\left(4 - 2 \frac{\rho_w}{r_w} \right) \sin(\omega x)\\      
+              + 4(r_w-\rho_w)\frac{\vc{r}\cdot\vc{e}_1}{r_w} \omega\cos(\omega x)
+                - (r_w-\rho_w)^2\omega^2\sin(\omega x) \bigg],
+    \end{multline*}
+\item case 3: $p_{reg} = U r_w^2$, $f_2 = -4 K_2 U$,
+\item case 4: $p_{reg} = U\sin(\omega x)$, $f_2 = K_2 U\omega^2\sin(\omega x)$.
+\end{itemize}
+The source term $f_2$ is visualized in \fig{fig:prim_sources}.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+    \centering    
+%     \subfloat[test case 1]{\label{fig:source01} 
+%         \includegraphics[width=0.46\textwidth]{\results source07_final.pdf} }
+% %   \hspace{5pt}
+%     \hfill
+    \subfloat[test case 2]{\label{fig:source02} 
+        \includegraphics[width=0.46\textwidth]{\results source04_final.pdf} }
+    \vskip\baselineskip
+    \subfloat[test case 3]{\label{fig:source03} 
+        \includegraphics[width=0.46\textwidth]{\results source05_final.pdf} }
+%   \hspace{5pt}
+    \hfill
+    \subfloat[test case 4]{\label{fig:source04} 
+        \includegraphics[width=0.46\textwidth]{\results source07_final.pdf} }
+    
+  \caption
+  {Source term $f_2$ visualization.}
+  \label{fig:prim_sources}
+\end{figure}
+%
+Test case 1 includes only the singularity and has zero source term, therefore the approximation
+of the singularity itself is in the focus. 
+% Later we present the original result from \cite{exner_2016} for this test case.
+In Test case 2, the part of the searched solution $p_{reg}$ has both its value and gradient zero on the edge of the well $\Gamma_w$.
+% we have no effects of the source term directly on $\Gamma_w$.
+In Test case 3, $p_{reg}$ has constant value and gradient on $\Gamma_w$, and finally $p_{reg}$ is fluctuating on $\Gamma_w$ in Test case 4.
+Thus from test cases 1 to 4 we are going from the simplest to the most complex problem
+in the view of how the approximation is constructed in the vicinity of the well.
+% Thus the average decomposition $\Gamma_w$ is not necessary as in the previous cases.
+% and the average decomposition plays important role to achieve optimal convergence.
+
+We now list the input data common to all test cases.
+The permeability between the aquifer and the well is set to $10^5$.
+The value of the parameter $c_w$ (well permeability), explained in \eqref{eqn:linear_pressure_in_1d} is set to $10^{10}$,
+so the pressure in the well is nearly constant.
+The aquifer domain is a~square $\Omega=[-l_\Omega, l_\Omega]\times[-l_\Omega,l_\Omega]$, with $l_
+\Omega$ defined for each test case individually.
+As we shall see below, the approximation of the singularity by means of the standard FEM shape functions is better 
+when a~node of $\mathcal{T}_{2}$ is inside the well cross-section. Therefore the center of the singularity $\bx_w$
+is placed such that we do not take advantage of this feature and solve the worse scenario.
+See the common geometry of the test cases in \fig{fig:test_cases_geometry}.
+% %
+% \begin{table}
+% \begin{center}
+% \begin{tabular}{c|cccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% parameter & case 1 & case 2 & case 3 & case 4 \\
+% \midrule
+% $l_\Omega$  & 100    & 2      & 2      & 2  \\ 
+% $\bx_w$     & [5.43,5.43]  & [0.004,0.004]  & [0.004,0.004]  & [0.004,0.004] \\
+% $\rho_w$    & 0.2    & 0.003  & 0.003  & 0.003 \\
+% $\sigma_w$  & $10^5$ & $10^5$ & $10^5$ & $10^5$ \\
+% $c_w$       & $10^{10}$ & $10^{10}$ & $10^{10}$ & $10^{10}$ \\
+% $R_w$       & 50     & 0.3    & 0.3    & 0.3 \\
+% $g^w_{1D}$  & 100    & 4      & 4      & 4  \\
+% $\omega$    & --     & 6      & --     & 6  \\
+% $U$         & --     & 4      & 0.7    & 4  \\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for the considered test cases.}
+% \label{tab:test_cases_data}
+% \end{center}
+% \end{table}
+% %
+
+\begin{figure}[!htb]
+    \centering    
+    \def\svgwidth{0.35\textwidth}
+        \input{\results geometry.pdf_tex}
+  \caption[Geometry of the aquifer domain.]{Geometry of the aquifer domain common to all the test cases.}
+  \label{fig:test_cases_geometry}
+\end{figure}
+
+% \begin{figure}[!htb]
+% %   \vspace{0pt}
+%   \centering    
+%   \subfloat[geometry of the problem]{\label{fig:geometry} 
+% %     \begin{center}         
+%       \def\svgwidth{0.325\textwidth}
+%       \input{\results geometry.pdf_tex}
+% %     \end{center} 
+%       }
+%   \hspace{5pt}
+%   \subfloat[source term $f$]{\label{fig:solution} 
+%     \includegraphics[width=0.58\textwidth]{\results source_term.pdf} }
+%   \caption[]
+%   {Geometry and the prescribed source term. Note that the cylinder representing the well is thicker then the actual well.}
+% %   \label{fig:adapt_refinement}
+% \end{figure}
+
+
+We are interested in the behavior of the enrichment in the 2d domain.
+Thus we measure the convergence of the methods only inside the aquifer.
+% and we do not pay attention to the solution in the well.
+The error of the solution is measured in $L^2$ norm, which is evaluated using higher order quadrature
+on the unenriched elements and adaptive quadrature in the enriched area, as defined in Section \ref{sec:adaptive_quad_rules}.
+
+\subsubsection{Test case 1}
+Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$\\
+\midrule
+100 & [5.43,5.43] & 0.2 & 50 & 100 \\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 1.}
+\label{tab:test_case_1_data}
+\end{center}
+\end{table}
+%
+The parameters are gathered in Table \ref{tab:test_case_1_data}.
+Convergence of all used methods is measured on a~set of uniformly refined meshes, 
+see the convergence graph in \fig{fig:convergence01}.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=\textwidth]{\results convergence01.pdf}
+  \caption[Convergence graph in Test case 1]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
+  \label{fig:convergence01}
+\end{figure}
+%
+At first, we solve the problem by the standard FEM using $h$ adaptivity.
+Kelly's error estimator from Deal II library is used to determine 30\% of the elements
+with the highest error which are refined in the next step.
+The element size $h$ for the convergence graph is determined as the size of the smallest element in the 
+vicinity of the well.
+From the graph of "FEM\_adapt" it is apparent that the convergence is slow until the size of the elements reaches the scale of the
+well cross-section and one of the mesh nodes gets inside. 
+Therefore the graph is divided into two parts with different convergence orders 0.56 and 1.27.
+%We see that a very fine mesh is needed to capture the singularity but the error is still high.
+
+Next we look at the convergence of the enrichment methods in the XFEM.
+The standard XFEM pushes the error down by three orders of magnitude. Its convergence rate is nearly optimal with the order closing to 2.0.
+On the other hand we have no results on finer meshes due to the conditioning of the linear system
+which deteriorates rapidly for $h<2$ and our conjugate gradient (CG) solver does not converge.
+The same problem arises using the ramp function XFEM. It deals better with the error on blending elements but the
+ill-conditioning of the system matrix still corrupts the computation. We discuss the conditioning of the system 
+a bit more in the next subsection \ref{sec:res_conditioning}.
+
+The shifted XFEM and the SGFEM behave nearly the same way and give the best results as expected.
+We alert the reader that the convergence graphs of ramp function XFEM, shifted XFEM and SGFEM overlap in \fig{fig:convergence01}.
+We only mention that the SGFEM saves small amount of degrees of freedom on blending elements in comparison
+with the shifted and the ramp function XFEM. The order of convergence in $L^2$ norm closing to 2.0 is optimal.
+
+
+\subsubsection{Test case 2}
+Next we present the results in Test case 2, the convergence graph is in \fig{fig:convergence02}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $\omega$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 6 & 4\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 2.}
+\label{tab:test_case_2_data}
+\end{center}
+\end{table}
+%
+The parameters are gathered in Table \ref{tab:test_case_2_data}.
+We expect the standard FE shape functions to optimally approximate the regular part of the solution
+and the shape functions of the enrichment to capture the singularity.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=\textwidth]{\results convergence02.pdf}
+  \caption[Convergence graph in Test case 2]{Convergence of the $L^2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
+  data comes from the problem without the well solved by standard FEM and with optimal convergence order 2.0.}
+  \label{fig:convergence02}
+\end{figure}
+%
+Therefore we solve the problem on the aquifer domain only with the source term $f_2$ but omitting the singularity
+to have a reference solution -- an~approximation of $p_{reg}$. We plot this solution labeled as $\textrm{FEM}_{reg}$ in the convergence graph.
+Since the source term $f_2$ is a~smooth and bounded function, the FEM is supposed to converge optimally with order 2.0
+which is confirmed in the graph.
+The error in XFEM is then expected to be of the same magnitude as the error $\textrm{FEM}_{reg}$.
+
+Using the standard FEM approximation, see the line FEM in \fig{fig:convergence02}, the convergence order is low 0.5,
+because the size of the elements is still far from $\rho_w$ and it cannot capture the singularity at all.
+
+The XFEM behave similarly as in the Test case 1. The error of the enrichment methods is very close to the error $\textrm{FEM}_{reg}$,
+except standard XFEM where the error in the blending elements is significant. The ill-conditioning of the linear system again 
+disallows computing on finer meshes in case of the standard and ramp function XFEM.
+The shifted XFEM and the SGFEM converge optimally and the error is dominated by the error of the regular part.
+
+
+\subsubsection{Test case 3}
+The application of the standard and ramp function XFEM suffers from the same weaknesses, as we have shown above, in both Test case 3 and 4.
+Due to the fact that these two methods do not perform well in our problems, we do not deal with them any further
+and we do not present obtained results.
+The parameters are gathered in Table \ref{tab:test_case_3_data}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 0.7\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 3.}
+\label{tab:test_case_3_data}
+\end{center}
+\end{table}
+%
+
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+% \begin{tabular}{r|c|c|c|c|c|r|r}
+\begin{tabular}{rc|cc|cc|cc}
+\toprule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$\textrm{FEM}_{reg}$} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
+i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+0 & 0.5000 & 2.45e-01 & --   & 2.73e-01 & --   & 2.35e-01 & --   \\ %\hline
+1 & 0.2500 & 6.12e-02 & 2.17 & 7.89e-02 & 1.79 & 6.70e-02 & 1.81 \\ %\hline
+2 & 0.1250 & 1.53e-02 & 1.95 & 1.60e-02 & 2.30 & 1.60e-02 & 2.07 \\ %\hline
+3 & 0.0625 & 3.82e-03 & 1.99 & 4.08e-03 & 1.97 & 4.08e-03 & 1.97 \\ %\hline
+4 & 0.0312 & 9.56e-04 & 2.00 & 1.02e-03 & 2.00 & 1.02e-03 & 2.00 \\ %\hline
+5 & 0.0156 & 2.39e-04 & 2.00 & 2.58e-04 & 1.98 & 2.58e-04 & 1.98 \\ %\hline
+6 & 0.0078 & 5.97e-05 & 2.00 & 6.44e-05 & 2.00 & 6.44e-05 & 2.00 \\ %\hline
+7 & 0.0039 & 1.49e-05 & 2.00 & 1.61e-05 & 2.00 & 1.61e-05 & 2.00 \\ %\hline 
+\bottomrule
+\end{tabular}
+\caption{Convergence table of the shifted XFEM and SGFEM in Test case 3.}
+\label{tab:convergence_test3}
+\egroup
+\end{center}
+\end{table}
+%
+Table \ref{tab:convergence_test3} shows the convergence of the shifted XFEM and SGFEM for Test case 3.
+In the column $\textrm{FEM}_{reg}$ the optimal convergence with the order 2.0 of the standard FEM on the regular problem is displayed as a~reference.
+We see that both shifted XFEM and SGFEM converge also with the optimal convergence order 2.0 and that there is no significant difference in the error 
+from the refinement level 2. The error of both enrichment methods is a bit higher than the error of $\textrm{FEM}_{reg}$, we would further diminish this
+difference by enlarging the enrichment radius. Looking at the graph in \fig{fig:error_distribution_test3} where the error distribution is plotted,
+we see that the error is concentrated outside the enrichment radius circle. It is caused due to the insufficient approximation of the singularity
+by the standard FE shape functions. We also see from this figure that the approximation quality of the quadrilateral FEs on structured mesh is direction dependent.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=0.5\textwidth]{\results error05_final.pdf}
+  \caption[Error distribution in Test case 3]{$L^2$ error distribution in Test case 3 at the refinement level level 4 ($h=0.0312$).
+  A green circle represents the enrichment radius $R_w$. There is no visible difference between shifted XFEM and SGFEM, so only SGFEM is plotted.}
+  \label{fig:error_distribution_test3}
+\end{figure}
+%
+
+\subsubsection{Test case 4}
+The last case of our test series demonstrates the necessity of the averaged terms in the model formulation.
+The parameters are gathered in Table \ref{tab:test_case_4_data}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $\omega$ & $U$ \\
+\midrule
+2 & [0.004,0.004] & 0.003 & 0.3 & 4 & 6 & 4\\
+\bottomrule
+\end{tabular}
+\caption{Input data for Test case 4.}
+\label{tab:test_case_4_data}
+\end{center}
+\end{table}
+%
+
+The convergence of the considered methods is shown in Table \ref{tab:convergence_test4}, in the same manner as in Test case 3.
+We see that the convergence order of shifted XFEM and SGFEM is optimal up to the refinement level 6 and the error corresponds to
+the error of the regular problem in $\textrm{FEM}_{reg}$ column. 
+%
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+% \begin{tabular}{r|c|c|c|c|c|r|r}
+\begin{tabular}{rc|cc|cc|cc}
+\toprule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$\textrm{FEM}_{reg}$} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
+i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+0 & 0.5000 & 1.01e+01 & --   & 9.30e+00 & --   & 9.92e+00 & --   \\ %\hline
+1 & 0.2500 & 2.25e+00 & 2.17 & 2.21e+00 & 2.07 & 2.24e+00 & 2.15 \\ %\hline
+2 & 0.1250 & 5.84e-01 & 1.95 & 5.75e-01 & 1.94 & 5.80e-01 & 1.95 \\ %\hline
+3 & 0.0625 & 1.47e-01 & 1.99 & 1.46e-01 & 1.98 & 1.47e-01 & 1.98 \\ %\hline
+4 & 0.0312 & 3.70e-02 & 2.00 & 3.66e-02 & 2.00 & 3.67e-02 & 2.00 \\ %\hline
+5 & 0.0156 & 9.24e-03 & 2.00 & 9.15e-03 & 2.00 & 9.17e-03 & 2.00 \\ %\hline
+6 & 0.0078 & 2.31e-03 & 2.00 & 2.41e-03 & 1.93 & 2.39e-03 & 1.94 \\ %\hline
+7 & 0.0039 & 5.78e-04 & 2.00 & 1.05e-03 & 1.20 & 1.01e-03 & 1.24 \\ %\hline 
+\bottomrule
+\end{tabular}
+\egroup
+\caption{Convergence table of the shifted XFEM and SGFEM in Test case 4.}
+\label{tab:convergence_test4}
+\end{center}
+\end{table}
+
+Then the error of the enrichment methods does not decrease as expected at the refinement level 7 and partially 6. 
+To explain this behavior we plot the error distribution in two different refinement levels in \fig{fig:error_distribution_test4}.
+On the left side, the error in the regular part is dominating. On the right side, the error of the singular part dominates in the center
+and it spreads in $x$ direction. Closer look at the solution on the well edge shows that the pressure on the well edge is incorrect.
+The problem has been solved several times for different $\rho_w$ (smaller and larger) and this error always shows up when there is 
+an~element of the mesh with all its nodes inside the well-aquifer intersection.
+We have a~suspicion that the elimination of the degrees of freedom of such elements from the linear system is done incorrectly
+in our implementation. On the finer meshes where $\rho_w$ is larger than the element size,
+neglecting the fluctuation term on the well edge \eqref{eqn:well_edge_fluctuation_neglect} might actually increase the error.
+Since our model is not describing the pressure in the aquifer inside the well-aquifer intersection
+(the pressure is constant and equal $p_1(\bx_w)$ according to the reduced 1d model of the well),
+and we do not aim in reality to compute on such fine meshes, we do not pursue solving this error at the moment.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering
+  \subfloat[refinement level 4]{\label{fig:error_distribution_test4a} 
+        \includegraphics[width=0.48\textwidth]{\results error07_04_final.pdf} }
+  \hfill
+  \subfloat[refinement level 7]{\label{fig:error_distribution_test4b} 
+        \includegraphics[width=0.48\textwidth]{\results error07_07_final.pdf} }
+  \caption[Error distribution in Test case 4]{$L^2$ error distribution in Test case 4 at the refinement level level 4 and 7.
+  A green circle represents the enrichment radius $R_w$. Pay attention to the logarithmic scale in the right figure.}
+  \label{fig:error_distribution_test4}
+\end{figure}
+%
+
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{7pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|rr}
+% \toprule
+% %\hline
+% %&&\multicolumn{2}{c|}{}&&\\[-15pt]
+% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L^2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{Test case 3} & \multicolumn{2}{c|}{Test case 4} & \multicolumn{2}{c}{}\\ [3pt] %\midrule
+% i & h & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
+% 0 & 0.5000 & 2.73e-01 & -    & 9.92e+00 & -    & 87 & 6         \\ %\hline
+% 1 & 0.2500 & 7.89e-02 & 1.79 & 2.24e+00 & 2.15 & 295 & 6        \\ %\hline
+% 2 & 0.1250 & 1.60e-02 & 2.30 & 5.80e-01 & 1.95 & 1110 & 21      \\ %\hline
+% 3 & 0.0625 & 4.08e-03 & 1.97 & 1.47e-01 & 1.98 & 4294 & 69      \\ %\hline
+% 4 & 0.0312 & 1.02e-03 & 2.00 & 3.67e-02 & 2.00 & 16930 & 289    \\ %\hline
+% 5 & 0.0156 & 2.58e-04 & 1.98 & 9.17e-03 & 2.00 & 67206 & 1157   \\ %\hline
+% 6 & 0.0078 & 6.44e-05 & 2.00 & 2.39e-03 & 1.94 & 267797 & 4628  \\ %\hline
+% 7 & 0.0039 & 1.61e-05 & 2.00 & 1.01e-03 & 1.24 & 1069134 & 18509\\ %\hline 
+% \bottomrule
+% \end{tabular}
+% \egroup
+% \label{tab:sgfem_convergence_test34}
+% \caption{Convergence table of the SGFEM in Test case 3 and 4.}
+% \end{center}
+% \end{table}
+% 
+% \paragraph{Test case 4}
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{7pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|rr}
+% \toprule
+% %\hline
+% %&&\multicolumn{2}{c|}{}&&\\[-15pt]
+% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L^2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{Test case 3} & \multicolumn{2}{c|}{Test case 4} & \multicolumn{2}{c}{}\\ [3pt] %\midrule
+% i & h & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
+% 0 & 0.5000 & 2.35e-01 & -    & 9.30e+00 & -    & 103 & 22       \\ %\hline
+% 1 & 0.2500 & 6.70e-02 & 1.81 & 2.21e+00 & 2.07 & 311 & 22       \\ %\hline
+% 2 & 0.1250 & 1.60e-02 & 2.07 & 5.75e-01 & 1.94 & 1134 & 45      \\ %\hline
+% 3 & 0.0625 & 4.08e-03 & 1.97 & 1.46e-01 & 1.98 & 4334 & 109     \\ %\hline
+% 4 & 0.0312 & 1.02e-03 & 2.00 & 3.66e-02 & 2.00 & 17010 & 369    \\ %\hline
+% 5 & 0.0156 & 2.58e-04 & 1.98 & 9.15e-03 & 2.00 & 67362 & 1313   \\ %\hline
+% 6 & 0.0078 & 6.44e-05 & 2.00 & 2.41e-03 & 1.93 & 268105 & 4936  \\ %\hline
+% 7 & 0.0039 & 1.61e-05 & 2.00 & 1.05e-03 & 1.20 & 1069750 & 19125\\ %\hline
+% \bottomrule
+% \end{tabular}
+% \egroup
+% \label{tab:xfem_convergence_test34}
+% \caption{Convergence table of the shifted XFEM in Test case 3 and 4.}
+% \end{center}
+% \end{table}
+
+\subsubsection{Test cases summary}
+We solved four single well-aquifer problems with different solutions on the well-aquifer intersection and different source terms.
+We showed that the enrichment methods can sufficiently approximate the singularity and that the $L^2$ error of the approximation
+can be pushed as low as the error of the regular part of the solution. The optimal convergence order 2.0 has been reached for all
+the enrichment methods. The standard XFEM displayed significant error on the blending elements in contrast to the ramp function XFEM.
+However, both suffered from ill-conditioning of the linear system. The most promising results were obtained using the shifted XFEM
+and SGFEM, which behaved very similarly in our test cases.
+
+Regarding the order convergence 1.8 presented by Gracie and Craig \cite{gracie_modelling_2010}, we obtained similar convergence order 
+around 1.7-1.8 in our experiments using the original adaptive quadrature. Although, the order could be lower 
+depending on the position of the well to the nodes of the mesh. We do not experience this behavior with our adaptive
+quadrature and the convergence order is always close to the optimum of 2.0.
+
+% The error of the shifted XFEM and the SGFEM addressed in \cite{exner_2016} for Test case 4 is suppressed due to two improvements. 
+% Firstly the analytic solution has been derived more generally, including the effect of the well permeability $c_w$
+% and the averaged terms, which better corresponds to the weak form.
+% Secondly the code has been improved and debugged heavily since then and there was apparently a~problem in assembling the averaged terms.
+
+
+
+\subsection{Conditioning of System Matrix} \label{sec:res_conditioning}
+A~problem with ill-conditioning of the linear system coming from the XFEM methods is mentioned in Section \ref{sec:soa_xfem}
+and are encountered also in our test cases in the section above. We do not inspect the matrices of the linear system in details, 
+but we use some general results on the conjugate gradients method and the Laplace equation to have an insight on this problem.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+%   \includegraphics[width=\textwidth]{\results iterations.pdf}
+    \includegraphics[width=\textwidth]{\results conditioning05.pdf}
+  \caption[CG iterations count in Test case 3]{Graph of dependence of the CG iteration count on the 
+  number of degrees of freedom. Measured on both problems with no serious distinction observed.}
+  \label{fig:conditioning05}
+\end{figure}
+%
+
+The condition number for matrices resulting from a~conforming FEM applied to Laplace equation is $O(h^{-2})$, so the iteration count 
+for the CG without preconditioning is $O(h^{-1})=O(\sqrt{n})$, where $n=1/h^2$ is number of degrees of freedom in case of linear finite elements in 2d. 
+With local preconditioning (Jacobi, SOR, ILU) one can usually achieve the number of iterations $O(h^{-0.5})$, cf. \cite{ern_evaluation_2006}.
+
+
+Let us use the data from Test case 3 and look at the iteration count needed by the CG solver in \fig{fig:conditioning05}.
+The number of iterations of the standard FEM is corresponding to the classic results as mentioned in the paragraph above. 
+
+We can see clearly the enormous growth of the number of iterations in case of the standard XFEM and the ramp 
+function XFEM. These problems are generally known and are described for example in the overview of the XFEM in
+\cite{fries_xfem_overview_2010}. The usage of enrichment functions can make the approximation space almost linearly 
+dependent from which the ill-conditioning of the system arises. 
+
+On the other hand, the SGFEM is proven in \cite{babuska_stable_2012} to overcome this. They state in the conclusion that
+the conditioning of the SGFEM system is not worse than that of the standard FEM system.
+This is exactly what we see in the graph \fig{fig:conditioning05}, where the trends of the SGFEM and the FEM are nearly the same.
+The behavior of the shifted XFEM is similarly good. We explain this by the fact that the difference between the enrichment functions
+in shifted XFEM and SGFEM in this particular settings is not that significant.
+
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=\textwidth]{\results moving_xw_error_zero.pdf}
+  \caption[Approximation error dependence on singularity position]{Graph of dependence of the approximation error
+   on the position of the singularity respective to a~mesh node.}
+  \label{fig:moving_xw_error}
+\end{figure}
+%
+Another test is considered based on Test case 3, in which the source term is set zero. The model is solved for different 
+positions of the singularity $\bx_w$ and the effects on the solution and the linear system is observed. The mesh is structured and fixed with $h=0.125$,
+centered at point $[0,0]$ which is an~element node. The position of the well (the singularity center) is parametrized by $\bx_w = [t,t]$ with 
+\[t\in\{0,\, 0.002,\, 0.004,\, 0.01,\, 0.015,\, 0.03,\, 0.06,\, 0.1,\, 0.11,\, 0.12,\, 0.123,\, 0.125\},\]
+so the well moves from one node of the element to the opposite one along the element diagonal. 
+We see the results in two graphs \fig{fig:moving_xw_error} and \fig{fig:moving_xw_iterations}. The first one displays
+the approximation error dependence on the relative position of the singularity and the element. The trend is apparent,
+however the magnitude of the change is not significant. The error of the standard XFEM exhibits the same behavior
+but it is by one order of magnitude higher, so it does not fit in the figure.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=\textwidth]{\results moving_xw_iterations.pdf}
+  \caption[CG iteration count dependence on singularity position]{Graph of dependence of the CG iteration count
+   on the position of the singularity respective to a~mesh node.}
+  \label{fig:moving_xw_iterations}
+\end{figure}
+%
+The second figure shows the change in the number of iterations of the CG solver. The trend is again apparent:
+the CG deals better with the linear system when the singularity closes to an element node, the situation is worse
+with the singularity in the middle. We do not understand this behavior completely, although we provide the following explanation.
+The approximation of a~singularity by standard FE shape functions is much better when the singularity center is close to a~mesh node
+(we observed this in Test case 1) due to the fact that the magnitude of the singularity is captured by the DoF corresponding to the node. 
+Therefore when moving the singularity center away from the mesh node, the contribution of the enrichment to the system matrix is larger
+(also observed in the experiments).
+Since the conditioning (and the number of CG iterations) is sensitive to the enrichment part of the matrix,
+we observe this trend in \fig{fig:moving_xw_iterations}.
+
+
+% \begin{figure}[!htb]
+% %   \vspace{0pt}
+%   \centering
+%   \subfloat[Approximation error]{\label{fig:moving_xw_error} 
+%         \includegraphics[width=\textwidth]{\results moving_xw_error.pdf} }
+%   \vskip\baselineskip
+%   \subfloat[CG iterations]{\label{fig:moving_xw_iterations}
+%         \includegraphics[width=\textwidth]{\results moving_xw_iterations.pdf} }
+%         
+%   \caption[Dependence on position of singularity]{Graph of dependence of the approximation error and the CG iteration count
+%   on the position of the singularity respective to a~mesh node.}
+%   \label{fig:conditioning05}
+% \end{figure}
+%
+
+We are satisfied with the results of the shifted XFEM and SGFEM, so we do not investigate the properties of the linear
+system any further at this stage. This area of the problem would need deeper investigation, including a~search for a~proper
+preconditioner of the system matrix and looking for an~alternative iteration scheme to solve these specific types of linear systems.
+
+
+
+\subsection{Enrichment Radius Estimation} \label{sec:enrichemnt_radius}
+Up to now, we set the enrichment radius $R_w$ in the experiments to a~fixed value, without providing any explanation of the particular choice.
+In this section, we study the dependence of the solution error on the enrichment radius $R_w$.
+We look for a~clue for a~particular choice of $R_w$ that is optimal in a~specific sense.
+The first part of this section is devoted to a~theoretical analysis, the later part presents a~numerical validation of obtained estimates.
+
+\subsubsection{Derivation of Theoretical Estimate}
+Let us consider a~general elliptic problem to find $p\in V$ satisfying
+\[
+   a(p, q) = l(q), \text{ for } q \in V,
+\]
+where $a$ is bounded elliptic bilinear form: $\norm{a}\le \alpha_2$, $a(q, q) \ge \alpha_1 \norm{q}_V^2$, $\alpha_1>0$, and $l$ a~bounded linear form, $l\in V'$. 
+Suppose, that the problem is to be solved on a~domain $\Omega \subset \Real^2$ with a~single well of radius $\rho_w$ at the origin. 
+Let us assume, that the solution can be split into the singular part $p_{sin}(\vc x)= \log |\vc x|$ and the regular part $p_{reg}=p-p_{sin}$.
+Let $V^{reg}_h$ be a~polynomial finite element subspace of $V$ on a~regular mesh of elements with a~maximal side length $h$
+and let $V_h=V^{reg}_h + V^{enr}_h$ be a~such enriched space that $p_{sin}$ can be approximated exactly on the enriched domain $Z_w$, i.e.
+\begin{equation}
+   \inf_{q\in V_h} \norm{p_{sin} - q}_V = \inf_{q\in V^{reg}_h} \norm{p_{sin}|_{Z'_w} - q}_V, \quad Z'_w = \Omega\setminus Z_w.
+\end{equation}
+Using standard error estimate for elliptic PDE (e.g. \cite[Theorem 13.1]{ciarlet_basic_1991}), we get
+\begin{equation}
+    \label{eq:std_err_estimate}
+    \norm{p - p_h}_{V} \le c_a \inf_{q \in V_h} \norm{p - q}_{V} 
+    \le c_a \left(\inf_{q \in V^{reg}_h} \norm{p_{reg} - q}_{V} + \inf_{q \in V_h} \norm{p_{sin} - q}_{V} \right)   
+\end{equation}
+where $c_a=1+\alpha_2/\alpha_1$.
+In the following, we consider $V=H^1(\Omega)$, a square grid and $V^{reg}_h$ formed by bilinear finite elements. 
+Then \eqref{eq:std_err_estimate} can be further estimated using approximation property of $V^{reg}_h$:
+\begin{equation}
+    \label{eq:particular_estimate}
+    \norm{p - p_h}_{H^1(\Omega)} \le c_a \big(c h \abs{p_{reg}}_{H^2(\Omega)} + \norm{p_{sin} - \pi_h p_{sin}}_{H^1(Z'_w)} \big)
+\end{equation}
+where $\pi_h p_{sin}$ denotes interpolation of $p_{sin}$ in $V^{reg}_h$. Our next aim is to find tight estimate for the second term.
+To this end, we calculate $H^1$ error on a~single square element $S_{h,r}$ with side $h$ and distance $r$ from origin.
+Using parametrization $0<s,t<1$,  we get
+
+\begin{align*}
+ (p_{sin} - \pi_h p_{sin})(s,t)&=\log\sqrt{(r+hs)^2+(ht)^2} -\Big[(1-s)(1-t)\log r\\
+ &\quad+ (1-s)t\log\sqrt{r^2+h^2} + s(1-t) \log(r+h) \\
+ &\quad+ st\log\sqrt{(r+h)^2+h^2} \Big]\\
+ &=\frac12 \frac{h^2}{r^2}\left(t^2-t - s^2 +s\right) + O\left(\frac{h^3}{r^3}\right)
+\end{align*}
+and 
+\begin{equation}
+ \grad(p_{sin} - \pi_h p_{sin})(s,t) = \frac{h}{r^2} \left( \frac12-s, t-\frac12 \right) + O\left(\frac{h^2}{r^2}\right).
+\end{equation}
+Assuming $h<r$, we can neglect higher order terms. Then, we obtain by direct integration
+\begin{align*}
+ \norm{p_{sin} - \pi_h p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
+\end{align*}
+and
+\begin{equation}
+    \label{eq:grad_estimate_on_square}
+    \norm{\grad(p_{sin} - \pi_h p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
+\end{equation}
+Thus for the density of squared error we have
+\[
+    \frac{1}{\abs{S_{h,r}}} \norm{p_{sin} - \pi_h p_{sin}}^2_{H^1(S_{h,r})} \approx \frac{h^2}{6r^4}
+\]
+which after integration over the unenriched domain gives final estimate
+\begin{equation}
+    \label{eq:singular_approx_error}
+    \norm{p_{sin} - \pi_h p_{sin}}_{H^1(Z'_w)} \le \left[\int_0^{2\pi} \int_{R_w}^\infty \frac{h^2} {6r^4} r \,\dd r\, \dd \theta\right]^{1/2} = \sqrt\frac{\pi}{6}\frac{h}{R_w}. 
+\end{equation}
+
+Recalling the estimate \eqref{eq:std_err_estimate}, we can conclude that optimal choice of the enrichment radius is $h/R_w\approx \norm{p_{reg}-\pi_h p_{reg}}_{H^1(\Omega)}$, 
+which balances the error in the regular and the singular part. Larger $R_w$ would not benefit to better overall approximation error and it would lead unnecessarily to
+higher amount of enriched DoFs.
+In combination with an a~posteriori error analysis, this could give a~rule for an automatic
+determination of the enrichment radius.
+
+\subsubsection{Numeric Validation}
+Here we provide numerical validation of the results above.
+Our aim is twofold: we first validate the estimate \eqref{eq:grad_estimate_on_square}, secondly we simulate 
+the dependence of the error in $L^2$ norm on the enrichment radius numerically and compare it with \eqref{eq:singular_approx_error}.
+
+Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calculating the ratio
+\begin{equation} \label{eqn:log_h1_estimate_ratio}
+\frac{h^{3/2} r^{-2} 12^{-1/2}}{\|p_{sin} - \pi_h p_{sin}\|^2_{H^1(T)}},\quad p_{sin}(\vc x) = \log \abs{\vc x}
+\end{equation}
+on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm.
+%
+\begin{table}[!ht]
+\centering
+\begin{tabular}{crr}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$h$    & min & max \\
+\midrule
+$\rfrac{10}{8}$   & 0.97 & 7.1  \\% & 1.38 & 10.0  \\ %& 0.7 & 5.3   \\
+$\rfrac{10}{16}$  & 0.99 & 16.4  \\% & 1.40 & 23.1  \\ %& 1.0 & 17.4  \\
+$\rfrac{10}{32}$  & 1.00 & 34.4  \\% & 1.41 & 48.7  \\ %& 1.5 & 51.8  \\
+$\rfrac{10}{64}$  & 1.00 & 70.3  \\% & 1.41 & 99.5  \\ %& 2.1 & 150   \\
+$\rfrac{10}{128}$ & 1.00 & 142.0   \\% & 1.41 & 201   \\ %& 3.0 & 427   \\
+\bottomrule
+\end{tabular}
+\caption{Minimal and maximal values of the ratio \eqref{eqn:log_h1_estimate_ratio} for sequence of refined 
+meshes with element size $h$. Validation of the estimate \eqref{eq:grad_estimate_on_square}.}
+\label{tab:log_h1_estimate}
+\end{table}
+%
+Table \ref{tab:log_h1_estimate} reports the minimum and the maximum values of the ratio over all elements of every mesh.
+The minimum values are close to 1 independently of $h$ which is in perfect agreement with \eqref{eq:grad_estimate_on_square}.
+Moreover, the minimum value is attained on the majority of
+elements, see \fig{fig:log_estimate_b}. Both parts of \fig{fig:log_estimate} demonstrate also higher convergence rate on diagonal elements
+where the nonlinear term of the bilinear finite elements allows better approximation of the saddle shaped logarithmic surface.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \subfloat[$\|\log \vc x - p_h\|^2_{H^1(T)}$ in log scale]{\label{fig:log_estimate_a} 
+    \includegraphics[width=0.47\textwidth]{\results log_estimate_h1.pdf} }
+  \hspace{0pt}
+  \subfloat[the ratio \eqref{eqn:log_h1_estimate_ratio}]{\label{fig:log_estimate_b} 
+    \includegraphics[width=0.47\textwidth]{\results log_estimate_ratio.pdf} }
+  \caption[Log error estimate.]
+  {
+  Results of the numerical validation of the estimate \eqref{eq:grad_estimate_on_square}. The elements are left out 
+  in the center where the $\log$ singularity is situated and where the function is cut off.
+  }
+  \label{fig:log_estimate}
+\end{figure}
+%
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=0.9\textwidth]{\results radius_convergence_01.pdf}
+%   \subfloat[rozdìlený element s vrtem]{\label{fig:adapt_ref_a} 
+%     \includegraphics[width=70mm]{\figpath adaptive_ref.pdf} }
+%   \hspace{0pt}
+%   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
+%     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
+  \caption[Convergence for different enrichment radii.]{Convergence graph for different enrichment radii. The "FEM reg"
+  data comes from the problem without the singularity solved by the standard FEM -- it has the optimal convergence order 2.0.}
+  \label{fig:radius_conv_1}
+\end{figure}
+%
+Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Test case 3
+using the SGFEM for different mesh steps and different values of $R_w$.
+Let us remind that $O(h^p)$ convergence of the solution in the $H^1$ norm translates to the $O(h^{p+1})$ convergence of the solution in the $L^2$ norm 
+for the linear elliptic problems (cf. \cite[Theorem 19.2]{ciarlet_basic_1991}). According to the estimates \eqref{eq:std_err_estimate}
+and \eqref{eq:singular_approx_error}, we expect $O(h^2)$ convergence of $L^2$ norm independently of the enrichment radius. This is 
+clearly demonstrated in \fig{fig:radius_conv_1}. For comparison, we plot also the error of the regular part $p_{reg}$ of the solution
+% \[
+%   p_{reg}(x,y) = U(r_w-\rho_w)^2 \sin(\omega x)
+% \]
+solved by standard FEM showing the $O(h^2)$ convergence.
+As predicted, the total error diminishes with $R_w$ but cannot 
+drop under the error of $p_{reg}$. We approximate $\norm{p_{reg} - \pi_h p_{reg}}_{H^1(\Omega)}$
+using a~fine mesh and then according to \eqref{eq:singular_approx_error},
+we get the optimal value of the enrichment radius
+\[
+    R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \pi_h p_{reg}}_{H^1(\Omega)} \sim 0.32
+\]
+This value roughly matches a~point in the plots of the error as a~function of $R_w$ in
+\fig{fig:radius_conv_2}, from which the error is not decreasing any more.
+
+
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=0.9\textwidth]{\results radius_convergence_02.pdf}
+%   \subfloat[rozdìlený element s vrtem]{\label{fig:adapt_ref_a} 
+%     \includegraphics[width=70mm]{\figpath adaptive_ref.pdf} }
+%   \hspace{0pt}
+%   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
+%     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
+  \caption[Optimal enrichment radius.]{Dependence of the error on the enrichment radius for different
+  element sizes $h$.}
+  \label{fig:radius_conv_2}
+\end{figure}
+
+
+\subsection{Test Cases with Multiple Wells}
+\label{sec:2d_results_multiple}
+In this section, more complex test cases are solved, including more than one well cross-secting the aquifer.
+We test the enrichment methods, shifted XFEM and SGFEM in particular, whether they
+still have such good convergence properties when the wells influence each other and when the enrichment zones coincide with each other.
+
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.8\textwidth]{\results test_2w_exact.pdf}
+  \caption{Solution of Test case 5 with 2 wells. }
+  \label{fig:test_2w_exact}
+\end{figure}
+\subsubsection{Test case 5}
+At first we consider two wells intersecting a~square aquifer $\Omega_2 = [0,10]\times[0, 10]$ at points $\bx_1 = [4.1, 4.3]$ and $\bx_2 = [5.7, 5.9]$.
+The pressure at the top of the wells is set $g^1_{1D}=150$ and $g^2_{1D}=100$ respectively.
+Remaining parameters are set the same for both wells: $\rho_w = 0.003$, $\sigma_w = 100$, $c_w = 10^{10}$ for $w=1,2$.
+The hydraulic conductivity of the aquifer is set $K_2=10^{-3}$ and the aquifers thickness is set $\delta_2=1$.
+The source term is sinusoidal as in Test case 4, i.e. $f_2 = K_2U\omega^2\sin(\omega x)$, with parameters $\omega=1$, $U=80$.
+The solution is shown in \fig{fig:test_2w_exact}.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering
+  \subfloat[enrichment radius $R_w=0.6$]{\label{fig:error_2w_0-6} 
+        \includegraphics[width=0.48\textwidth]{\results error_2w_0,6.pdf} }
+  \hfill
+  \subfloat[enrichment radius $R_w=2.0$]{\label{fig:error_2w_2-0} 
+        \includegraphics[width=0.48\textwidth]{\results error_2w_2,0.pdf} }
+  \caption[Error distribution in Test case 5]{$L^2$ error distribution in Test case 5 for two different $R_w$,
+  represented by green circles.}
+  \label{fig:error_distribution_test5}
+\end{figure}
+%
+At first we solve the problem using the enrichment radius $R_w=0.6$ for both wells. The results are as expected:
+optimal convergence order is observed and CG iterations count increases reasonably as in Section \ref{sec:res_conditioning}.
+Next we enlarge the enrichment radius $R_w=2.0$ such that the two circular enrichment zones overlap and
+the elements are enriched from both singularities there. We plot the error distribution in \fig{fig:error_distribution_test5}, 
+comparing the difference between $R_w=0.6$ on the left and $R_w=2.0$ on the right. We see a~higher approximation error 
+accumulating outside the smaller enrichment zones, in case of larger enrichment radii only the error of the regular part is apparent.
+%
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+\begin{tabular}{rc|cc|cc}
+\toprule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
+i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+0 & 0.5000 & 1.01e+02 & --   & 1.06e+02 & --   \\ %\hline
+1 & 0.2500 & 1.66e+01 & 2.61 & 1.78e+01 & 2.57 \\ %\hline
+2 & 0.1250 & 4.22e+00 & 1.97 & 4.45e+00 & 2.00 \\ %\hline
+3 & 0.0625 & 1.07e+00 & 1.99 & 1.11e+00 & 2.00 \\ %\hline
+4 & 0.0312 & 2.67e-01 & 1.99 & 2.78e-01 & 2.00 \\ %\hline
+5 & 0.0156 & 6.72e-02 & 1.99 & 6.93e-02 & 2.00 \\ %\hline
+6 & 0.0078 & --       & --   & 1.72e-02 & 2.01 \\ %\hline
+\bottomrule
+\end{tabular}
+\caption{Convergence table of the shifted XFEM and SGFEM in Test case 5, using enrichment radius $R_w=2.0$.}
+\label{tab:convergence_test5}
+\egroup
+\end{center}
+\end{table}
+
+Table \ref{tab:convergence_test5} displays the optimal convergence order of both shifted XFEM and SGFEM for $R_w=2.0$.
+The computation on the most refined mesh is failing in case of the shifted XFEM due to the non-converging CG solver.
+The number of CG iterations for both enrichment methods and standard FEM is plotted in the graph in \fig{fig:test_2w_conditioning}.
+The SGFEM performs as expected, on the other hand the CG iterations for shifted XFEM increase rapidly.
+This is due to the enrichment of elements by multiple enrichment functions causing worse conditioning of the resulting linear system.
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.8\textwidth]{\results test_2w_conditioning.pdf}
+  \caption[CG iterations count in Test case 3]{Graph of dependence of the CG iteration count on the 
+  number of degrees of freedom. Measured on both problems with no serious distinction observed.}
+  \label{fig:test_2w_conditioning}
+\end{figure}
+
+
+
+\subsubsection{Test case 6}
+In this test case, five wells are cross-secting the aquifer $\Omega_2 = [0,10]\times[0, 10]$.
+The well specific data are gathered in Table \ref{tab:test_case6_wells_data}.
+The wells 3 and 5 can be seen as injection wells with a~positive flux to the aquifer, the others as pumping wells with a~positive flux from the aquifer.
+The common well parameters are $\rho_w = 0.003$, $c_w = 10^{7}$.
+The hydraulic conductivity of the aquifer is set $K_2=10^{-3}$ and the aquifers thickness is set $\delta_2=1$.
+The source term is similar to the one in Test case 5, using parameters $\omega=1$, $U=-8$.
+The solution is shown in \fig{fig:test_5w_exact}.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{c|ccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+well $w$ & 1 & 2 & 3 & 4 & 5 \\
+\midrule
+$\bx_w$     & [2.8,2.5]  & [4.9,5.4]  & [2.9,7.4]  & [7.3,7.8] & [7.4, 2.8] \\
+$\sigma_w$  & 20   & 10  & 10  & 10  & 20 \\
+$g^w_{1D}$  & -150 & -30 & 120 & -50 & 100 \\
+\bottomrule
+\end{tabular}
+\caption{Input data for the wells in Test case 6.}
+\label{tab:test_case6_wells_data}
+\end{center}
+\end{table}
+
+%
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.8\textwidth]{\results test_5w_exact.pdf}
+  \caption{Solution of Test case 6 with 6 wells. }
+  \label{fig:test_5w_exact}
+\end{figure}
+%
+
+We show the convergence results of the SGFEM in Table \ref{tab:convergence_test6}. The problem is solved with
+two different enrichment radii $R_w$, the smaller one assures non-overlapping enrichment zones.
+The convergence order is still satisfying, although in case of the larger $R_w$ the error did not decreased enough
+in the last refinement level for an unknown reason.
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+\begin{tabular}{rc|cc|cc}
+\toprule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$R_w=0.8$} & \multicolumn{2}{c}{$R_w=2.0$}\\ [3pt] %\midrule
+i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+0 & 0.5000 & 5.09e+01 & --   & 5.08e+01 & --   \\ %\hline
+1 & 0.2500 & 2.30e+00 & 4.46 & 1.66e+00 & 4.93 \\ %\hline
+2 & 0.1250 & 5.66e-01 & 2.03 & 4.05e-01 & 2.04 \\ %\hline
+3 & 0.0625 & 1.44e-01 & 1.98 & 1.03e-01 & 1.98 \\ %\hline
+4 & 0.0312 & 3.61e-02 & 1.99 & 2.47e-02 & 2.06 \\ %\hline
+5 & 0.0156 & 9.22e-03 & 1.97 & 6.36e-03 & 1.96 \\ %\hline
+6 & 0.0078 & 2.41e-03 & 1.94 & 1.77e-03 & 1.85 \\ %\hline
+\bottomrule
+\end{tabular}
+\caption{Convergence table of the SGFEM in Test case 6, using two different enrichment radii.}
+\label{tab:convergence_test6}
+\egroup
+\end{center}
+\end{table}
+
+We do not mention the results of shifted XFEM explicitly since it performs nearly the same as SGFEM with the smaller enrichment radius.
+In case of overlapping enrichment zones, the shifted XFEM suffers with ill-conditioning as in the previous test case.
+On the other hand, the iteration count for the SGFEM increases still with the same rate independently of the chosen $R_w$.
+
+
+
+\section{Summary}
+\label{sec:summary}
+
+In this first part of our work we provided the research on the XFEM and the adjacent topics relevant to our main theme, in Section \ref{sec:soa_xfem}.
+We described the fundamentals of the usage of the XFEM and got into details in several implementation aspects such as
+the choice of the local enrichment functions, the accurate integration or enrichment zone size.
+
+The aim of the later part in Section \ref{sec:model_aquifer} was the investigation of four different enrichment methods
+-- the XFEM, the Corrected XFEM with the ramp function and shifting, and the SGFEM. 
+The problem setting was inspired by the work \cite{gracie_modelling_2010,craig_using_2011} 
+of R.~Gracie and J.R.~Craig but our effort was aimed more in understanding the details of enrichment methods and their comparison
+rather than in computation of complex problems. Resolving a~point singularity in a~2d domain was addressed.
+
+The well-aquifer model was defined in the beginning and its weak form was derived, including the analysis of the weak solution existence.
+In addition to our article \cite{exner_2016}, the model was formulated correctly using the averaged term on the well-aquifer
+cross-section. Then the discretization by means of the XFEM was thoroughly described.
+The range of the numerical tests was narrowed to problems with a~single aquifer for which the pseudo-analytic solution was derived.
+
+All the implemented methods were compared in \ref{sec:2d_results_single}. Regarding the XFEM, we saw that at 
+least the ramp function must be used in order to optimize the error on the blending elements. 
+The shifted XFEM and the SGFEM converged optimally and did not show any difference in the solution precision.
+For the last two methods we also showed that the precision is not dependent on the relative position of a~singularity to a~node.
+
+The issue of a~suboptimal convergence order reported in \cite{gracie_modelling_2010} was investigated. 
+We revealed the problem and we suggested a~better strategy for the adaptive quadrature. 
+The improvement was confirmed by the numerical tests in \ref{sec:pressure_results} where we obtained the optimal 
+order of convergence in $L^2$ norm.
+An alternative quadrature for integration of enriched functions in polar coordinates was also suggested.
+% The quadrature was implemented but the numerical results were not satisfying. This would need a~deeper 
+% investigation on the parameters that are needed to be set and a~possible bug in a~code is not excluded.
+
+A proper size of the enrichment zone, defined by the enrichment radius, was studied. The error estimate dependent
+on the enrichment radius was derived and it was numerically validated. Furthermore, the optimal enrichment radius was predicted 
+for the test problem and it corresponded with the computed data.
+
+The ill-conditioning of the system matrix was observed through the increasing iteration count of conjugate gradients solver.
+The standard XFEM and the ramp function XFEM suffered from ill-conditioning even in the simplest test cases.
+The shifted XFEM performed well when there was only one singular enrichment per element. Otherwise, when the enrichment
+zones from multiple singularities were overlapping, only the SGFEM behaved well in terms of system matrix conditioning.
+
+
+Regarding the three conditions \ref{enum:sgfem_conditions_a}-\ref{enum:sgfem_conditions_c} in Section \ref{sec:stable_gfem}
+for an XFEM to be called the SGFEM, we conclude that our implementation of the SGFEM indeed appears to have these properties,
+although we do not provide a~theoretical proof. The SGFEM yields the optimal convergence rate and its conditioning is not worse
+than that of the FEM in all presented test cases, both the approximation error and the conditioning is robust with respect to the relative position
+of the singularity to the mesh nodes.
+The local orthogonalization technique has not been implemented, but it might be beneficial in case of overlapping enrichment zones.
+Particularly in Test case 6, it is worth of further experimenting to resolve the slightly suboptimal error decrease at the last refinement level.
+
+
+
+
+
+% \begin{figure}[!htb]
+% %   \vspace{0pt}
+%   \centering    
+%     \includegraphics[width=0.6\textwidth]{\figpath 2_aquifers-5_wells_mesh_whitebg_crop.pdf}
+%   \caption{0D-2D coupling example from my previous work. Distribution of pressure in 2 aquifers (horizontal planes) with 5 wells 
+%           (vertical lines). The XFEM is used on a~coarse mesh (at the bottom). }
+%   \label{fig:aquifers}
+% \end{figure}
