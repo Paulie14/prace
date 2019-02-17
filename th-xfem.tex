@@ -63,7 +63,7 @@ the light elements are enriched only partially and the sum of $N_\alpha$ in the 
 %   \vspace{0pt}
   \centering    
     \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone.pdf}
-  \caption[Local enrichment]{Local enrichment on a~quadrilateral mesh. }
+  \caption[Localized enrichment.]{Local enrichment on a~quadrilateral mesh. }
   \label{fig:enrichment_zone}
 \end{figure}
 % \begin{figure}[!htb]
@@ -113,7 +113,7 @@ The term \emph{weak} discontinuity is then used when the derivative of the quant
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.83\textwidth]{\figpath weak_strong_disc.pdf}
-  \caption[Types of discontinuities]{Types of discontinuities -- strong, weak and their combination. }
+  \caption[Types of discontinuities.]{Types of discontinuities -- strong, weak and their combination. }
   \label{fig:types_of_discontinuities}
 \end{figure}
 
@@ -158,7 +158,7 @@ are collected in the Natarajan's thesis \cite{natarajan_enriched_2011}, in the o
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.83\textwidth]{\figpath singularity_types.pdf}
-  \caption{Examples of singularities. }
+  \caption{Examples of singularities.}
   \label{fig:types_of_singularities}
 \end{figure}
 
@@ -182,7 +182,7 @@ see the left part of \fig{fig:enrichment_zone_types}.
 %   \vspace{0pt}
   \centering    
     \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone_types.pdf}
-  \caption[Enrichment zone types]{Enrichment zones in case of a~discontinuity (on the left) and a~singularity (on the right).
+  \caption[Enrichment zone types.]{Enrichment zones in case of a~discontinuity (on the left) and a~singularity (on the right).
   In case of the singularity, the large green circle denotes the fixed (geometrical) enrichment zone; the topological enrichment would
   only enrich the nodes of the element denoted by the green dashed line.}
   \label{fig:enrichment_zone_types}
@@ -268,7 +268,7 @@ elements which were previously unenriched, see \fig{fig:enrichment_zone_radial}.
 %   \vspace{0pt}
   \centering    
     \includegraphics[height=0.37\textwidth]{\figpath enrichment_zone_radial.pdf}
-  \caption[Radial enrichment zone]{Radial enrichment zone on a~quadrilateral mesh -- blending and reproducing elements.}
+  \caption[Radial enrichment zone.]{Radial enrichment zone on a~quadrilateral mesh -- blending and reproducing elements.}
   \label{fig:enrichment_zone_radial}
 \end{figure}
 %
@@ -396,7 +396,7 @@ regarding the specific 3d problem.
 
 There is much less to be found on the usage of the XFEM in the field of flow modeling, especially regarding the dimensions coupling,
 than in mechanics.
-Apart from the references on various types of the XFEM in previous paragraph, we can name some works regarding flow and the XFEM.
+Apart from the references on various types of the XFEM in previous sections, we can name some works regarding flow and the XFEM.
 
 Extensive work has been done in the area of modeling 1d-2d fractured domains with mixed finite 
 elements by D'Angelo, Fumagalli and Scotti~\cite{fumagalli_numerical_2012, dangelo_mixed_2012, fumagalli_efficient_2014}. 
@@ -412,14 +412,15 @@ The authors further analyze the stability and convergence properties of their ap
 They also deal with various types of the discontinuity-element cross-sections and with branching of the fractures.
 The model is formulated in 1d-2d at the moment.
 
-Another work regarding 1d-2d fractures is by Schwenck~\cite{schwenck_xfem-based_2015} (also in \cite{schwenck_2015}), 
-where the primary formulation is used and among others, the fracture tip and fractures intersection is dealt with.
+Another work regarding flow in coplanar 1d-2d fractured system is by Schwenck~\cite{schwenck_xfem-based_2015, schwenck_2015}.
+The XFEM is applied in the primary formulation for pressure, the discontinuous enrichment is used.
+The approximation around fracture tips and model of fractures intersections is proposed.
 
 Next, there are several publications on multi-phase fluid flow governed by Navier-Stokes equations using the XFEM for
 approximation on the interfaces in 2d (\cite{diez_stable_2013,sauerland_stable_2013}). However, these are
-little bit further from our application.
+a~bit further from our needs and application.
 
-A 1d-3d model for investigation of the transport of substances in a~human body has been developed by D'Angelo 
-and Zunino et al. (e.g in~\cite{dangelo_coupling_2008,cattaneo_numerical_2015}), without usage of the XFEM.
-Further, 1d-3d coupling for blood flow and mass transport in vascularized human tissue is
-investigated by K{\" o}ppl in\cite{koppl_tum_2015}.
+% A 1d-3d model for investigation of the transport of substances in a~human body has been developed by D'Angelo 
+% and Zunino et al. (e.g in~\cite{dangelo_coupling_2008,cattaneo_numerical_2015}), without usage of the XFEM.
+% Further, 1d-3d coupling for blood flow and mass transport in vascularized human tissue is
+% investigated by K{\" o}ppl in\cite{koppl_tum_2015}.

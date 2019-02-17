@@ -1,4 +1,4 @@
-\documentclass[bibliography=totocnumbered,dvipsnames,FM,Dis]{tulthesis}
+\documentclass[bibliography=totocnumbered,dvipsnames,FM,Dis,EN]{tulthesis}
 
 \usepackage[czech, english]{babel}
 \usepackage[utf8]{inputenc}
@@ -79,6 +79,20 @@
 %
 %*************************************************************************************************************
 %
+% Title Page
+% Copyright Page
+% Abstract
+% Dedication, Acknowledgements, and Preface (each optional)
+% Table of Contents, with page numbers
+% List of Tables, List of Figures, or List of Illustrations, with titles and page numbers (if applicable)
+% List of Abbreviations (if applicable)
+% List of Symbols (if applicable)
+% Chapters, including:
+% Introduction, if any
+% Main body, with consistent subheadings as appropriate
+% Appendices (if applicable)
+% Endnotes (if applicable)
+% References (see section on References for options)
 
 \begin{document}
 
@@ -87,24 +101,31 @@
 % \ThesisTitle{CZ}
 % \ThesisTitle{EN}
 
+\input th-abstract.tex
+\clearpage
+
+
 \thispagestyle{empty}
 \vspace*{\fill}
 \begin{center}
 % \begin{flushright}
 \emph{
-Dedicated to the memory of my late father, \\
-Zden{\v e}k Exner. \\
+% Dedicated to the memory of my late father, \\
+% Zden{\v e}k Exner. \\
+Dedicated to the memory of my late father, Zden{\v e}k Exner,\\
+who I still turn to for a guidance through my life,\\
+even though we cannot share the days in this world anymore.
 }
 % \end{flushright}
 \end{center}
 \vspace*{\fill}
 \clearpage
 
-\input th-abstract.tex
-\clearpage
 
 \begin{acknowledgement}
-Tato práce by nevznikla bez podpory mého nejbližšího pracovního a rodinného okolí.
+This work woud not have been created without the great support of my colleagues, family and friends
+and therefore I would like to express the deepest appreciation to all of them.
+
 
 \end{acknowledgement}
 
@@ -113,76 +134,20 @@ Tato práce by nevznikla bez podpory mého nejbližšího pracovního a rodinné
 
 %% \linenumbers
 
-% \begin{abbrList}
-\section*{Seznam zkratek}\addcontentsline{toc}{section}{Seznam zkratek}
+\listoffigures
+\clearpage
 
-\noindent\emph{Acronyms}
-\vspace{0.5cm}
+\listoftables
+\clearpage
 
-\begin{tabularx}{\linewidth}{@{}lX@{}}
-DFN & Discrete Fracture Network \\
-FVM & Finite Volume Method \\
-FDM & Finite Difference Method \\
-FEM & Finite Element Method \\
-MHFEM & Mixed Hybrid Finite Element Method \\
-PUM & Partition of Unity Method \\
-XFEM & Extended Finite Element Method \\
-GFEM & Generalized Finite Element Method \\
-SGFEM & Stable Generalized Finite Element Method \\
-TUL & Technical University in Liberec
-\end{tabularx}
-\vspace{1cm}
+\input th-list-of-symbols.tex
+\clearpage
 
-\noindent\emph{Mathematical notation}
-\vspace{0.5cm}
-
-\begin{tabularx}{\linewidth}{@{}lX@{}}
-$d$ & dimension: 1d, 2d, 3d \\
-$\Omega_d$ & domain of dimension $d$ \\
-$\Gamma_{dN}$ & part of boundary of $\Omega_d$ with Neumann boundary condition \\
-$\Gamma_{dD}$ & part of boundary of $\Omega_d$ with Dirichlet boundary condition \\
-$\mathcal T_d$ & mesh consisting of elements of dimension $d$ \\
-$T^i_d, F^i_d$  & element and face of $\mathcal T_d$ \\
-$\vc x_i$ & node \\
-$\mathcal I_{d,E}, \mathcal I_{d,F}, \mathcal I_{d,N}$ & indices of elements faces and nodes of element of dimension $d$ \\
-$\Omega^w_C$ & domain (cylinder) of a well $w$ \\
-$\Omega^w_1$ & reduced domain (line) of a well $w$ \\
-$\mathcal W$ & index set of wells \\
-$\mathcal M$ & index set of aquifers \\
-$p_d$ & pressure in $d$-dimensional domain \\
-$\vc u_d$ & velocity in $d$-dimensional domain \\
-$r_w, \rho_w, R_w$ & distance function, radius and enrichment radius of a~well $w$ \\
-$s_w, \vc s_w$ & scalar and vector global enrichment function\\
-$a(\cdot, \cdot)$ & bilinear form \\
-$l(\cdot)$ & linear form \\
-$\avg{\cdot}$ & average operator \\
-$\fluct{\cdot}$ & fluctuation operator \\
-\end{tabularx}
-\vspace{1cm}
-
-\noindent\emph{Spaces}
-\vspace{0.5cm}
-
-\begin{tabularx}{\linewidth}{@{}lX@{}}
-$\R$ & space of real numbers  \\
-$\mathbb N$ & space of unsigned integers \\
-$\mathbb P^k$ & space of polynomials of order $k$  \\
-$\mathbb {RT}^k$ & space of Raviart-Thomas shape functions of order $k$  \\
-$L_2$ & Lebesque space \\
-$H^k, H(\div)$ & Hilbert spaces \\
-\end{tabularx}
 
 % TODO:
-% FVM, FDM, FEM
-% XFEM, GFEM, SGFEM
 % Fig. vs Figure, ?? the ?? Figure
 % use of subequations ??
 % definition of seminorm in enrichment radius estimate section
-
-% \textbf{TUL} & Technická univerzita v~Liberci \\
-% \textbf{FM} & Fakulta mechatroniky, informatiky a mezioborových studií
-% Technické univerzity v~Liberci
-% \end{abbrList}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -310,13 +275,6 @@ in the field of porous media modelling and they are also interested in models on
 work together both on the theory and implementation of the XFEM in 0D-2D and 1D-3D flow model.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% \listoffigures
-% \clearpage
-% 
-% \listoftables
-% \clearpage
 
 
 %   \nocite{gracie_modelling_2010, fries_corrected_2008, babuska_stable_2012, bangerth_deal.ii_2007, 

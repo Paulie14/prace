@@ -32,10 +32,9 @@ but they cannot capture the local effects accurately.
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=10cm]{\figpath ground_fractures}
-\caption{
-    \label{fig:multi-dim}
-    Scheme of a~problem with domains of multiple dimensions, (taken from the Flow123d documentation~\cite{flow123d_doc_2018}).
-}
+\caption[Reduced dimensional model scheme.]{
+    Scheme of a~problem with domains of multiple dimensions, (taken from the Flow123d documentation~\cite{flow123d_doc_2018}).}
+\label{fig:multi-dim}
 \end{figure}
 
 % Discrete approach (reduced dimensions)
@@ -246,6 +245,7 @@ There can be several aquifers on top of each other, separated by layers of very 
 which are called aquitards.
 In contrast to Gracie and Craig, we suppose the aquitards to be impermeable, 
 so the aquifers can communicate between each other only through the wells.
+See the scheme of well-aquifer model in \fig{fig:well_flows}.
 On the other hand, we add an artificial volume source term on aquifers.
 This allows us to better study the impact of the prescribed source on the solution
 which is better suited to the numerical experiments we are going to present. 
@@ -264,7 +264,7 @@ we constrain ourselves to a~single aquifer in a~major part of the work.
   \begin{center}         
     \includegraphics[width=0.5\textwidth]{\figpath well_communcation2.pdf}
   \end{center}
-  \caption{Flow balance in the well.}
+  \caption{Well-aquifer model scheme.}
   \label{fig:well_flows}
 \end{figure}
 
