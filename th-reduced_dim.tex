@@ -53,7 +53,9 @@ and to represent these as lower dimensional objects. This means on the geometric
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
 This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
 
-There is a~world-wide community around the Discrete Fracture Network (DFN) problematics, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview. The people are dealing with a~wide range of topics on DFN,
+Within the scope of geology or hydrogelogy, the reduced dimension concept is used in the Discrete Fracture Network (DFN) models.
+There is a~world-wide community around the DFN problematics, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview.
+The people are dealing with a~wide range of topics on DFN,
 from the definition and measurement of the geological parameters, stochastic generation of DFN and its discretization for FVM/FEM methods,
 to solving multi-physic problems on such geometries. We may differentiate between two types of fracture network models. One is strictly considering only
 the fracture network itself, without considering the bulk domain between fractures. Such model can predict for example the so called \emph{preferential paths}
@@ -63,30 +65,29 @@ coupling conditions and solution of the underlying linear system.
 Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN on the most refined level and only the most influential
 parts of the DFN (or none) on the coarsest level.
 
+Having the geometry of a~reduced dimensional model prepared, the space discretization then follows,
+leading to the meshes of combined dimensions, i.e. composed of elements of different dimension.
+This approach, called mixed-dimensional analysis in the mechanics \cite{bournival_mesh-geometry_2008},
+is also studied in the groundwater context, see e.g. \cite{martin_modeling_2005, fumagalli_numerical_2011, dangelo_mixed_2012, brezina_analysis_2015}
+and already adopted by some groundwater simulation software, e.g FeFlow \cite{trefry_feflow_2007} and Flow123d \cite{flow123d}.
+
+The works mentioned before deal with modeling fractures, however they are not concerned neither about 1d-3d coupling
+nor point intersections in non-planar 1d-2d coupling. These topics are also studied extensively by different groups, see
+especially \cite{dangelo_coupling_2008, cattaneo_numerical_2015} and \cite{koppl_tum_2015, koppl_vidotto_2018}.
+Their applications are mainly addressed to the medical problematics and they analyze the transport of medicaments through
+the vascular system and to the surrounding tissue. The veins can be viewed as 1d channels and the tissue is modeled as a~porous media,
+and thus the flow is governed by the same type of equations as in the groundwater simulations.
+
 In this work we build and expanse a reduced dimensional model on top of the existing one being developed at TUL.
-It combines both the equivalent continuum and DFN approach including the communication with bulk domains.
+It combines both the equivalent continuum and the DFN approach including the communication fractures with surrounding bulk domains.
 Since the numerical solution is based on FEM, we are interested in how the fractures and bulk are geometrically discretized.
 Therefore we describe the meshes of combined dimensions below.
-
 
 % - introduce concept of meshes of combined dimensions
 % - come to reduce dimensional models
 % - explain problematics of geometry discretisation for FEM (in general)
 % - introduce meshes of combined dimensions
 % - who uses these models:
-\cite{martin_modeling_2005}
-\cite{fumagalli_numerical_2011}
-\cite{dangelo_mixed_2012}
-zunino 1d-3d (dirac delta models)
-% We shall refer to the approach that has been developed at the Technical University in Liberec.
-
-
-% The realistic models of groundwater processes including the transport processes and geomechanics have to deal with 
-% a~complex nature of geological formations containing various small scale features as fractures (or fractured zones) and wells. 
-% Although of small scale, these features may have significant impact 
-% on the global behavior of the system and their representation in the numerical model is imperative. For example the fractures may form preferential 
-% paths which allow much faster transport that cannot be fully captured by equivalent continuum.
-% One possible approach is to model fractures and wells as lower dimensional objects and introduce their coupling with the surrounding continuum. 
 
 % The discretization then leads to the meshes of mixed dimensions, i.e. composed of elements of different dimension. This approach 
 % called mixed-dimensional analysis in the mechanics \cite{bournival_mesh-geometry_2008} is also studied in the groundwater context, see e.g. 
