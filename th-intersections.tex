@@ -119,10 +119,10 @@ it means that the lines $p$ and $s_i$ are coplanar.
     \subfloat[$\pi_p\odot \pi_{s_i} > 0 \;\forall i$]{
         \includegraphics[width=0.25\textwidth]{\figpathins plucker_product_c.pdf}
     }
-    \caption{Different relative positions of the line $p$ and a triangle with sides $s_i$, $i=0,1,2$. 
-            Dashed parts are behind the triangle. Signs of the permuted inner products depend on orientation of lines,
-            the line $p$ is coplanar with a side in the case (b).
-    }
+    \caption[Geometric illustration of \plucker products.]
+    {Different relative positions of the line $p$ and a triangle with sides $s_i$, $i=0,1,2$. 
+        Dashed parts are behind the triangle. Signs of the permuted inner products depend on orientation of lines,
+        the line $p$ is coplanar with a side in the case (b).}
     \label{fig:plucker_products}
 \end{figure}
 
@@ -316,7 +316,8 @@ calculation of edge-triangle ICs (Section~\ref{sec:edges}), ordering of ICs (Sec
 \begin{figure}[!htb]
     \centering    
     \includegraphics[width=0.65\textwidth]{\figpathins tracing_color.pdf}
-    \caption{An example of an intersection 2d-3d, demonstrating the ICs ordering. We see at every 
+    \caption[Intersection 2d-3d example -- ICs ordering.]
+    {An example of an intersection 2d-3d, demonstrating the ICs ordering. We see at every 
     intersection polygon corner $p_i$ which \nfaces it lies on. Looking at $p_0$, the connection table entries
     are: $F_c[s_2]=p_0$, $F_f[p_0]=s_0$. For the other ICs we have: $F_c[s_0]=p_1$, $F_f[p_1]=f_1$, $F_c[f_1]=p_2$, $F_f[p_2]=f_2$ and $F_c[f_2]=p_3$, $F_f[p_3]=s_2$.}
     \label{fig:tracing}
@@ -441,7 +442,8 @@ The ICs at vertices of $S_2$ are treated differently, but follows the same idea.
   \begin{center}        
     \includegraphics[width=0.3\textwidth]{\figpathins edge_faces_color.pdf}
   \end{center}
-  \caption{Order of faces adjacent to the oriented edge $e$ pointing towards us.}
+  \caption[Order of faces adjacent to the oriented edge.]
+  {Order of faces adjacent to the oriented edge $e$ pointing towards us.}
   \label{fig:edge_faces}
 \end{figure}
 
@@ -500,8 +502,9 @@ is used to determine the right face.
 \begin{figure}[!htb]
     \centering    
     \includegraphics[width=0.9\textwidth]{\figpathins vertex_faces.pdf}
-    \caption{Possible cases processed in the function \emph{vertex faces}.
-             Only the main features referred in text are denoted: tetrahedron vertex $v$, edge $e$, face $f$ (stripes).}
+    \caption[Possible cases processed in the vertex faces function.]
+    {Possible cases processed in the function \emph{vertex faces}.
+        Only the main features referred in text are denoted: tetrahedron vertex $v$, edge $e$, face $f$ (stripes).}
     \label{fig:vertex_faces}
 \end{figure}
 
@@ -686,7 +689,8 @@ For every IC one or both of the following cases may happen:
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.55\textwidth]{\figpathins components.pdf}
-    \caption{For a non-convex bulk domain a situation as this may happen. The 1d elements 3,4,5 extends out of the bulk mesh.
+    \caption[Components in non-convex bulk domain.]
+    {For a non-convex bulk domain a situation as this may happen. The 1d elements 3,4,5 extends out of the bulk mesh.
     Therefore four initializations are needed, to find all four 1d-3d intersections every one forming an independent component. 
     Advancing front method cannot play any part in this situation.}
     \label{fig:components}
@@ -824,7 +828,7 @@ initialization phase of advancing front method.
 
 In this section, we present numerical results on several benchmark problems. 
 In the beginning, we provide some software development related information.
-Then we analyze the theoretical number of FLOPS in our element intersection algorithms with 
+Then we analyze the theoretical number of FLOPs in our element intersection algorithms with 
 other state of art algorithms.
 Next we compare our algorithms with different initialization phase (candidate pairs search),
 and using the advancing front method or not. We show the results both on a mesh of a real locality
@@ -859,24 +863,25 @@ It proved to be a bit problematic to compare the presented algorithms for elemen
 algorithms e.g. from the field of computer graphics. The algorithms for computer graphics applications are specialized for
 the 1d-2d and 1d-3d cases and they provide different output information then our algorithms. Moreover our implementation 
 is not yet fully optimized to be on par with the fine tuned implementations. Instead, we present a theoretical comparison 
-in terms of estimated number of floating point operations (FLOPS) performed by individual algorithms. As the intersection 
+in terms of estimated number of floating point operations (FLOPs) performed by individual algorithms. As the intersection 
 algorithms works on small data they should not be limited by the memory access, thus such comparison may be realistic. 
 
 We consider 3 algorithms for the line-triangle intersections: \plucker algorithm 
 described in Section \ref{sec:1d-2d}, the algorithm based on the plane clipping due to Haines \cite{haines_fast_1991}, and the minimum storage
 algorithm due to M{\" o}ller and Trumbore (MT) \cite{moller_fast_1997}. For the later two algorithms we have considered straightforward modifications
 to make them return qualitatively same output as our algorithms for 1d-2d, 1d-3d, and 2d-3d cases.
-Estimated numbers of FLOPS for all cases are summarized in Table \ref{tab:fundamental_flops}.
-For the \plucker, we count FLOPS actually made by the implementation of individual intersection algorithms. For Haines and MT, 
-we estimated number of FLOPS in theoretical implementations. In particular we account for reuse of the calculations in \plucker and Haines algorithms. 
+Estimated numbers of FLOPs for all cases are summarized in Table \ref{tab:fundamental_flops}.
+For the \plucker, we count FLOPs actually made by the implementation of individual intersection algorithms. For Haines and MT, 
+we estimated number of FLOPs in theoretical implementations. In particular we account for reuse of the calculations in \plucker and Haines algorithms. 
 Conclusions from this census are: algorithms based on the \plucker coordinates should be competitive with state of art algorithms in the case of 1d-3d 
 and 2d-3d intersections. The expected performance for the 1d-2d case seems to be poor however these intersections are computed after 1d-3d and 2d-3d 
-so the \plucker coordinates may be reused. Considering this scenario we get quite competitive $45$ FLOPS. 
+so the \plucker coordinates may be reused. Considering this scenario we get quite competitive $45$ FLOPs. 
 Similarly we may expect better times in remaining two intersection cases when the \plucker coordinates and their products 
 are reused by neighboring elements.
 
 \begin{table}[!htb]
-    \caption{Raw number of FLOPs used by different intersection algorithms. Second row contains estimated effective number of FLOPs per intersection
+    \caption[Comparison of intersection algorithms by FLOPs.]
+    {Raw number of FLOPs used by different intersection algorithms. Second row contains estimated effective number of FLOPs per intersection
     accounting for reuse of edges through the mesh intersection assuming edges of 2d and 3d elements are used twice (conservative). }    
     \label{tab:fundamental_flops}
     \centering
@@ -953,15 +958,17 @@ That is roughly related to the average fraction of the non-intersecting 3d eleme
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.43\textwidth]{\figpathins test1_cube0.pdf}
-    \caption{Artificial mesh -- a cube with two perpendicular planes placed on the diagonals of the cube.
-             The planes are also non-matching, therefore can be seen as two independent components.}
+    \caption[Cube intersected by two diagonal fractures.]
+    {Artificial mesh -- a cube with two perpendicular planes placed on the diagonals of the cube.
+        The planes are also non-matching, therefore can be seen as two independent components.}
     \label{fig:cube_mesh}
 \end{figure}
   
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=1.0\textwidth]{\figpathins cube_scale.pdf}
-    \caption{Time complexity for the initialization phase (left) with respect to total mesh size and the intersection algorithm (right) with respect to the size of the component mesh.}
+    \caption[Time complexity of intersection algorithms.]
+    {Time complexity for the initialization phase (left) with respect to total mesh size and the intersection algorithm (right) with respect to the size of the component mesh.}
     \label{fig:cube_speed}
 \end{figure}
 
@@ -996,7 +1003,8 @@ This case is clearly treated by both BIH and BIH+AF variants much better.
         \includegraphics[width=0.49\textwidth]{\figpathins bedrichov_fract_extend.pdf}
         \label{fig:bedrichov_extend}
     }
-    \caption{A mesh of the real locality of Bed{\v r}ichov in the Jizera mountains.
+    \caption[Mesh of the real locality of Bed{\v r}ichov in the Jizera mountains.]
+    {A mesh of the real locality of Bed{\v r}ichov in the Jizera mountains.
              We see fractures inside the bulk mesh in the left figure,
              fractures are extending the bulk mesh.}
     \label{fig:bedrichov_meshes}
@@ -1005,7 +1013,8 @@ This case is clearly treated by both BIH and BIH+AF variants much better.
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.8\textwidth]{\figpathins intersections_bedrichov_both_speed.pdf}
-    \caption{Comparison of the algorithms on meshes of Bed{\v r}ichov locality -- interior fractures on the left,
+    \caption[Comparison of the algorithms on meshes of Bed{\v r}ichov locality.]
+    {Comparison of the algorithms on meshes of Bed{\v r}ichov locality -- interior fractures on the left,
              extending fractures on the right.}
     \label{fig:bedrichov_speed}
 \end{figure}

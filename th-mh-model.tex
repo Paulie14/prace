@@ -946,7 +946,7 @@ on the exterior boudary $g_D$, velocity is derived from the pressure $\vc u= -\v
     %\hspace{5pt}
     \subfloat[$L_2$ elementwise error in velocity]{
     \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_error.pdf} }
-    \caption
+    \caption[Dirichlet problem results, zero source term.]
     {Results of the Dirichlet problem for $f=0$. The velocity solution is displayed at refinement level 4,
     the green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_dirichlet_zero_source}
@@ -964,7 +964,7 @@ The convergence rate is nearly optimal.
     %\hspace{5pt}
     \subfloat[$L_2$ elementwise error in velocity]{
     \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f_error.pdf} }
-    \caption
+    \caption[Dirichlet problem results, nonzero source term.]
     {Results of the Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
     the green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_dirichlet_source}
@@ -996,7 +996,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 5 & 0.039 &  0.57 $\cdot10^{-3}$  & 0.96 &  1.58 $\cdot10^{-2}$  & 0.97 & 1.56 $\cdot10^{-2}$ &  0.99 \\
 \bottomrule
 \end{tabular}
-\caption{Convergence table of SGFEM in Test case.}
+\caption{Convergence table in mixed Dirichlet problem.}
 \label{tab:convergence_mh_dirichlet}
 \egroup
 \end{center}
@@ -1006,7 +1006,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \begin{figure}[!hb]
     \centering    
     \includegraphics[width=0.85\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
-    \caption[numerical verification of inf-sup condition]
+    \caption[Numerical verification of inf-sup condition.]
   {Graph representing numerical verification of inf-sup condition of Dirichlet problem.
   The red line is for the case without singularity, the blue line is for the case including the singularity.
   The fraction of the smallest eigenvalue $\eta_{min}/h$ and element size is nearly constant with mesh refinement,
@@ -1283,8 +1283,7 @@ using the enrichment radius $R_w$, see \fig{fig:enrichment_zone_in_3d}.
 \begin{figure}[!htb]
     \centering    
     \includegraphics[width=0.6\textwidth]{\figpath 3d_enrichment_zone.pdf} 
-    \caption[enrichment zone in 3d]
-  {The figure shows cylindrical enrichment zone in 3d.}
+    \caption{Cylindrical enrichment zone in 3d.}
   \label{fig:enrichment_zone_in_3d}
 \end{figure}
 %

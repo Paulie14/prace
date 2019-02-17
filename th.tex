@@ -43,7 +43,8 @@
 
 % intersections chapter
 % algorithms
-\usepackage[vlined, linesnumbered, ruled]{algorithm2e}
+\usepackage[vlined, linesnumbered, ruled, algochapter]{algorithm2e}
+\newcommand{\listofalgorithmes}{\tocfile{\listalgorithmcfname}{loa}}
 
 % for codes we use different labeling
 \newenvironment{code}[1][htb]
@@ -183,6 +184,9 @@ who never refused to answer to any of my questions on various subjects.
 \clearpage
 
 \listoftables
+\clearpage
+
+\listofalgorithmes
 \clearpage
 
 \input th-list-of-symbols.tex

@@ -669,7 +669,7 @@ since it depends only on $r_w(x,y)$ and the wells have constant center $\bx_w=[x
     \def\svgwidth{0.5\textwidth}
     \input{\figpath enrich_func.pdf_tex}
   \end{center}
-  \caption{The enrichment function.}
+  \caption{The logarithmic enrichment function.}
   \label{fig:enrich_func}
 \end{figure}
 
@@ -764,7 +764,7 @@ and the integration error is large.
   \hspace{0pt}
   \subfloat[improved refinement]{\label{fig:adapt_ref_b} 
     \includegraphics[width=0.45\textwidth]{\figpath adaptive_refinement_3_new.pdf} }
-  \caption[Adaptive refinement comparison]
+  \caption[Adaptive refinement comparison.]
   {Comparison of the original and improved refinement techniques.
    Black lines denote enriched elements edges, red lines denote adaptive refinement (subelements edges) and the well
    edge is blue.
@@ -915,7 +915,7 @@ Next we define a~smooth step function (see \fig{fig:smooth_step})
           \def\svgwidth{0.5\textwidth}
           \input{\figpath smooth_step.pdf_tex}
   }
-  \caption[Smooth step function]
+  \caption[Smooth step function in polar quadrature.]
   {Smooth step function $\mu$ on the well neighborhood $\mathcal{P}$.
   }
   \label{fig:smooth_step_well_band}
@@ -943,7 +943,7 @@ an example of quadrature points distribution).
   \subfloat[$\int\limits_0^{2\pi} \int\limits_{\rho_w}^{\rho_w+\gamma} (1-\mu(r_w)) v(\mathbf{x}) r_w \dd r \dd \phi $]{\label{fig:adapt_ref_polar_b} 
           \includegraphics[width=0.47\textwidth]{\figpath polar_band_refinement.pdf}
   }
-  \caption[Polar quadrature points]
+  \caption[Polar quadrature points.]
   {Distribution of quadrature points of the two integral parts.
   }
   \label{fig:polar_quad_points}

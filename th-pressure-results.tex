@@ -64,8 +64,7 @@ The source term $f_2$ is visualized in \fig{fig:prim_sources}.
     \subfloat[test case 4]{\label{fig:source04} 
         \includegraphics[width=0.46\textwidth]{\results source07_final.pdf} }
     
-  \caption
-  {Source term $f_2$ visualization.}
+  \caption{Source term $f_2$ visualization.}
   \label{fig:prim_sources}
 \end{figure}
 %
@@ -120,7 +119,7 @@ See the common geometry of the test cases in \fig{fig:test_cases_geometry}.
     \centering    
     \def\svgwidth{0.35\textwidth}
         \input{\results geometry.pdf_tex}
-  \caption[Geometry of the aquifer domain.]{Geometry of the aquifer domain common to all the test cases.}
+  \caption[Geometry of the single aquifer domain.]{Geometry of the aquifer domain common to all the test cases.}
   \label{fig:test_cases_geometry}
 \end{figure}
 
@@ -175,7 +174,7 @@ see the convergence graph in \fig{fig:convergence01}.
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence01.pdf}
-  \caption[Convergence graph in Test case 1]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
+  \caption[Convergence graph in Test case 1.]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
   \label{fig:convergence01}
 \end{figure}
 %
@@ -230,7 +229,7 @@ and the shape functions of the enrichment to capture the singularity.
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence02.pdf}
-  \caption[Convergence graph in Test case 2]{Convergence of the $L^2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
+  \caption[Convergence graph in Test case 2.]{Convergence of the $L^2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
   data comes from the problem without the well solved by standard FEM and with optimal convergence order 2.0.}
   \label{fig:convergence02}
 \end{figure}
@@ -293,7 +292,8 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 7 & 0.0039 & 1.49e-05 & 2.00 & 1.61e-05 & 2.00 & 1.61e-05 & 2.00 \\ %\hline 
 \bottomrule
 \end{tabular}
-\caption{Convergence table of the shifted XFEM and SGFEM in Test case 3.}
+\caption[Convergence table in Test case 3.]
+{Convergence table of the shifted XFEM and SGFEM in Test case 3.}
 \label{tab:convergence_test3}
 \egroup
 \end{center}
@@ -311,7 +311,7 @@ by the standard FE shape functions. We also see from this figure that the approx
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=0.5\textwidth]{\results error05_final.pdf}
-  \caption[Error distribution in Test case 3]{$L^2$ error distribution in Test case 3 at the refinement level level 4 ($h=0.0312$).
+  \caption[Error distribution in Test case 3.]{$L^2$ error distribution in Test case 3 at the refinement level level 4 ($h=0.0312$).
   A green circle represents the enrichment radius $R_w$. There is no visible difference between shifted XFEM and SGFEM, so only SGFEM is plotted.}
   \label{fig:error_distribution_test3}
 \end{figure}
@@ -363,7 +363,8 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 \bottomrule
 \end{tabular}
 \egroup
-\caption{Convergence table of the shifted XFEM and SGFEM in Test case 4.}
+\caption[Convergence table in Test case 4.]
+{Convergence table of the shifted XFEM and SGFEM in Test case 4.}
 \label{tab:convergence_test4}
 \end{center}
 \end{table}
@@ -389,7 +390,7 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
   \hfill
   \subfloat[refinement level 7]{\label{fig:error_distribution_test4b} 
         \includegraphics[width=0.48\textwidth]{\results error07_07_final.pdf} }
-  \caption[Error distribution in Test case 4]{$L^2$ error distribution in Test case 4 at the refinement level level 4 and 7.
+  \caption[Error distribution in Test case 4.]{$L^2$ error distribution in Test case 4 at the refinement level level 4 and 7.
   A green circle represents the enrichment radius $R_w$. Pay attention to the logarithmic scale in the right figure.}
   \label{fig:error_distribution_test4}
 \end{figure}
@@ -484,7 +485,7 @@ but we use some general results on the conjugate gradients method and the Laplac
   \centering    
 %   \includegraphics[width=\textwidth]{\results iterations.pdf}
     \includegraphics[width=\textwidth]{\results conditioning05.pdf}
-  \caption[CG iterations count in Test case 3]{Graph of dependence of the CG iteration count on the 
+  \caption[CG iterations count in Test case 3.]{Graph of dependence of the CG iteration count on the 
   number of degrees of freedom. Measured on both problems with no serious distinction observed.}
   \label{fig:conditioning05}
 \end{figure}
@@ -514,7 +515,7 @@ in shifted XFEM and SGFEM in this particular settings is not that significant.
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=\textwidth]{\results moving_xw_error_zero.pdf}
-  \caption[Approximation error dependence on singularity position]{Graph of dependence of the approximation error
+  \caption[Approximation error dependence on singularity position.]{Graph of dependence of the approximation error
    on the position of the singularity respective to a~mesh node.}
   \label{fig:moving_xw_error}
 \end{figure}
@@ -533,7 +534,7 @@ but it is by one order of magnitude higher, so it does not fit in the figure.
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=\textwidth]{\results moving_xw_iterations.pdf}
-  \caption[CG iteration count dependence on singularity position]{Graph of dependence of the CG iteration count
+  \caption[CG iteration count dependence on singularity position.]{Graph of dependence of the CG iteration count
    on the position of the singularity respective to a~mesh node.}
   \label{fig:moving_xw_iterations}
 \end{figure}
@@ -667,7 +668,8 @@ $\rfrac{10}{64}$  & 1.00 & 70.3  \\% & 1.41 & 99.5  \\ %& 2.1 & 150   \\
 $\rfrac{10}{128}$ & 1.00 & 142.0   \\% & 1.41 & 201   \\ %& 3.0 & 427   \\
 \bottomrule
 \end{tabular}
-\caption{Minimal and maximal values of the ratio \eqref{eqn:log_h1_estimate_ratio} for sequence of refined 
+\caption[Validation of the enrichment radius estimate.]
+{Minimal and maximal values of the ratio \eqref{eqn:log_h1_estimate_ratio} for sequence of refined 
 meshes with element size $h$. Validation of the estimate \eqref{eq:grad_estimate_on_square}.}
 \label{tab:log_h1_estimate}
 \end{table}
@@ -757,7 +759,7 @@ still have such good convergence properties when the wells influence each other 
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.8\textwidth]{\results test_2w_exact.pdf}
-  \caption{Solution of Test case 5 with 2 wells. }
+  \caption{Solution of Test case 5.}
   \label{fig:test_2w_exact}
 \end{figure}
 \subsubsection{Test case 5}
@@ -776,7 +778,7 @@ The solution is shown in \fig{fig:test_2w_exact}.
   \hfill
   \subfloat[enrichment radius $R_w=2.0$]{\label{fig:error_2w_2-0} 
         \includegraphics[width=0.48\textwidth]{\results error_2w_2,0.pdf} }
-  \caption[Error distribution in Test case 5]{$L^2$ error distribution in Test case 5 for two different $R_w$,
+  \caption[Error distribution in Test case 5.]{$L^2$ error distribution in Test case 5 for two different $R_w$,
   represented by green circles.}
   \label{fig:error_distribution_test5}
 \end{figure}
@@ -806,7 +808,8 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 6 & 0.0078 & --       & --   & 1.72e-02 & 2.01 \\ %\hline
 \bottomrule
 \end{tabular}
-\caption{Convergence table of the shifted XFEM and SGFEM in Test case 5, using enrichment radius $R_w=2.0$.}
+\caption[Convergence table in Test case 5.]
+{Convergence table of the shifted XFEM and SGFEM in Test case 5, using enrichment radius $R_w=2.0$.}
 \label{tab:convergence_test5}
 \egroup
 \end{center}
@@ -822,7 +825,7 @@ This is due to the enrichment of elements by multiple enrichment functions causi
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.8\textwidth]{\results test_2w_conditioning.pdf}
-  \caption[CG iterations count in Test case 3]{Graph of dependence of the CG iteration count on the 
+  \caption[CG iterations count in Test case 3.]{Graph of dependence of the CG iteration count on the 
   number of degrees of freedom. Measured on both problems with no serious distinction observed.}
   \label{fig:test_2w_conditioning}
 \end{figure}
@@ -861,7 +864,7 @@ $g^w_{1D}$  & -150 & -30 & 120 & -50 & 100 \\
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.8\textwidth]{\results test_5w_exact.pdf}
-  \caption{Solution of Test case 6 with 6 wells. }
+  \caption{Solution of Test case 6.}
   \label{fig:test_5w_exact}
 \end{figure}
 %
@@ -888,7 +891,8 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 6 & 0.0078 & 2.41e-03 & 1.94 & 1.77e-03 & 1.85 \\ %\hline
 \bottomrule
 \end{tabular}
-\caption{Convergence table of the SGFEM in Test case 6, using two different enrichment radii.}
+\caption[Convergence table in Test case 6.]
+{Convergence table of the SGFEM in Test case 6, using two different enrichment radii.}
 \label{tab:convergence_test6}
 \egroup
 \end{center}
