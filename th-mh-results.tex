@@ -2,6 +2,83 @@
 
 \section{Flow123d implementation}
 
+The implementation of the model using XFEM is a~part of the software Flow123d, version 3.0.x.
+The code is not however icluded in the official release yet, but it can be found on Github in an experimental branch \verb'PE_xfem_master'.
+There are some new features in the master development branch at the moment which prevent a~fast conflictless merge.
+
+All about Flow123d, including its installation and usage inside Docker, the input file format and running simulations
+can be found on through the official web pages~\cite{flow123d}, its Github pages and its current documentation~\cite{flow123d_doc_2018}.
+
+Flow123d uses the YAML file format as the main input format. To solve the model with singularities and XFEM, additional
+keys must be specified, see Code \ref{code:flow123d_input}. 
+%
+\begin{code}
+\caption{Flow123d input including XFEM.}
+\label{code:flow123d_input}
+% \begin{verbatim}
+%         problem: !Coupling_Sequential
+%         ...
+%         flow_equation: !Flow_Darcy_MH
+%             ...
+%             output_specific:
+%             compute_errors: true
+%             python_solution: analytical_solution.py
+%             output_linear_system: true
+%             use_xfem:
+%             use_xfem: true
+%             enrich_velocity: true
+%             enr_radius: 2.0
+%             dim: 2
+%             ...
+% \end{verbatim}
+\texttt{
+problem: !Coupling\_Sequential \\
+\mbox{}\phantom{mm} ... \\
+\mbox{}\phantom{mm}    flow\_equation: !Flow\_Darcy\_MH \\
+\mbox{}\phantom{mmmm}        ... \\
+\mbox{}\phantom{mmmm}        output\_specific: \\
+\mbox{}\phantom{mmmmmm}            compute\_errors: true \\
+\mbox{}\phantom{mmmmmm}            python\_solution: analytical\_solution.py \\
+\mbox{}\phantom{mmmmmm}            output\_linear\_system: true \\
+\mbox{}\phantom{mmmmmm}            fields: \\
+\mbox{}\phantom{mmmmmmmm}             - velocity\_enr \\
+\mbox{}\phantom{mmmmmmmm}             - velocity\_reg \\
+\mbox{}\phantom{mmmmmmmm}             - velocity\_diff \\
+\mbox{}\phantom{mmmmmmmm}             - velocity\_exact \\
+\mbox{}\phantom{mmmmmmmm}             - pressure\_diff \\
+\mbox{}\phantom{mmmm}        use\_xfem: \\
+\mbox{}\phantom{mmmmmm}            use\_xfem: true \\
+\mbox{}\phantom{mmmmmm}            enrich\_velocity: true \\
+\mbox{}\phantom{mmmmmm}            enr\_radius: 2.0 \\
+\mbox{}\phantom{mmmmmm}            dim: 2 \\
+\mbox{}\phantom{mmmm}       output\_stream: \\
+\mbox{}\phantom{mmmmmm}         ... \\
+\mbox{}\phantom{mmmmmm}         output\_mesh: \\
+\mbox{}\phantom{mmmmmmmm}        max\_level: 6 \\
+\mbox{}\phantom{mmmmmmmm}        refine\_by\_error: false \\
+\mbox{}\phantom{mmmmmmmm}        error\_control\_field: pressure\_exact \\
+\mbox{}\phantom{mmmm}        ... \\
+\mbox{}\phantom{mm} ...}
+\end{code}
+% 
+% \noindent
+In the first 3 lines the specific problem and equation are selected,
+Darcy flow with mixed-hybrid solver in our case. On the lines 6-8, it is set that the $L_2$ norm of the solution of the solution is to be computed,
+analytic solution is passed through the python script and the linear system is set to be output in Matlab format.
+On the lines 9-14, the fields (quantities) that are to be output are selected, it is in a~row: enriched (singular) part of velocity,
+regular part of velocity, elementwise $L_2$ velocity error, exact solution of velocity by the Python script and elementwise $L_2$ pressure error.
+
+On the lines 15-19, the XFEM is actually switched on. It is set that the velocity is to be enriched (the only choice at the moment),
+the enrichment radius is set to 2.0 and the dimension in which the XFEM is applied is selected (is equal 3 in 3d cases).
+Finally on the lines 22-25, the refined output mesh can be defined. The output mesh can be refined to visualize the non-polynomial solution properly
+(described later in Section \ref{sec:output_mesh}). The maximal level of the refinement and possibly the adaptive refinement by error can be selected.
+
+The rest of the input file is standard as in other Flow123d simulations.
+We use similar settings in our test cases where analytic solution is available.
+
+
+
+
 \subsection{Adaptive quadrature}
 The adaptive quadrature implemented in Flow123d is based on the one developed for the quadrilateral meshes
 in Section \ref{sec:integration}. The same adaptive quadrature rules are used, only the distance function $r$
