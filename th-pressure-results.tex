@@ -168,15 +168,15 @@ $l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$\\
 %
 The parameters are gathered in Table \ref{tab:test_case_1_data}.
 Convergence of all used methods is measured on a~set of uniformly refined meshes, 
-see the convergence graph in \fig{fig:convergence01}.
+see the convergence rate in \gref{graph:convergence01}.
 %
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence01.pdf}
   \caption[Convergence graph in Test case 1.]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
-  \label{fig:convergence01}
-\end{figure}
+  \label{graph:convergence01}
+\end{graph}
 %
 At first, we solve the problem by the standard FEM using $h$ adaptivity.
 Kelly's error estimator from Deal II library is used to determine 30\% of the elements
@@ -197,13 +197,13 @@ ill-conditioning of the system matrix still corrupts the computation. We discuss
 a bit more in the next subsection \ref{sec:res_conditioning}.
 
 The shifted XFEM and the SGFEM behave nearly the same way and give the best results as expected.
-We alert the reader that the convergence graphs of ramp function XFEM, shifted XFEM and SGFEM overlap in \fig{fig:convergence01}.
+We alert the reader that the convergence graphs of ramp function XFEM, shifted XFEM and SGFEM overlap in \gref{graph:convergence01}.
 We only mention that the SGFEM saves small amount of degrees of freedom on blending elements in comparison
 with the shifted and the ramp function XFEM. The order of convergence in $L^2$ norm closing to 2.0 is optimal.
 
 
 \subsubsection{Test case 2}
-Next we present the results in Test case 2, the convergence graph is in \fig{fig:convergence02}.
+Next we present the results in Test case 2, the convergence graph is in \gref{graph:convergence02}.
 %
 \begin{table}[!htb]
 \begin{center}
@@ -225,14 +225,14 @@ The parameters are gathered in Table \ref{tab:test_case_2_data}.
 We expect the standard FE shape functions to optimally approximate the regular part of the solution
 and the shape functions of the enrichment to capture the singularity.
 %
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence02.pdf}
   \caption[Convergence graph in Test case 2.]{Convergence of the $L^2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
   data comes from the problem without the well solved by standard FEM and with optimal convergence order 2.0.}
-  \label{fig:convergence02}
-\end{figure}
+  \label{graph:convergence02}
+\end{graph}
 %
 Therefore we solve the problem on the aquifer domain only with the source term $f_2$ but omitting the singularity
 to have a reference solution -- an~approximation of $p_{reg}$. We plot this solution labeled as $\textrm{FEM}_{reg}$ in the convergence graph.
@@ -240,7 +240,7 @@ Since the source term $f_2$ is a~smooth and bounded function, the FEM is suppose
 which is confirmed in the graph.
 The error in XFEM is then expected to be of the same magnitude as the error $\textrm{FEM}_{reg}$.
 
-Using the standard FEM approximation, see the line FEM in \fig{fig:convergence02}, the convergence order is low 0.5,
+Using the standard FEM approximation, see the line FEM in \gref{graph:convergence02}, the convergence order is low 0.5,
 because the size of the elements is still far from $\rho_w$ and it cannot capture the singularity at all.
 
 The XFEM behave similarly as in the Test case 1. The error of the enrichment methods is very close to the error $\textrm{FEM}_{reg}$,
@@ -480,15 +480,15 @@ A~problem with ill-conditioning of the linear system coming from the XFEM method
 and are encountered also in our test cases in the section above. We do not inspect the matrices of the linear system in details, 
 but we use some general results on the conjugate gradients method and the Laplace equation to have an insight on this problem.
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
 %   \includegraphics[width=\textwidth]{\results iterations.pdf}
     \includegraphics[width=\textwidth]{\results conditioning05.pdf}
   \caption[CG iterations count in Test case 3.]{Graph of dependence of the CG iteration count on the 
   number of degrees of freedom. Measured on both problems with no serious distinction observed.}
-  \label{fig:conditioning05}
-\end{figure}
+  \label{graph:conditioning05}
+\end{graph}
 %
 
 The condition number for matrices resulting from a~conforming FEM applied to Laplace equation is $O(h^{-2})$, so the iteration count 
@@ -496,7 +496,7 @@ for the CG without preconditioning is $O(h^{-1})=O(\sqrt{n})$, where $n=1/h^2$ i
 With local preconditioning (Jacobi, SOR, ILU) one can usually achieve the number of iterations $O(h^{-0.5})$, cf. \cite{ern_evaluation_2006}.
 
 
-Let us use the data from Test case 3 and look at the iteration count needed by the CG solver in \fig{fig:conditioning05}.
+Let us use the data from Test case 3 and look at the iteration count needed by the CG solver in \gref{graph:conditioning05}.
 The number of iterations of the standard FEM is corresponding to the classic results as mentioned in the paragraph above. 
 
 We can see clearly the enormous growth of the number of iterations in case of the standard XFEM and the ramp 
@@ -506,38 +506,38 @@ dependent from which the ill-conditioning of the system arises.
 
 On the other hand, the SGFEM is proven in \cite{babuska_stable_2012} to overcome this. They state in the conclusion that
 the conditioning of the SGFEM system is not worse than that of the standard FEM system.
-This is exactly what we see in the graph \fig{fig:conditioning05}, where the trends of the SGFEM and the FEM are nearly the same.
+This is exactly what we see in \gref{graph:conditioning05}, where the trends of the SGFEM and the FEM are nearly the same.
 The behavior of the shifted XFEM is similarly good. We explain this by the fact that the difference between the enrichment functions
 in shifted XFEM and SGFEM in this particular settings is not that significant.
 
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=\textwidth]{\results moving_xw_error_zero.pdf}
   \caption[Approximation error dependence on singularity position.]{Graph of dependence of the approximation error
    on the position of the singularity respective to a~mesh node.}
-  \label{fig:moving_xw_error}
-\end{figure}
+  \label{graph:moving_xw_error}
+\end{graph}
 %
 Another test is considered based on Test case 3, in which the source term is set zero. The model is solved for different 
 positions of the singularity $\bx_w$ and the effects on the solution and the linear system is observed. The mesh is structured and fixed with $h=0.125$,
 centered at point $[0,0]$ which is an~element node. The position of the well (the singularity center) is parametrized by $\bx_w = [t,t]$ with 
 \[t\in\{0,\, 0.002,\, 0.004,\, 0.01,\, 0.015,\, 0.03,\, 0.06,\, 0.1,\, 0.11,\, 0.12,\, 0.123,\, 0.125\},\]
 so the well moves from one node of the element to the opposite one along the element diagonal. 
-We see the results in two graphs \fig{fig:moving_xw_error} and \fig{fig:moving_xw_iterations}. The first one displays
+We see the results in two graphs \ref{graph:moving_xw_error} and \ref{graph:moving_xw_iterations}. The first one displays
 the approximation error dependence on the relative position of the singularity and the element. The trend is apparent,
 however the magnitude of the change is not significant. The error of the standard XFEM exhibits the same behavior
 but it is by one order of magnitude higher, so it does not fit in the figure.
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=\textwidth]{\results moving_xw_iterations.pdf}
   \caption[CG iteration count dependence on singularity position.]{Graph of dependence of the CG iteration count
    on the position of the singularity respective to a~mesh node.}
-  \label{fig:moving_xw_iterations}
-\end{figure}
+  \label{graph:moving_xw_iterations}
+\end{graph}
 %
 The second figure shows the change in the number of iterations of the CG solver. The trend is again apparent:
 the CG deals better with the linear system when the singularity closes to an element node, the situation is worse
@@ -547,7 +547,7 @@ The approximation of a~singularity by standard FE shape functions is much better
 Therefore when moving the singularity center away from the mesh node, the contribution of the enrichment to the system matrix is larger
 (also observed in the experiments).
 Since the conditioning (and the number of CG iterations) is sensitive to the enrichment part of the matrix,
-we observe this trend in \fig{fig:moving_xw_iterations}.
+we observe this trend in \gref{graph:moving_xw_iterations}.
 
 
 % \begin{figure}[!htb]
@@ -697,7 +697,7 @@ where the nonlinear term of the bilinear finite elements allows better approxima
 \end{figure}
 %
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=0.9\textwidth]{\results radius_convergence_01.pdf}
@@ -708,15 +708,15 @@ where the nonlinear term of the bilinear finite elements allows better approxima
 %     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
   \caption[Convergence for different enrichment radii.]{Convergence graph for different enrichment radii. The "FEM reg"
   data comes from the problem without the singularity solved by the standard FEM -- it has the optimal convergence order 2.0.}
-  \label{fig:radius_conv_1}
-\end{figure}
+  \label{graph:radius_conv_1}
+\end{graph}
 %
 Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Test case 3
 using the SGFEM for different mesh steps and different values of $R_w$.
 Let us remind that $O(h^p)$ convergence of the solution in the $H^1$ norm translates to the $O(h^{p+1})$ convergence of the solution in the $L^2$ norm 
 for the linear elliptic problems (cf. \cite[Theorem 19.2]{ciarlet_basic_1991}). According to the estimates \eqref{eq:std_err_estimate}
 and \eqref{eq:singular_approx_error}, we expect $O(h^2)$ convergence of $L^2$ norm independently of the enrichment radius. This is 
-clearly demonstrated in \fig{fig:radius_conv_1}. For comparison, we plot also the error of the regular part $p_{reg}$ of the solution
+clearly demonstrated in \gref{graph:radius_conv_1}. For comparison, we plot also the error of the regular part $p_{reg}$ of the solution
 % \[
 %   p_{reg}(x,y) = U(r_w-\rho_w)^2 \sin(\omega x)
 % \]
@@ -729,11 +729,11 @@ we get the optimal value of the enrichment radius
     R_o \sim \sqrt{\frac{\pi}{6}} h/\norm{p_{reg} - \pi_h p_{reg}}_{H^1(\Omega)} \sim 0.32
 \]
 This value roughly matches a~point in the plots of the error as a~function of $R_w$ in
-\fig{fig:radius_conv_2}, from which the error is not decreasing any more.
+\gref{graph:radius_conv_2}, from which the error is not decreasing any more.
 
 
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=0.9\textwidth]{\results radius_convergence_02.pdf}
@@ -744,8 +744,8 @@ This value roughly matches a~point in the plots of the error as a~function of $R
 %     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
   \caption[Optimal enrichment radius.]{Dependence of the error on the enrichment radius for different
   element sizes $h$.}
-  \label{fig:radius_conv_2}
-\end{figure}
+  \label{graph:radius_conv_2}
+\end{graph}
 
 
 \subsection{Test Cases with Multiple Wells}
@@ -817,18 +817,18 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 
 Table \ref{tab:convergence_test5} displays the optimal convergence order of both shifted XFEM and SGFEM for $R_w=2.0$.
 The computation on the most refined mesh is failing in case of the shifted XFEM due to the non-converging CG solver.
-The number of CG iterations for both enrichment methods and standard FEM is plotted in the graph in \fig{fig:test_2w_conditioning}.
+The number of CG iterations for both enrichment methods and standard FEM is plotted in \gref{graph:test_2w_conditioning}.
 The SGFEM performs as expected, on the other hand the CG iterations for shifted XFEM increase rapidly.
 This is due to the enrichment of elements by multiple enrichment functions causing worse conditioning of the resulting linear system.
 %
-\begin{figure}[!htb]
+\begin{graph}[!htb]
 %   \vspace{0pt}
   \centering    
     \includegraphics[width=0.8\textwidth]{\results test_2w_conditioning.pdf}
   \caption[CG iterations count in Test case 3.]{Graph of dependence of the CG iteration count on the 
   number of degrees of freedom. Measured on both problems with no serious distinction observed.}
-  \label{fig:test_2w_conditioning}
-\end{figure}
+  \label{graph:test_2w_conditioning}
+\end{graph}
 
 
 

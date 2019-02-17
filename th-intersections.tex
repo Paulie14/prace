@@ -948,7 +948,7 @@ The artificial composed mesh consists of a cube and two diagonal rectangular 2d 
 A sequence of meshes was prepared with increasing number of elements ranging
 form $33$ up to $2000$ thousands of elements. The mesh step for the bulk mesh was always about half the mesh step of the component mesh. 
 The number of the bulk-component intersections varies from $0.1$ up to $2.0$ millions. The timing for the three compared variants
-of the mesh intersection algorithm is shown on \fig{fig:cube_speed}. Every algorithm consists of the initialization phase which process all elements of the mesh 
+of the mesh intersection algorithm is shown in \gref{graph:cube_speed}. Every algorithm consists of the initialization phase which process all elements of the mesh 
 and the intersection phase which depends only on the number of elements in the component mesh. In these terms both phases of all three variants exhibits almost 
 linear time complexity. As the number of component meshes is low and they are completely inside of the bulk mesh the FS+AF variant is the fastest in particular
 due to fast initialization. On the other hand the BIH variant is about two times slower than the BIH+AF variant during the intersection phase. 
@@ -964,13 +964,13 @@ That is roughly related to the average fraction of the non-intersecting 3d eleme
     \label{fig:cube_mesh}
 \end{figure}
   
-\begin{figure}[!htb]
+\begin{graph}[!htb]
     \centering
     \includegraphics[width=1.0\textwidth]{\figpathins cube_scale.pdf}
     \caption[Time complexity of intersection algorithms.]
     {Time complexity for the initialization phase (left) with respect to total mesh size and the intersection algorithm (right) with respect to the size of the component mesh.}
-    \label{fig:cube_speed}
-\end{figure}
+    \label{graph:cube_speed}
+\end{graph}
 
 
 
@@ -981,7 +981,7 @@ the bulk mesh we also prepared a mesh with the artificially extended fractures (
 Each of these meshes contains 28 fractures however some of them are connected in the conforming way so there is 9 separated 2d components and a 
 single 1d component, the tunnel.
 
-The results for both meshes can be seen in the \fig{fig:bedrichov_speed}, pay attention to the different time
+The results for both meshes can be seen in \gref{graph:bedrichov_speed}, pay attention to the different time
 scales in the graph. In the first case, we notice that FS+AF and BIH+AF algorithms are nearly twice as fast as \emph{BIHonly}.
 The fraction of the non-intersecting 3d elements in bounding boxes of the 2d elements is higher as the 3d elements are on average smaller then the 2d elements.
 Creation of the BIH in the BIH+AF variant pays off and the algorithm performs better than the FS+AF variant.
@@ -1010,14 +1010,14 @@ This case is clearly treated by both BIH and BIH+AF variants much better.
     \label{fig:bedrichov_meshes}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{graph}[!htb]
     \centering
     \includegraphics[width=0.8\textwidth]{\figpathins intersections_bedrichov_both_speed.pdf}
     \caption[Comparison of the algorithms on meshes of Bed{\v r}ichov locality.]
     {Comparison of the algorithms on meshes of Bed{\v r}ichov locality -- interior fractures on the left,
              extending fractures on the right.}
-    \label{fig:bedrichov_speed}
-\end{figure}
+    \label{graph:bedrichov_speed}
+\end{graph}
 
 
 

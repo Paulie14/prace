@@ -24,8 +24,12 @@
 \usepackage{graphicx}
 \usepackage{subfig}
 \newcommand{\fig}[1]{Figure \hyperref[#1]{\ref{#1}}}
+\newcommand{\gref}[1]{Graph \hyperref[#1]{\ref{#1}}}
 \newcommand{\figpath}{figures/}
 \newcommand{\results}{results/}
+
+\DeclareCaptionType[name={Graph}]{graph}
+% \newcommand{\listofgarphs}{\tocfile{\listfigures}{graph}}
 
 % živé odkazy v PDF
 % \usepackage{hyperref}
@@ -136,6 +140,8 @@ even though we cannot share the days in this world anymore.
 This work woud not have been created without the great support of my colleagues, family and friends
 and therefore I would like to express the deepest appreciation to all of them.
 
+% First and foremost, I 
+
 I also greatly appreciate the support from my colleague Mgr. Jan Stebel, Ph.D.
 who never refused to answer to any of my questions on various subjects.
 
@@ -181,6 +187,9 @@ who never refused to answer to any of my questions on various subjects.
 %% \linenumbers
 
 \listoffigures
+\clearpage
+
+\listofgraphs
 \clearpage
 
 \listoftables
