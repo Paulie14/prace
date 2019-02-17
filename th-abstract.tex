@@ -3,18 +3,18 @@ Tato doktorská práce je zaměřena na řešení problému proudění podzemní
 je ovlivněno přítomností vrtů či studní. Model proudění je sestaven na základě konceptu redukce dimenzí,
 který je hojně využíván při modelování rozpukaného porézního přostředí, především granitů.
 Vrty jsou modelovány jako 1d objekty, které protínají blok horniny. 
-Propojení těchto domén v redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
-Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k výpočetním sítím kombinujícím elementy
+Propojení těchto domén v~redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
+Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k~výpočetním sítím kombinujícím elementy
 různých dimenzí.
 
 Jádrem doktorské práce je pak vývoj specializované metody konečných prvků pro výše popsaný model. 
-Pro umožnění propojení sítí různých dimenzí a pro zpřesnění aproximace singularit v okolí vrtů je 
+Pro umožnění propojení sítí různých dimenzí a~pro zpřesnění aproximace singularit v~okolí vrtů je 
 použita rozšířená metoda konečných prvků (XFEM), v~rámci níž jsou navrženy nové typy obohacení
 konečně-prvkové aproximace.
-Metoda XFEM je nejprve aplikována v~modelu pro tlak, dále je navrženo obohacení pro rychlost a metoda
+Metoda XFEM je nejprve aplikována v~modelu pro tlak, dále je navrženo obohacení pro rychlost a~metoda
 je použita ve smíšeném modelu, jehož řešením jsou rychlost i~tlak.
 
-Doktorská práce se dále detailně věnuje numerickým aspektům v metodě XFEM, a~to především 
+Doktorská práce se dále detailně věnuje numerickým aspektům v~metodě XFEM, a~to především 
 adaptivním kvadraturám, volbě velikosti obohacené oblasti nebo podmíněnosti výsledného lineárního systému.
 Vlastnosti navržené XFEM metody a~optimální konvergence jsou ověřeny na sérii numerických experimentů.
 Praktickým výstupem doktorské práce je implementace metody XFEM jako součásti open-source softwaru Flow123d.
