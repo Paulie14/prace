@@ -98,7 +98,7 @@ Due to the choice of $V^m_0$ in \eqref{eqn:prim_weak_space_Vm0},
 the well edge integral is simplified:
 \begin{equation} \label{eqn:prim_avg_assumption}
     \int_{\Gamma^m_w} p_2q_2 \dd s %= \int_{\Gamma^m_w} \big(\avg{p}\avg{q} + \avg{p}\fluct{q} + \fluct{p}\avg{q} + \fluct{p}\fluct{q} \big)\dd s
-    =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s \simeq \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s.
+    =  \int_{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s + \int_{\Gamma^m_w} \fluct{p_2}^m_w\fluct{q_2}^m_w \dd s = \abs{\Gamma^m_w} \avg{p_2}^m_w\avg{q_2}^m_w \dd s.
 \end{equation}
 We now apply the standard Galerkin method. We multiply the equations \eqref{eqn:prim_problem_2d_2d} and \eqref{eqn:prim_problem_2d_1d_source}
 by test functions $q_d$, integrate by parts over $\Omega_d$ using \eqref{eqn:prim_problem_2d_flux}-\eqref{eqn:prim_problem_2d_neumann} and the assumption \eqref{eqn:prim_avg_assumption}, 
@@ -549,7 +549,8 @@ Effects of this assumption are studied in details there and an error estimate is
 
 \section{Discretization}
 \label{sec:prim_discretization}
-In this section we choose a~particular XFEM discretization, using the methods described in Section \ref{sec:enrichment_methods},
+
+We now choose a~particular XFEM discretization, using the methods described in Section \ref{sec:enrichment_methods},
 and apply it to the weak form \eqref{eqn:prim_weak_form}.
 
 We omit the upper index $m$, denoting aquifer, till the end of this section for the sake of the simplicity of notation.
@@ -596,6 +597,19 @@ Thus we can write the enriched solution in the form
 \end{equation}
 where $a_\alpha$ are the standard degrees of freedom and $b_{\alpha w}$ are the degrees of freedom coming from
 the enrichment of the well $w$.
+
+We point out that the selected discrete space $V^{reg}_{2h} \not\subset V$ and thus $V_{2h} \not\subset V$.
+This is due to the fact that the linear shape functions cannot have zero fluctuations on $\Gamma^m_w$,
+which contradicts the property of the continuous test space in \eqref{eqn:prim_weak_space_Vm0}.
+In this view, our discretization is non-conforming.
+
+From the physical perspective, the pressure in the vicinity of the well is above all governed by the large difference between the pressure inside the well and in the aquifer.
+Then the fluctuations of the linear shape functions will be small, influenced mainly by the regular part of the solution and the size of elements.
+If the elements intersecting the well are large, then the fluctuations will be even less significant.
+The fluctuations might increase when element size closes up to the scale of the well, but then this is not the case
+we are the most interested in and the singular XFEM enrichment is unnecessary.
+As it will be observed later in the numerical experiments, the non-conformity does not corrupt
+the convergence of the method and does not increase the approximation error in the problems of our interest.
 
 We now look at the choice of the enrichment function $L_{\alpha w}$ in our particular case.
 Below we select a~proper global enrichment function and then define $L_{\alpha w}$ according
