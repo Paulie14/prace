@@ -44,6 +44,13 @@
 % intersections chapter
 % algorithms
 \usepackage[vlined, linesnumbered, ruled]{algorithm2e}
+
+% for codes we use different labeling
+\newenvironment{code}[1][htb]
+  {\renewcommand{\algorithmcfname}{Code}% Update algorithm name
+   \begin{algorithm}[#1]%
+  }{\end{algorithm}}
+  
 %\usepackage{float}
 %\newfloat{algorithm}{t}{lop}
 \usepackage{array}
@@ -106,7 +113,8 @@
 
 
 \thispagestyle{empty}
-\vspace*{\fill}
+% \vspace*{\fill}
+\vspace*{2in}
 \begin{center}
 % \begin{flushright}
 \emph{
@@ -123,9 +131,46 @@ even though we cannot share the days in this world anymore.
 
 
 \begin{acknowledgement}
+\thispagestyle{empty}
 This work woud not have been created without the great support of my colleagues, family and friends
 and therefore I would like to express the deepest appreciation to all of them.
 
+I also greatly appreciate the support from my colleague Mgr. Jan Stebel, Ph.D.
+who never refused to answer to any of my questions on various subjects.
+
+
+% I want to thank someone
+% I would (particularly) like to thank someone
+% I would like to express my gratitude to someone
+% I would like to express the deepest appreciation to someone
+% My deepest [heartfelt] appreciation goes to someone
+% I would like to show my greatest appreciation to someone
+% Special thanks (also) to someone
+% I would like to offer my special thanks to someone
+% I owe a very important debt to someone
+% I owe my deepest gratitude to someone
+% 
+% Acknowledging comments and support
+% Discussions with A and B have been illuminating [insightful]
+% I appreciate the feedback offered by someone
+% I have greatly benefited from someone
+% I have had the support and encouragement of someone
+% I received generous support from someone
+% My intellectual debt is to someone
+% someone gives insightful comments and suggestions
+% someone has been (greatly, extraordinarily) tolerant and supportive ...
+% someone gives me constructive comments and warm encouragement
+% someone made enormous contribution to ...
+% someone's support [encouragement, suggestions, comments] were invaluable
+% someone's meticulous comments were an enormous help to me
+% Advice and comments given by someone has been a great help in...
+% I am particularly grateful for the assistance given by someone
+% 
+% Without his/her guidance and persistent help this paper [dissertation, thesis] would not have been possible.
+% Without his/her encouragement [help, guidance], this paper [dissertation, project] would not have materialized.
+% 
+% I thank someone for permission to use [include] ...
+% I would also like to express my gratitude to someone for their financial support.
 
 \end{acknowledgement}
 
