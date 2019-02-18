@@ -2,12 +2,12 @@
 
 \section{Flow123d implementation}
 
-The implementation of the model using XFEM is a~part of the software Flow123d, version 3.0.x.
-The code is not however icluded in the official release yet, but it can be found on Github in an experimental branch \verb'PE_xfem_master'.
+The implementation of the mixed-hybrid model using XFEM is a~part of the software Flow123d, version 3.0.x.
+The code is not however included in the official release yet, but it can be found on Github in an experimental branch \verb'PE_xfem_master'.
 There are some new features in the master development branch at the moment which prevent a~fast conflictless merge.
 
 All about Flow123d, including its installation and usage inside Docker, the input file format and running simulations
-can be found on through the official web pages~\cite{flow123d}, its Github pages and its current documentation~\cite{flow123d_doc_2018}.
+can be found through the official web pages~\cite{flow123d}, its Github pages and its current documentation~\cite{flow123d_doc_2018}.
 
 Flow123d uses the YAML file format as the main input format. To solve the model with singularities and XFEM, additional
 keys must be specified, see Code \ref{code:flow123d_input}. 
@@ -63,12 +63,12 @@ problem: !Coupling\_Sequential \\
 % 
 % \noindent
 In the first 3 lines the specific problem and equation are selected,
-Darcy flow with mixed-hybrid solver in our case. On the lines 6-8, it is set that the $L_2$ norm of the solution of the solution is to be computed,
-analytic solution is passed through the python script and the linear system is set to be output in Matlab format.
-On the lines 9-14, the fields (quantities) that are to be output are selected, it is in a~row: enriched (singular) part of velocity,
-regular part of velocity, elementwise $L_2$ velocity error, exact solution of velocity by the Python script and elementwise $L_2$ pressure error.
+Darcy flow with mixed-hybrid solver in our case. On the lines 6-8, it is set that the $L_2$ norm of the solution is to be computed,
+the analytic solution is passed through the python script and the linear system is set to be output in the Matlab format.
+On the lines 9-14, the fields (quantities) that are to be output are selected, these are in a~row: the enriched (singular) part of velocity,
+the regular part of velocity, the elementwise $L_2$ velocity error, the exact solution of velocity by the Python script and the elementwise $L_2$ pressure error.
 
-On the lines 15-19, the XFEM is actually switched on. It is set that the velocity is to be enriched (the only choice at the moment),
+On the lines 15-19, the XFEM is actually switched on. It is set that velocity is to be enriched (the only choice at the moment),
 the enrichment radius is set to 2.0 and the dimension in which the XFEM is applied is selected (is equal 3 in 3d cases).
 Finally on the lines 22-25, the refined output mesh can be defined. The output mesh can be refined to visualize the non-polynomial solution properly
 (described later in Section \ref{sec:output_mesh}). The maximal level of the refinement and possibly the adaptive refinement by error can be selected.
