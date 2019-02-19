@@ -82,10 +82,9 @@ We use similar settings in our test cases where analytic solution is available.
 \subsection{Adaptive quadrature}
 The adaptive quadrature implemented in Flow123d is based on the one developed for the quadrilateral meshes
 in Section \ref{sec:integration}. The same adaptive quadrature rules are used, only the distance function $r$
-is adapted to the simplicial elements. The quadrature generalized for all three dimensions.
-This way we can use it in the computation of both integrals over elements and integrals
-over element faces (e.g. for accurate computation of $z^w_j$ in $\pi^{RT}_T$ interpolant \eqref{eqn:sgfem_interpolant_vel}).
-
+is adapted to the simplicial elements. The detail of refined subelements and quadrature points
+is displayed in \fig{fig:adapt_refinement_flow123d}.
+%
 \begin{figure}[!htb]
   \centering    
   \subfloat[adaptive quadrature refinement]{\label{fig:adapt_refinement_flow123d_a} 
@@ -100,6 +99,27 @@ over element faces (e.g. for accurate computation of $z^w_j$ in $\pi^{RT}_T$ int
   }
   \label{fig:adapt_refinement_flow123d}
 \end{figure}
+
+The adaptive quadrature is generalized for all three dimensions.
+This way we can use it in the computation of both integrals over elements and integrals
+over element faces (e.g. for accurate computation of $z^w_j$ in $\pi^{RT}_T$ interpolant \eqref{eqn:sgfem_interpolant_vel}).
+Such quadrature on a~face of tetrahedron is shown in \fig{fig:adaptive_refinement_ellipse}.
+\begin{figure}[!htb]
+  \centering    
+    \includegraphics[height=6cm]{\figpath adaptive_refinement_ellipse.pdf}
+  \caption[Adaptive quadrature on a~face of tetrahedron.]
+  {Adaptive quadrature on a~face of tetrahedron intersected by a~well.
+   The well is parallel to $z$-axis (the grey and blue circles indicate the cylinder),
+   the tetrahedron face is covered by the red subelements.
+   First the face is mapped to the plane of the blue cross-section, then the subelements are
+   constructed adaptively around the circle and mapped back to the face.
+   Finally the quadrature points are placed in the subelements.
+   The actual cross-section is an ellipse (green points/purple axes).
+  }
+  \label{fig:adaptive_refinement_ellipse}
+\end{figure}
+
+
 
 In 3 dimensions the distance vector \eqref{eqn:distance_vector_in_3d} is used to determine the distance of nodes and elements from the singularity.
 The subelements are refined using the edge splitting technique which is later described in Section \ref{sec:element_refinement}.
@@ -331,7 +351,7 @@ in the right subfigure.
     \subfloat[TC1-b]{
     \includegraphics[width=0.482\textwidth]{\results tc-24-error.pdf} }
     \caption[Error distribution in Test case 1.]
-    {Results of Test case 1. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 1. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_tc1_error}
 \end{figure}
@@ -432,7 +452,7 @@ in the scale of the error of the regular part.
     \subfloat[TC2-d]{
     \includegraphics[width=0.482\textwidth]{\results tc_26_source_error_2,0.pdf} }
     \caption[Error distribution in Test case 2.]
-    {Results of Test case 2. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 2. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green circle indicates the enrichment radius $R_w$. }
     \label{fig:mh_tc2_error}
 \end{figure}
@@ -533,7 +553,7 @@ $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $g_{1D}$\\
     \subfloat[TC3-d]{
     \includegraphics[width=0.482\textwidth]{\results tc_51_source_error_2,0.pdf} }
     \caption[Error distribution in Test case 3.]
-    {Results of Test case 3. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 3. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green circle indicates the enrichment radius $R_w$. }
     \label{fig:mh_tc3_error}
 \end{figure}
@@ -637,7 +657,7 @@ $10^{-3}$ & 0.03 & 10.0 & 2.0 & 100 & 1.0 & 80\\
     \subfloat[TC4-d]{
     \includegraphics[width=0.482\textwidth]{\results tc_25_source_error_2,0.pdf} }
     \caption[Error distribution in Test case 4.]
-    {Results of Test case 4. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 4. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green cylinders indicates the enrichment zone. }
     \label{fig:mh_tc4_error}
 \end{figure}
@@ -724,7 +744,7 @@ We use the same parameters for the nonzero source terms as before: $U=80$, $\ome
     \subfloat[TC5-d]{
     \includegraphics[width=0.482\textwidth]{\results tc_33_2w_source_error_2,0.pdf} }
     \caption[Error distribution in Test case 5.]
-    {Results of Test case 5. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 5. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green cylinders indicates the enrichment zone. }
     \label{fig:mh_tc5_error}
 \end{figure}
@@ -852,12 +872,13 @@ inside the enrichment zones overlap.
 \subsubsection{Test Case 6}
 This test case is analogic to the previous test case, however it includes 5 wells.
 The wells are perpendicular to the $xy$ plane and they have the same parameters as in the 2d Test Case 3.
-
 The following settings are used:
 \begin{itemize}
     \item TC6-a: $f=0$, $R_w=1.0$,
-    \item TC6-b: $f=U\sin(\omega x)$, $R_w=1.0$,
-    \item TC6-c: $f=U\sin(\omega x)$, no singularity.
+    \item TC6-b: $f=0$, $R_w=2.0$,
+    \item TC6-c: $f=U\sin(\omega x)$, $R_w=1.0$,
+    \item TC6-d: $f=U\sin(\omega x)$, $R_w=2.0$,
+    \item TC6-e: $f=U\sin(\omega x)$, no singularity.
 \end{itemize}
 %
 \begin{figure}[!htb]
@@ -865,9 +886,13 @@ The following settings are used:
     \subfloat[TC6-a]{
     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_no_source_error_1,0.pdf} }
     \subfloat[TC6-b]{
+    \includegraphics[width=0.482\textwidth]{\results tc_31_5w_no_source_error_2,0.pdf} } \\
+    \subfloat[TC6-c]{
     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_source_error_1,0.pdf} }
+    \subfloat[TC6-d]{
+    \includegraphics[width=0.482\textwidth]{\results tc_31_5w_source_error_2,0.pdf} }
     \caption[Error distribution in Test case 6.]
-    {Results of Test case 6. The distribution of $L_2$ elementwise error in velocity is displayed at refinement level 5.
+    {Results of Test case 6. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
     The green cylinders indicates the enrichment zone. }
     \label{fig:mh_tc6_error}
 \end{figure}
@@ -881,15 +906,15 @@ The following settings are used:
 % \begin{tabular}{r|c|c|c|c|c|r|r}
 \begin{tabular}{rc|cc|cc|cc}
 \toprule
-\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC6-a } & \multicolumn{2}{c|}{ TC6-b } & \multicolumn{2}{c}{TC6-c}\\ [3pt] %\midrule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC6-c } & \multicolumn{2}{c|}{ TC6-d } & \multicolumn{2}{c}{TC6-e}\\ [3pt] %\midrule
 i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$
     & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
-1 & 1.404 &  $3.98\cdot10^{-2}$  &  -   &  $2.52\cdot10^{-1}$  &  -   &  $2.49\cdot10^{-1}$ &   -   \\
-2 & 1.190 &  $3.67\cdot10^{-2}$  & 0.49 &  $2.15\cdot10^{-1}$  & 0.96 &  $2.10\cdot10^{-1}$ &  1.03 \\
-3 & 0.878 &  $3.00\cdot10^{-2}$  & 0.66 &  $1.62\cdot10^{-1}$  & 0.93 &  $1.59\cdot10^{-2}$ &  0.92 \\
-4 & 0.681 &  $2.49\cdot10^{-2}$  & 0.74 &  $1.25\cdot10^{-1}$  & 1.01 &  $1.23\cdot10^{-2}$ &  1.02 \\
-5 & 0.515 &  $2.12\cdot10^{-2}$  & 0.57 &  $9.55\cdot10^{-2}$  & 0.98 &  $9.31\cdot10^{-2}$ &  0.99 \\
-6 & 0.416 &  $1.85\cdot10^{-2}$  & 0.64 &  $7.75\cdot10^{-2}$  & 0.97 &  $7.54\cdot10^{-2}$ &  0.98 \\
+1 & 1.404 &  $2.52\cdot10^{-1}$  &  -   & $2.51\cdot10^{-1}$ &  -   &  $2.49\cdot10^{-1}$ &   -   \\
+2 & 1.190 &  $2.15\cdot10^{-1}$  & 0.96 & $2.11\cdot10^{-1}$ & 1.04 &  $2.10\cdot10^{-1}$ &  1.03 \\
+3 & 0.878 &  $1.62\cdot10^{-1}$  & 0.93 & $1.59\cdot10^{-1}$ & 0.93 &  $1.59\cdot10^{-2}$ &  0.92 \\
+4 & 0.681 &  $1.25\cdot10^{-1}$  & 1.01 & $1.23\cdot10^{-1}$ & 1.01 &  $1.23\cdot10^{-2}$ &  1.02 \\
+5 & 0.515 &  $9.55\cdot10^{-2}$  & 0.98 & $9.39\cdot10^{-2}$ & 0.98 &  $9.31\cdot10^{-2}$ &  0.99 \\
+6 & 0.416 &  $7.75\cdot10^{-2}$  & 0.97 & $-$                & -    &  $7.54\cdot10^{-2}$ &  0.98 \\
 \bottomrule
 \end{tabular}
 \caption{Convergence table in Test case 6.}
