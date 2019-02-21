@@ -251,7 +251,7 @@ This allows us to better study the impact of the prescribed source on the soluti
 which is better suited to the numerical experiments we are going to present. 
 
 The model is defined as a~complex multi-aquifer system to follow our implementation and to see the differences
-we made in comparison to Gracie and Craig. However before solving the complex model,
+we made in comparison to Gracie and Craig. However, before solving the complex model,
 we constrain ourselves to a~single aquifer in a~major part of the work.
 %
 \begin{figure}[!htb]
@@ -355,7 +355,7 @@ which is not defined by the coupling terms. In reality, wells are very narrow in
 and so the changes in pressure on $\Gamma^m_w$ are very small. Thus we consider $g^m_w \approx \rho_w$ and
 we neglect the effects of $g^m_w$ as shown later.
 
-% Eventually it is worth noticing that the flux between dimensions is approximated by a~single value,
+% Eventually, it is worth noticing that the flux between dimensions is approximated by a~single value,
 % although the flux over $\Gamma^m_w$ can change arbitrarily.
 
 % In \eqref{eqn:problem_2d_1d_source} we used the Dirac measure at the point $\vc x^m_w$
@@ -431,7 +431,7 @@ where
 One can see the dimensional coupling terms highlighted in the blue color.
 The term $\Sigma_w$, similarly to 1d-2d case, represents the flux from the aquifer $\Omega_3$ to the well $\Omega^w_1$.
 The flux is proportional to the pressure difference with the (variable) permeability coefficient $\sigma_w(\vc x)>0\;[s^{-1}]$ between $\Omega_3$ and $\Omega^w_1$.
-However in contrast to the 1d-2d case, $\Sigma_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
+However, in contrast to the 1d-2d case, $\Sigma_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
 Analogically we can then read: the average outward flux from the aquifer at point $\vc x\in\Omega^w_1$
 in \eqref{eqn:problem_3d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_3d_1d_source}.
 The last two equations are the boundary conditions, the first one \eqref{eqn:problem_3d_dirichlet} prescribes the boundary pressure $g_{dD}$, 

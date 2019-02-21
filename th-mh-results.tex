@@ -113,7 +113,7 @@ Such quadrature on a~face of tetrahedron is shown in \fig{fig:adaptive_refinemen
    the tetrahedron face is covered by the red subelements.
    First the face is mapped to the plane of the blue cross-section, then the subelements are
    constructed adaptively around the circle and mapped back to the face.
-   Finally the quadrature points are placed in the subelements.
+   Finally, the quadrature points are placed in the subelements.
    The actual cross-section is an ellipse (green points/purple axes).
   }
   \label{fig:adaptive_refinement_ellipse}
@@ -135,7 +135,7 @@ The subelements are refined using the edge splitting technique which is later de
 
 Due to the enrichment, the finite element approximation is not polynomial anymore.
 If we want to look at the discrete solution, e.g. in Paraview, we have to interpolate it into a~space of piecewise
-constant or linear functions which can be viewed in such software. However the interpolation on the computational mesh
+constant or linear functions which can be viewed in such software. However, the interpolation on the computational mesh
 is quite coarse, so we suggested creating a~finer mesh specially refined for the output.
 
 Two types of refinement is implemented -- uniform and adaptive. In the first case the mesh is uniformly refined in
@@ -688,7 +688,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \end{table}
 
 The approximation error of velocity is displayed in \fig{fig:mh_tc4_error}. We can see that higher
-error is acummulated outside the edge of the enriched zone in TC4-a. However we observe significant error also
+error is acummulated outside the edge of the enriched zone in TC4-a. However, we observe significant error also
 along the edges of the cylinder bases where the two boundaries with the Dirichlet boundary condition and the zero Neumann condition
 are adjacent. The velocity shape functions on the elements with sides on both types of boundaries are obviously unable to approximate
 the solution correctly there. This error on the boundary also slows down the convergence rate, as it can be seen in Table \ref{tab:mh_tc4_convergence}.

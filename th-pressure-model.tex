@@ -117,7 +117,7 @@ then we sum up the two equations together to get
 Considering the Dirichlet boundary conditions, we split the solution into three parts $p=p_0 + p_w + p_D$, while
 $p_0\in V_0$ and $p_w, p_D\in V$ are functions chosen such that they satisfy \eqref{eqn:prim_problem_2d_press_fluct} on the wells edges and
 \eqref{eqn:prim_problem_2d_dirichlet} on the exterior boundary, respectively.
-Finally we define the weak problem
+Finally, we define the weak problem
 \thmproblem{ \label{thm:problem_2d_prim_weak}
 Find $p\in V$ such that
 \begin{align}
@@ -401,7 +401,7 @@ One can observe that the uniqueness of the solution can be attained by fixing th
 (e.g. a~pumping well where the pressure can be measured), possibly with Neumann boundary condition at the rest of the boundary.
 This might be useful when there is limiting amount of data on aquifer and no flow boundary condition is considered.
 
-Eventually we add a~practical assumption and we approximate the pressure fluctuation $g^m_w\approx 0$.
+Eventually, we add a~practical assumption and we approximate the pressure fluctuation $g^m_w\approx 0$.
 This assumption is based on the wells being very small in diameter, $\rho_w << |\Omega^m_2|$,
 and so that pressure is changing minimally along $\Gamma^m_w$.
 Then we put $a(p_w,q)\approx 0$ in Problem \eqref{thm:problem_2d_prim_weak}
@@ -426,7 +426,7 @@ Effects of this assumption are studied in details there and an error estimate is
 % which is better suited to the numerical experiments we are going to present. 
 % 
 % The model is defined as a~complex multi-aquifer system to follow our implementation and to see the differences
-% we made in comparison to Gracie and Craig. However before solving the complex model,
+% we made in comparison to Gracie and Craig. However, before solving the complex model,
 % we will constrain ourselves to a~single aquifer in several sections below.
 % 
 % \notePE{Is it necessary to define aquifers domain $\Omega^m_2$ somewhere?
@@ -712,7 +712,7 @@ such that every node of elements that have non-zero intersection with the area $
     \mathcal{J}^{*w}_{2N} = \{\alpha\in\mathcal{I}_{2N}: \bx_\alpha\in T^j_2,\, j\in\mathcal{J}^w_{2E},\, w\in\mathcal{W}\},
 %     \mathcal{J}^{*w}_{2N} = \{\bx_\alpha: \bx_\alpha\in T^i_2,\, T^i_2\cap Z_w \neq \emptyset, \, i\in\mathcal{I}_{2E},\, \alpha\in\mathcal{I}_{2N} \} \quad \forall w\in\mathcal{W}.
 \end{equation}
-see \fig{fig:enrichment_zone_radial} above. Finally we have the \textbf{SGFEM} scheme, see \eqref{eqn:sgfem_enrich},
+see \fig{fig:enrichment_zone_radial} above. Finally, we have the \textbf{SGFEM} scheme, see \eqref{eqn:sgfem_enrich},
 \begin{equation} \label{eqn:prim_sgfem_enrich}
     L_{\alpha w}|_{T_2^j} = \left[s_w(\bx) - \pi_{T_2^j} (s_w)(\bx)\right],
     \quad \alpha\in\mathcal{J}^w_{2N},\, j\in\mathcal{J}^w_{2E},\, w\in\mathcal{W},

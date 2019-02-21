@@ -736,7 +736,7 @@ Following Section \ref{sec:stable_gfem} we then obtain the local enrichment func
 \begin{equation}
     \vc\phi_{iw}=N_i\vc L_{w}, \qquad i=1\ldots n_{PU},\;\vc L_{w}=\vc s_w - \pi^{RT}_T\vc s_w.
 \end{equation}
-However such $\vc\phi_{iw}$ has non zero flux over element faces, so it devalues
+However, such $\vc\phi_{iw}$ has non zero flux over element faces, so it devalues
 the advantages of the delta property of $\mathbb{RT}^0$ functions \eqref{eqn:rt0_delta_property}.
 This property is important to retain the standard implementation of boundary conditions
 and possibly the coupling scheme for fractures in the mixed-hybrid model in Flow123d.
@@ -776,7 +776,7 @@ degrees of freedom (the fluxes of $\vc \psi_j$ over element faces).
 The property \eqref{eqn:local_enr_vel_int_sum_div_PU} can be checked when filling local element matrices during assembly,
 and can be a~good guide for finding errors.
 
-Finally we need to choose a~partition of unity. Since the hybrization decoupled the elements,
+Finally, we need to choose a~partition of unity. Since the hybrization decoupled the elements,
 the simplest choice is $\mathbb P^0$, 
 the enriched velocity then has the form:
 \begin{equation}
@@ -808,7 +808,7 @@ and the enriched part continuous over element faces. We were looking for proper 
 for hybridization of the enriched part, but we were unsuccessful in this matter.
 
 A step back to solving the mixed model \ref{thm:prob_mixed_weak_simple_discrete} and implementing an enrichment
-for that problem would be reasonable. However the non-hybridized model is not implemented currently in Flow123d
+for that problem would be reasonable. However, the non-hybridized model is not implemented currently in Flow123d
 and it would require significant changes from mesh proccessing to output routines.
 Testing the enrichment in the mixed form is one of our future aims.
 
@@ -839,7 +839,7 @@ For such enrichment it holds:
     \label{eqn:local_enr_vel_normal},
 \end{align}
 %
-Finally we define the enriched velocity in the form:
+Finally, we define the enriched velocity in the form:
 \begin{equation}
     \vc u_h = 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
@@ -1082,7 +1082,7 @@ For handling the coupling terms, let us define a~space of average traces of flux
     \mu^m_w=\avg{\vc v\cdot \vc n}^m_w,\; m\in\mathcal{M}, w\in\mathcal{W},\, \vc v\in V_h(\Omega_2)\}.
 \end{equation}
 %
-Finally let us denote the discretization spaces for the 1d-2d coupled problem:
+Finally, let us denote the discretization spaces for the 1d-2d coupled problem:
 \begin{align}
     V_h &= V^{reg}_h(\Omega_1) \times V_h(\Omega_2), \label{eqn:vel_h_space}\\
     Q_h &= Q_h(\Omega_1) \times Q_h(\Omega_2) \label{eqn:press_h_space} \\
@@ -1288,12 +1288,12 @@ using the enrichment radius $R_w$, see \fig{fig:enrichment_zone_in_3d}.
 \end{figure}
 %
 The enrichment functions $\vc s_{iw}$ are in fact the same on all the elements,
-since we assume the wells to be straight (elements lie on a~line). However their enrichment zones differ from one element to another,
+since we assume the wells to be straight (elements lie on a~line). However, their enrichment zones differ from one element to another,
 so the enriched degrees of freedom can capture different singularity strenght, if the pressure difference between
 the well and the bulk differs along the well.
 The enrichment zones $Z^i_w$ can have different enrichment radii, but we do not see any practical advantage for that at the moment.
 
-Finally we define the enriched velocity solution
+Finally, we define the enriched velocity solution
 \begin{align}
     \vc u_h &= 
     \sum \limits_{i=1}^{n_F\cdot N_E} a_i \vc \psi_i + 
