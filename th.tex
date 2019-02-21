@@ -51,6 +51,28 @@
 % algorithms
 \usepackage[vlined, linesnumbered, ruled, algochapter]{algorithm2e}
 \newcommand{\listofalgorithmes}{\tocfile{\listalgorithmcfname}{loa}}
+% \newcommand{\algo}[1]{\hyperref[#1]{Algorithm \ref{#1}}}
+\newcommand{\algo}[1]{Algorithm \ref{#1}}
+% \newcommand{\mykwsty}[1]{\textcolor{blue}{\emph{#1}}}
+\newcommand{\myfuncsty}[1]{\textbf{\texttt{#1}}}
+% \newcommand{\myvarsty}[1]{\textcolor{GoogleGreen}{\texttt{#1}}}
+% \SetKwSty{mykwsty}
+% \SetArgSty{textbf}
+\SetFuncSty{myfuncsty}
+% \SetDataSty{myvarsty}
+\SetKwFunction{setlinks}{set links}
+\SetKwFunction{vertexfaces}{vertex faces}
+\SetKwFunction{edgefaces}{edge faces}
+\SetKwFunction{intersectionA}{intersection12}
+\SetKwFunction{intersectionB}{intersection13}
+\SetKw{and}{and}
+\SetKw{continue}{continue}
+\SetKw{break}{break}
+% \SetKwFunction{cost}{cost}
+% \SetKw{Of}{of}
+% \SetKwData{neighbors}{neighbors}
+% \SetKwData{edge}{edge}
+
 
 % for codes we use different labeling
 \newenvironment{code}[1][htb]
@@ -65,7 +87,6 @@
 \newcommand{\nface}{$n$-face }
 \newcommand{\nfaces}{$n$-faces }
 \newcommand{\ngh}{NGH }
-\newcommand{\algo}[1]{\hyperref[#1]{Algorithm \ref{#1}}}
 \newcommand{\figpathins}{figures/intersections/}
 
 \pdfsuppresswarningpagegroup=1
