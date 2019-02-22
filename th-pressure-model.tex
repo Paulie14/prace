@@ -12,7 +12,7 @@ The results presented here are partially covered in our article \cite{exner_2016
 % \section{Model of Well-Aquifer System} 
 % \label{sec:model_aquifer}
 
-\section{Coupled 1d-2d model (Primary weak form)}
+\section{Coupled 1d-2d Model (Primary Weak Form)}
 \label{sec:primary_form}
 
 We rearrange Problem \ref{thm:problem_2d} and we substitute for $\vc u_d$ from the Darcy's law and solve the problem
@@ -724,7 +724,7 @@ with the interpolation operator
 \end{equation}
 
 
-\subsection{Integration on enriched elements}
+\subsection{Integration on Enriched Elements}
 \label{sec:integration}
 In order to compute the entries of the system matrix, %\eqref{eqn:s_entry} and \eqref{eqn:r_entry} 
 we need to integrate
@@ -746,7 +746,7 @@ This way the integration is more accurate, increasing the number of quadrature p
 any more degrees of freedom into the linear system. In this section we discuss the adaptivity rules for the element subdivision, 
 suggest an improvement and compare our strategy to the original one from which we have started, developed in \cite{gracie_modelling_2010}.
 
-\subsubsection{Instability of adaptive quadrature}
+\subsubsection{Instability of Adaptive Quadrature}
 \label{sec:refinement_element}
 Gracie and Craig in \cite{gracie_modelling_2010} refine only subelements that cross the boundary of the well, using at most 12 refinements.
 This catches nicely the well edge but it works only when the well is placed at the node of an element or near the center of an element. 
@@ -774,7 +774,7 @@ and the integration error is large.
 In order to overcome this instability of the adaptive quadrature, we have made an asymptotic analysis of the integration error presented 
 in the next section.
 
-\subsubsection{Estimate of quadrature error}
+\subsubsection{Estimate of Quadrature Error}
 
 Let us assume only one well of radius $\rho_w$ situated at the origin. In the case of elliptic equation, the term with the strongest singularity is 
 \begin{equation}
@@ -835,7 +835,7 @@ and possibly to employ a~higher order quadrature.
 %JB%
 %\noteJB{TODO: modify test of integration on unit disk for the function $1/r^2$.}
 
-\subsubsection{A priori adaptive quadrature rules} \label{sec:adaptive_quad_rules}
+\subsubsection{A Priori Adaptive Quadrature Rules} \label{sec:adaptive_quad_rules}
 Let us denote $r_{min}$ the minimum and $r_{max}$ the maximum distance from a~particular subelement $S$ to the singularity center. 
 Based on the analysis presented above, we propose following adaptive quadrature rules:
 %JB%\begin{enumerate}
@@ -887,7 +887,7 @@ see \fig{fig:adapt_ref_b}.
 By implementing this approach, all the variants of the XFEM enrichment methods converge with optimal order.
 as the results of the numerical tests will show in section \ref{sec:pressure_results}.
 
-\subsubsection{Quadrature in polar coordinates}
+\subsubsection{Quadrature in Polar Coordinates}
 
 The idea for the usage of the quadrature in polar coordinates originates from the radial character of the terms
 that are integrated. 

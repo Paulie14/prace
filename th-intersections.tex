@@ -43,7 +43,7 @@ The content of this chapter includes the results published in our article~\cite{
 
 
 
-\section{Introduction}
+\section{Introduction to Mesh Intersection}
 % The grid intersection algorithms are crucial for several techniques that try to overcome some limitations of the classical finite element method.
 % The Chimera method \cite{brezzi_analysis_2001}, also called overset grid, and similar Nitche method \cite{massing_efficient_2013}
 % allow solution of the problems with changing geometry as in the fluid-structure problems. 
@@ -361,7 +361,6 @@ The computation of IP consists of three stages: a~calculation of side-tetrahedro
 a~calculation of edge-triangle ICs, an ordering of ICs.
 
 
-% \subsubsection{Successor tables}
 The intersection corners are appended to the list $I$ as they are computed, however their final order in IP is 
 given indirectly by the \emph{successor tables} $F_c[:]$ and $F_f[:]$. Every side of IP that lies on an \nface $x\in M_2\cup M_3$ is followed by an 
 IC given by $F_c[x]$. Every IC $p$ is followed by the side of IP that lies on the \nface $y=F_f[p]\in M_2\cup M_3$ (see an example in \fig{fig:tracing}).

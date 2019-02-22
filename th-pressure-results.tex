@@ -147,7 +147,7 @@ Thus we measure the convergence of the methods only inside the aquifer.
 The error of the solution is measured in $L^2$ norm, which is evaluated using higher order quadrature
 on the unenriched elements and adaptive quadrature in the enriched area, as defined in Section \ref{sec:adaptive_quad_rules}.
 
-\subsubsection{Test case 1}
+\subsubsection{Test Case 1}
 Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
 %
 \begin{table}[!htb]
@@ -202,7 +202,7 @@ We only mention that the SGFEM saves small amount of degrees of freedom on blend
 with the shifted and the ramp function XFEM. The order of convergence in $L^2$ norm closing to 2.0 is optimal.
 
 
-\subsubsection{Test case 2}
+\subsubsection{Test Case 2}
 Next we present the results in Test case 2, the convergence graph is in \gref{graph:convergence02}.
 %
 \begin{table}[!htb]
@@ -249,7 +249,7 @@ disallows computing on finer meshes in case of the standard and ramp function XF
 The shifted XFEM and the SGFEM converge optimally and the error is dominated by the error of the regular part.
 
 
-\subsubsection{Test case 3}
+\subsubsection{Test Case 3}
 The application of the standard and ramp function XFEM suffers from the same weaknesses, as we have shown above, in both Test case 3 and 4.
 Due to the fact that these two methods do not perform well in our problems, we do not deal with them any further
 and we do not present obtained results.
@@ -317,7 +317,7 @@ by the standard FE shape functions. We also see from this figure that the approx
 \end{figure}
 %
 
-\subsubsection{Test case 4}
+\subsubsection{Test Case 4}
 The last case of our test series demonstrates the necessity of the averaged terms in the model formulation.
 The parameters are gathered in Table \ref{tab:test_case_4_data}.
 %
@@ -455,7 +455,7 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
 % \end{center}
 % \end{table}
 
-\subsubsection{Test cases summary}
+\subsubsection{Test Cases Summary}
 We solved four single well-aquifer problems with different solutions on the well-aquifer intersection and different source terms.
 We showed that the enrichment methods can sufficiently approximate the singularity and that the $L^2$ error of the approximation
 can be pushed as low as the error of the regular part of the solution. The optimal convergence order 2.0 has been reached for all
@@ -762,7 +762,7 @@ still have such good convergence properties when the wells influence each other 
   \caption{Solution of Test case 5.}
   \label{fig:test_2w_exact}
 \end{figure}
-\subsubsection{Test case 5}
+\subsubsection{Test Case 5}
 At first we consider two wells intersecting a~square aquifer $\Omega_2 = [0,10]\times[0, 10]$ at points $\bx_1 = [4.1, 4.3]$ and $\bx_2 = [5.7, 5.9]$.
 The pressure at the top of the wells is set $g^1_{1D}=150$ and $g^2_{1D}=100$ respectively.
 Remaining parameters are set the same for both wells: $\rho_w = 0.003$, $\sigma_w = 100$, $c_w = 10^{10}$ for $w=1,2$.
@@ -832,7 +832,7 @@ This is due to the enrichment of elements by multiple enrichment functions causi
 
 
 
-\subsubsection{Test case 6}
+\subsubsection{Test Case 6}
 In this test case, five wells are intersecting the aquifer $\Omega_2 = [0,10]\times[0, 10]$.
 The well specific data are gathered in Table \ref{tab:test_case6_wells_data}.
 The wells 3 and 5 can be seen as injection wells with a~positive flux to the aquifer, the others as pumping wells with a~positive flux from the aquifer.

@@ -22,7 +22,7 @@ implemented in the software Flow123d.
 %     \avg{\vc v\cdot \vc n}_w &=& \frac{1}{{\abs{\Gamma_w}}} \int_{\Gamma_w} \vc v\cdot \vc n, \\
 %     \int_{\Gamma_w} \{\vc v\cdot \vc n\}_w &=& 0. \\
 % \end{eqnarray}
-\section{Mixed formulation}
+\section{Mixed Form}
 The theory of mixed and mixed-hybrid finite element method is described in general in the well known book by 
 Brezzi and Fortin~\cite{brezzi_mixed_1991}. 
 The formulation, its stability and error estimates are studied there.
@@ -90,7 +90,7 @@ permeability coefficient between the well and the 2d domain.
 The condition \eqref{eqn:mixed_form_3} relates the average of the normal flux over $\Gamma_w$ in the outward direction
 to the pressure difference. Due to the fixed pressure $P_w$, this equation resembles a~Robin type boundary condition.
 
-\subsection{Weak Form of Mixed problem}
+\subsection{Saddle Point Weak Form}
 We define the spaces for velocity and pressure,
 so we can derive the weak form of Problem \ref{thm:prob_mixed_simple}:
 \begin{eqnarray}    
@@ -322,7 +322,7 @@ such that the solution fulfills the stability estimate
 % 
 
 
-\subsection{Discretization of Mixed Problem}
+\subsection{Discretization}
 
 The discretization applied in the flow model in Flow123d is followed in this section
 and it is enhanced using an~enrichment of the velocity space.
@@ -870,7 +870,7 @@ we need to check the coercivity
     (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
 }
 
-\subsubsection{Numeric verification of LBB condition.}
+\subsubsection{Numeric Verification of LBB Condition.}
 \notePE{We can do the LBB numerically but we must somehow show that the form $a_h$
 is coercive on kernel of $B$. That is a prerequisite.}
 
@@ -1016,7 +1016,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 %
 
 
-\section{Coupled 1d-2d model (Mixed Hybrid model)}
+\section{Coupled 1d-2d Model}
 \label{sec:coupled_12d}
 Let us consider Problem \ref{thm:problem_2d}, including multiple wells and aquifers.
 For the sake of simplicity, we only assume homogeneous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.
@@ -1195,7 +1195,7 @@ and $\vc u_{0h} \in V_h$.
 
 
 
-\section{Coupled 1d-3d model}
+\section{Coupled 1d-3d Model}
 \label{sec:coupled_13d}
 Let us consider Problem \ref{thm:problem_3d}, including multiple wells.
 For the sake of simplicity, we only assume homogeneous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.

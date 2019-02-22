@@ -152,7 +152,7 @@ The refinement is meant to be used for the enriched discrete solutions in partic
 according to any scalar quantity present in the model. Thus for the quantity $v_h$ in \eqref{eqn:output_ref_criterion} one can use
 for example the source term, the hydraulic conductivity or the supplied analytic solution.
 
-\subsubsection{Element refinement}
+\subsubsection{Element Refinement}
 \label{sec:element_refinement}
 The refinement of elements for the output mesh is done using edge splitting technique (the so called red refinement).
 Since the output mesh is used only for better visualization of non-polynomial quantities, we do not
@@ -296,6 +296,8 @@ When examining the convergence of the method, we use Linux shell scripts and par
 to generate series of refined meshes.
 
 We output the results into VTK format and visualize them in Paraview software. 
+
+\subsection{Test Cases in 1d-2d}
 
 \subsubsection{Test Case 1}
 In the first test case we consider $\Omega_2$ to be a~circular shaped domain of radius 5.0.
@@ -607,6 +609,8 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 %     \label{fig:mh_tc3_inf_sup}
 % \end{figure}
 %
+
+\subsection{Test Cases in 1d-3d}
 
 \subsubsection{Test Case 4}
 We now present several test cases in 3 dimensions. The geometries of the test cases
