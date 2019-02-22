@@ -52,8 +52,8 @@ and to represent these as lower dimensional objects. This means on the geometric
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
 This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
 
-Within the scope of geology or hydrogelogy, the reduced dimension concept is used in the Discrete Fracture Network (DFN) models.
-There is a~world-wide community around the DFN problematics, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview.
+Within the scope of geology or hydrogeology, the reduced dimension concept is used in the Discrete Fracture Network (DFN) models.
+There is a~world-wide community around the DFN problematic, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview.
 The people are dealing with a~wide range of topics on DFN,
 from the definition and measurement of the geological parameters, stochastic generation of DFN and its discretization for FVM/FEM methods,
 to solving multi-physic problems on such geometries. We may differentiate between two types of fracture network models. One is strictly considering only
@@ -74,7 +74,7 @@ and already adopted by some groundwater simulation software, e.g FeFlow \cite{tr
 The works mentioned before deal with modeling fractures, however they are not concerned neither about 1d-3d coupling
 nor point intersections in non-planar 1d-2d coupling. These topics are also studied extensively by different groups, see
 especially \cite{dangelo_coupling_2008, cattaneo_numerical_2015} and \cite{koppl_tum_2015, koppl_vidotto_2018}.
-Their applications are mainly addressed to the medical problematics and they analyze the transport of medicaments through
+Their applications are mainly addressed to the medical problematic and they analyze the transport of medicaments through
 the vascular system and to the surrounding tissue. The veins can be viewed as 1d channels and the tissue is modeled as a~porous media,
 and thus the flow is governed by the same type of equations as in the groundwater simulations.
 
@@ -151,7 +151,7 @@ A creation of a~compatible mesh can be challenging on the algorithms, due to the
 The requirements on the element quality can be also limiting, since the intersection of domains can be very arbitrary.
 Therefore we look for models not requiring the compatible meshes.
 
-\emph{An incompatible mesh}, also refered as non-conforming or non-matching, does not have to satisfy the compatibility equations above.
+\emph{An incompatible mesh}, also referred as non-conforming or non-matching, does not have to satisfy the compatibility equations above.
 The creation of the mesh is much simpler when it can be done independently per domain.
 On the other hand, there are three main challenges on the next levels of the model solution.
 First, the intersections of the mesh elements must be computed efficiently and the intersection data
@@ -174,13 +174,13 @@ for computation of intersections of incompatible meshes.
 \newpage
 \section{Well-Aquifer Model}
 A~well-aquifer model that we solve in our work is defined in this section.
-We follow the reduced dimensional concept and introduce a simplified underground waterflow model.
+We follow the reduced dimension concept and introduce a simplified underground water flow model.
 
 We consider wells (or boreholes, channels) to be straight narrow tubes (cylinders) $\Omega^w_C$ of radius $\rho_w$;
-we use the index $w\in\mathcal{W}=\{1\ldots W\}$ when refering to a~particular well.
+we use the index $w\in\mathcal{W}=\{1\ldots W\}$ when referring to a~particular well.
 Using the reduced dimensional concept, the wells are modeled as lower dimensional objects,
 i.e. 1d manifolds $\Omega^w_1$ which represent the central lines of cylinders $\Omega^w_C$.
-The 1d manifold $\Omega^w_1$ can be parametrized using a~mapping $\nu_w: [0,1] \rightarrow \Omega^w_1$:
+The 1d manifold $\Omega^w_1$ can be parameterized using a~mapping $\nu_w: [0,1] \rightarrow \Omega^w_1$:
 \begin{equation} \label{eqn:1d_parametrization}
     \Omega^w_1 = \{\vc x\in\R^3: \vc x = \nu_w(t),\; t\in[0,1] \}. %\quad \nu_w: [0,1] \rightarrow \Omega^w_1
 \end{equation}

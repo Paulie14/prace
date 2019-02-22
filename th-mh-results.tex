@@ -3,11 +3,11 @@
 \section{Flow123d implementation}
 
 The implementation of the mixed-hybrid model using XFEM is a~part of the software Flow123d, version 3.0.x.
-The code is not however included in the official release yet, but it can be found on Github in an experimental branch \verb'PE_xfem_master'.
+The code is not however included in the official release yet, but it can be found on GitHub in an experimental branch \verb'PE_xfem_master'.
 There are some new features in the master development branch at the moment which prevent a~fast conflictless merge.
 
 All about Flow123d, including its installation and usage inside Docker, the input file format and running simulations
-can be found through the official web pages~\cite{flow123d}, its Github pages and its current documentation~\cite{flow123d_doc_2018}.
+can be found through the official web pages~\cite{flow123d}, its GitHub pages and its current documentation~\cite{flow123d_doc_2018}.
 
 Flow123d uses the YAML file format as the main input format. To solve the model with singularities and XFEM, additional
 keys must be specified, see Code \ref{code:flow123d_input}. 
@@ -109,7 +109,7 @@ Such quadrature on a~face of tetrahedron is shown in \fig{fig:adaptive_refinemen
     \includegraphics[height=6cm]{\figpath adaptive_refinement_ellipse.pdf}
   \caption[Adaptive quadrature on a~face of tetrahedron.]
   {Adaptive quadrature on a~face of tetrahedron intersected by a~well.
-   The well is parallel to $z$-axis (the grey and blue circles indicate the cylinder),
+   The well is parallel to $z$-axis (the gray and blue circles indicate the cylinder),
    the tetrahedron face is covered by the red subelements.
    First the face is mapped to the plane of the blue cross-section, then the subelements are
    constructed adaptively around the circle and mapped back to the face.
@@ -148,7 +148,7 @@ The refinement criterion reads as follows
 where $\pi_{out}$ is the interpolator to a~space of constant or linear functions on an arbitrary element $T$ of the output mesh.
 The relative tolerance $\textrm{tol}$ is specified by the user.
 
-The refinement is ment to be used for the enriched discrete solutions in particular, however in Flow123d the output mesh can be refined
+The refinement is meant to be used for the enriched discrete solutions in particular, however in Flow123d the output mesh can be refined
 according to any scalar quantity present in the model. Thus for the quantity $v_h$ in \eqref{eqn:output_ref_criterion} one can use
 for example the source term, the hydraulic conductivity or the supplied analytic solution.
 
@@ -275,7 +275,7 @@ the left half of the cube.
   
   
 \section{Numerical Tests in Flow123d}
-We present several numerical tests in which we demonstrate the properties and behaviour of the suggested enrichment in the mixed-hybrid method.
+We present several numerical tests in which we demonstrate the properties and behavior of the suggested enrichment in the mixed-hybrid method.
 The tests are computed using our implementation in Flow123d.
 The test setting in 2d similar to the one used in Section \ref{sec:2d_results_single} and \ref{sec:2d_results_multiple}.
 We will again investigate cases on different domains, with a~single well or with multiple wells, with a~source term or without.
@@ -292,7 +292,7 @@ p_2 &=& p_{sin} + p_{reg} = \sum\limits_{j\in\mathcal{W}} a_j\log r_j + p_{reg},
 The meshes used for computations are simplicial and unstructured.
 They are prepared by Gmsh software using the default "MeshAdapt" algorithm.
 % The model is computed on a~serie of refined meshes and the convergence of our method is examined.
-When examining the convergence of the method, we use linux shell scripts and parametrized ".geo" files for Gmsh,
+When examining the convergence of the method, we use Linux shell scripts and parameterized ".geo" files for Gmsh,
 to generate series of refined meshes.
 
 We output the results into VTK format and visualize them in Paraview software. 
@@ -337,9 +337,9 @@ $10^{-3}$ & [3.33,3.33] & 0.03 & 10.0 & 2.0 & 100 & 1.0 & 200\\
 \end{table}
 
 % \noindent
-The model is computed on a~serie of refined meshes and the convergence of our method is examined.
+The model is computed on a~series of refined meshes and the convergence of our method is examined.
 The approximation error of velocity is displayed in \fig{fig:mh_tc1_error}. We can see that 
-the error is mainly acummulated outside the edge of the enriched zone in case of zero source term.
+the error is mainly accumulated outside the edge of the enriched zone in case of zero source term.
 Considering the source term, the error of the singular part is inferior to the error of the regular part, as it is apparent
 in the right subfigure.
 %
@@ -431,7 +431,7 @@ Setting the larger enrichment radius leads to enrichment zones overlap.
 % The last situation, the regular problem, is computed only as a~reference as in Test Case 1.
 
 The approximation error of velocity is displayed in \fig{fig:mh_tc2_error}. We can again observe
-the error mainly acummulating outside the edge of the enriched zone in TC2-a,b,c.
+the error mainly accumulating outside the edge of the enriched zone in TC2-a,b,c.
 The error near the first well is little higher since the singularity is stronger (there is higher pressure inside the well).
 In the case TC2-b, we see a~very small error in the overlap of the enrichment zones
 since both singular enrichments are active there.
@@ -565,7 +565,7 @@ the strongest singularities. In setting TC3-b, the error is largest in the centr
 which is affected by all the singularities. The solution is well approximated inside the four enrichment zones
 of the wells 1,3,4,5, we see only small effects of the other singularities there.
 
-In the subfigures for settings TC3-c and TC3-d, we see the same behaviour of the error as in previous test case.
+In the subfigures for settings TC3-c and TC3-d, we see the same behavior of the error as in previous test case.
 The error of the regular part is significant in TC3-d while the error of the singular part is not apparent.
 
 The convergence for the selected settings is displayed in Table \ref{tab:mh_tc3_convergence}.
@@ -610,14 +610,14 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 
 \subsubsection{Test Case 4}
 We now present several test cases in 3 dimensions. The geometries of the test cases
-are analogic to the previous test cases in 2d, but extruded to the third dimension in $z$ coordinate.
+are analogical to the previous test cases in 2d, but extruded to the third dimension in $z$ coordinate.
 
 In the first 3d test case, the 3d domain $\Omega_3$ is a~cylinder with the bottom base in $xy$ plane
 with the center at $[3.33,3.33,0]$, of height 2.0 and radius 5.0.
 A~well is intersecting the cylinder along its vertical axis.
 Similarly to the 2d case, we set high conductivity $\vc K_1$ inside the well and constant Dirichlet boundary condition $g_{1D}$ on both ends of the well,
 to have constant pressure there.
-Homogenous Neumann boundary condition is applied on both bases of the cylinder. The flow is then governed 
+Homogeneous Neumann boundary condition is applied on both bases of the cylinder. The flow is then governed 
 by the well and the boundary condition on the lateral surface of the cylinder.
 Therefore we can still use the pseudo-analytic solution from Section \ref{sec:prim_analytic_solution}.
 
@@ -688,7 +688,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \end{table}
 
 The approximation error of velocity is displayed in \fig{fig:mh_tc4_error}. We can see that higher
-error is acummulated outside the edge of the enriched zone in TC4-a. However, we observe significant error also
+error is accumulated outside the edge of the enriched zone in TC4-a. However, we observe significant error also
 along the edges of the cylinder bases where the two boundaries with the Dirichlet boundary condition and the zero Neumann condition
 are adjacent. The velocity shape functions on the elements with sides on both types of boundaries are obviously unable to approximate
 the solution correctly there. This error on the boundary also slows down the convergence rate, as it can be seen in Table \ref{tab:mh_tc4_convergence}.
@@ -870,7 +870,7 @@ inside the enrichment zones overlap.
 % is optimal.
 
 \subsubsection{Test Case 6}
-This test case is analogic to the previous test case, however it includes 5 wells.
+This test case is analogical to the previous test case, however it includes 5 wells.
 The wells are perpendicular to the $xy$ plane and they have the same parameters as in the 2d Test Case 3.
 The following settings are used:
 \begin{itemize}
@@ -933,7 +933,7 @@ and the dominant error is in the regular part of the solution. The optimal conve
 \section{Summary}
 In this chapter we developed a~new XFEM method for approximation of singularities both in 2 and 3 dimensions.
 The model was formulated in the mixed-hybrid form following the concept of the software Flow123d.
-We used what we have learned in Chapter \ref{chap:xfem_pressure} and transfered our experience into creating
+We used what we have learned in Chapter \ref{chap:xfem_pressure} and transferred our experience into creating
 an SGFEM like enrichment of velocity in the vicinity of the singularities to improve the approximation.
 
 Regarding the reduced dimensional modeling, our approach enables coupling of non-coplanar 1d and 2d domains

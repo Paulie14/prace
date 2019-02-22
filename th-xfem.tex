@@ -406,13 +406,13 @@ The trick is, that the same basis functions are used but with different support 
 Thus no step function is actually used to enrich the finite element space,
 like we would do in standard XFEM approach described in Section \ref{sec:glob_enr_discontinuity}.
 This approach however is not suitable for the approximation of a~singularity,
-since enriching the FE space by additional Raviart-Thomas basis fuctions would not help to capture neither the geometry of the singularity
+since enriching the FE space by additional Raviart-Thomas basis functions would not help to capture neither the geometry of the singularity
 nor the adjacent steep gradients.
 The authors further analyze the stability and convergence properties of their approach, in particular the inf-sup condition.
 They also deal with various types of the discontinuity-element cross-sections and with branching of the fractures.
 The model is formulated in 1d-2d at the moment.
 
-Another work regarding flow in coplanar 1d-2d fractured system is by Schwenck~\cite{schwenck_xfem-based_2015, schwenck_2015}.
+Another work regarding flow in porous media in coplanar 1d-2d fractured system is by Schwenck~\cite{schwenck_xfem-based_2015, schwenck_2015}.
 The XFEM is applied in the primary formulation for pressure, the discontinuous enrichment is used.
 The approximation around fracture tips and model of fractures intersections is proposed.
 

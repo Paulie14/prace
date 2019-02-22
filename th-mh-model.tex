@@ -44,12 +44,12 @@ it cannot approximate the discontinuity of the velocity over the fractures accur
 \section{Mixed Dirichlet Problem}
 
 At the beginning, we consider a steady 2d problem with a single singularity present in a~domain $\Omega\subset\R^2$.
-We take Problem \ref{thm:problem_2d} and restrain ourselves to a~single aquifer, therefore ommitting the index $m$,
+We take Problem \ref{thm:problem_2d} and restrain ourselves to a~single aquifer, therefore omitting the index $m$,
 and a~single well $w$ perpendicular to the aquifer. Further we fix the pressure in the well,
 so we do not solve the 1d part of the problem
 and we can focus on the properties of the mixed form in the aquifer domain.
 We consider the aquifer thickness $\delta_2=1$ for simplicity.
-Due to this assumption we also ommit the dimension index further in this section (we consider only $d=2$).
+Due to this assumption we also omit the dimension index further in this section (we consider only $d=2$).
 
 We let the exterior boundary be  $\Gamma_{ext}=\Gamma_D$, where we prescribe the Dirichlet boundary condition, for simplicity.
 The boundary of the domain $\prtl\Omega=\Gamma_D \cup \Gamma_w$ then consists of only two parts: the exterior boundary $\Gamma_D$
@@ -235,7 +235,7 @@ This is done through solving an auxiliary Poisson problem
     \grad\varphi\cdot\vc n &= 0 && \textrm{on } \Gamma_w
 \end{aligned}
 \end{equation}
-with homogenous Dirichlet b. c. on $\Gamma_D$ and homogenous Neumann b. c. on $\Gamma_w$.
+with homogeneous Dirichlet b. c. on $\Gamma_D$ and homogeneous Neumann b. c. on $\Gamma_w$.
 From the ellipticity of the artificial problem we get
 \begin{equation}
     \norm{\grad\varphi}_{L_2(\Omega)} \leq \norm{\varphi}_{H^1(\Omega)}
@@ -287,7 +287,7 @@ and that there holds the LBB condition
 \end{equation}
 with $\beta_1$ from \eqref{eqn:form_b_lbb_proof}.\\
 Then there exists a~unique solution $\vc u$, $p$ to Problem \eqref{thm:prob_mixed_weak_simple} for any $F\in V'$ and $G\in Q'$
-such that the solution fullfills the stability estimate
+such that the solution fulfills the stability estimate
 \begin{eqnarray}
     \norm{\vc u}_{H(\div,\Omega)} &\leq& \frac{1}{\alpha_1} \norm{F}_{V'} + \left( \frac{\alpha_2}{\alpha_1} + 1\right)\frac{1}{\beta_1} \norm{G}_{Q'},\\
     \norm{p}_{L_2(\Omega)} &\leq& \frac{1}{\beta_2} \left(1+ \frac{\alpha_2}{\alpha_1} \right) \norm{F}_{V'}
@@ -709,7 +709,7 @@ Similarly for $\mathbb{RT}^0(T)$ functions it holds
 We see in \eqref{eqn:rt0_flux_properties} that the first two cases, $\Gamma_w$ outside
 or fully inside the element, do not imply any significant changes in the numerical computation
 in system matrix assembly. In the second case, the normal flux of $\vc\psi_j$ over $\Gamma_w$
-is computed analyticaly.
+is computed analytically.
 Only the last case, the well intersecting an element face, means
 numerical evaluation of the face integrals.
 
@@ -776,7 +776,7 @@ degrees of freedom (the fluxes of $\vc \psi_j$ over element faces).
 The property \eqref{eqn:local_enr_vel_int_sum_div_PU} can be checked when filling local element matrices during assembly,
 and can be a~good guide for finding errors.
 
-Finally, we need to choose a~partition of unity. Since the hybrization decoupled the elements,
+Finally, we need to choose a~partition of unity. Since the hybridization decoupled the elements,
 the simplest choice is $\mathbb P^0$, 
 the enriched velocity then has the form:
 \begin{equation}
@@ -800,16 +800,16 @@ There are 3 local enrichment functions per element, in case of 2d.
 Unfortunately, we were unsuccessful in implementation of these PU.
 In case of $\mathbb P^0$, the coupling of the enrichment functions over the element faces was too loose,
 that the solution was utterly broken into pieces.
-Additional enrichment of the constant Lagrange multipliers, that would strenghten the connections over faces,
+Additional enrichment of the constant Lagrange multipliers, that would strengthen the connections over faces,
 might be worth trying.
 
-The $\mathbb P^1$ partition of unity goes againts the hybridization, since we have the regular part disconnected
+The $\mathbb P^1$ partition of unity goes against the hybridization, since we have the regular part disconnected
 and the enriched part continuous over element faces. We were looking for proper Lagrange multiplicators
 for hybridization of the enriched part, but we were unsuccessful in this matter.
 
 A step back to solving the mixed model \ref{thm:prob_mixed_weak_simple_discrete} and implementing an enrichment
 for that problem would be reasonable. However, the non-hybridized model is not implemented currently in Flow123d
-and it would require significant changes from mesh proccessing to output routines.
+and it would require significant changes from mesh processing to output routines.
 Testing the enrichment in the mixed form is one of our future aims.
 
 
@@ -858,7 +858,7 @@ we need to check the coercivity
 \[a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in V_{0h}\].
 
 \notePE{
-    Instead it might be sufficient to proove one of the weaker conditions:
+    Instead it might be sufficient to prove one of the weaker conditions:
     \begin{eqnarray}
     \inf_{\vc u_h\in V_{0h}}\sup_{\vc v_h\in V_{0h}}
         \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
@@ -871,7 +871,7 @@ we need to check the coercivity
 }
 
 \subsubsection{Numeric verification of LBB condition.}
-\notePE{We can do the LBB numericaly but we must somehow show that the form $a_h$
+\notePE{We can do the LBB numerically but we must somehow show that the form $a_h$
 is coercive on kernel of $B$. That is a prerequisite.}
 
 Proving the discrete LBB condition for such enrichment is non-trivial,
@@ -936,7 +936,7 @@ the second considering the source term $f=U\sin(\omega x)$.
 
 The solution error is computed against a~pseudo-analytic solution determined according to Section \ref{sec:prim_analytic_solution},
 while setting the pressure in the well to constant $P_w$. The pseudo-analytic solution is used to set the Dirichlet boundary condition
-on the exterior boudary $g_D$, velocity is derived from the pressure $\vc u= -\vc K \grad p$.
+on the exterior boundary $g_D$, velocity is derived from the pressure $\vc u= -\vc K \grad p$.
 
 %
 \begin{figure}[!htb]
@@ -1019,7 +1019,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \section{Coupled 1d-2d model (Mixed Hybrid model)}
 \label{sec:coupled_12d}
 Let us consider Problem \ref{thm:problem_2d}, including multiple wells and aquifers.
-For the sake of simplicity, we only assume homogenous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.
+For the sake of simplicity, we only assume homogeneous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.
 The saddle point problem is derived using the same steps
 as in derivation of Problem \ref{thm:prob_mh_weak_simple} with an additional treatment of the coupling terms.
 
@@ -1198,7 +1198,7 @@ and $\vc u_{0h} \in V_h$.
 \section{Coupled 1d-3d model}
 \label{sec:coupled_13d}
 Let us consider Problem \ref{thm:problem_3d}, including multiple wells.
-For the sake of simplicity, we only assume homogenous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.
+For the sake of simplicity, we only assume homogeneous Neumann boundary condition $g_{dN}=0$, if $\Gamma_{dN}\neq\emptyset$.
 Before we define the saddle point form, we must specify how the enrichment functions are computed in 3d,
 how the enriched elements are selected and what is the actual support of the enrichment functions.
 
@@ -1212,7 +1212,7 @@ We define the velocity global enrichment function in the same form as in 2d case
     \label{eqn:global_enr_vel_3d}
 \end{equation}
 %
-where the effective surface $S_e$ is the lateral surface of a~cylinder of lenght $z$.
+where the effective surface $S_e$ is the lateral surface of a~cylinder of length $z$.
 The global enrichment functions have these properties on an element $T$:
 \begin{align} \label{eqn:glob_flux_properties_3d}
     \int_{T\setminus \Omega^w_C} \div\,\vc s_w \dd\bx
@@ -1289,7 +1289,7 @@ using the enrichment radius $R_w$, see \fig{fig:enrichment_zone_in_3d}.
 %
 The enrichment functions $\vc s_{iw}$ are in fact the same on all the elements,
 since we assume the wells to be straight (elements lie on a~line). However, their enrichment zones differ from one element to another,
-so the enriched degrees of freedom can capture different singularity strenght, if the pressure difference between
+so the enriched degrees of freedom can capture different singularity strength, if the pressure difference between
 the well and the bulk differs along the well.
 The enrichment zones $Z^i_w$ can have different enrichment radii, but we do not see any practical advantage for that at the moment.
 
