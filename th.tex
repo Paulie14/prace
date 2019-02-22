@@ -149,7 +149,7 @@
 % Dedicated to the memory of my late father, \\
 % Zden{\v e}k Exner. \\
 Dedicated to the memory of my late father, Zden{\v e}k Exner,\\
-who I still turn to for a guidance through my life,\\
+whom I still turn to for a guidance through my life,\\
 even though we cannot share the days in this world anymore.
 }
 % \end{flushright}
@@ -160,13 +160,24 @@ even though we cannot share the days in this world anymore.
 
 \begin{acknowledgement}
 \thispagestyle{empty}
-This work woud not have been created without the great support of my colleagues, family and friends
+This work would not have been created without the great support of my colleagues, family and friends
 and therefore I would like to express the deepest appreciation to all of them.
 
-% First and foremost, I 
+Especially, I would like to thank my supervisor, Mgr. Jan B{\v r}ezina, Ph.D., for his leadership and all the support he provided me
+during my doctorate and also before. His advice and his optimism helped me several times to get past a~problem
+when the solution was too blurred for my eyes.
 
-I also greatly appreciate the support from my colleague Mgr. Jan Stebel, Ph.D.
-who never refused to answer to any of my questions on various subjects.
+I also greatly appreciate the support from my colleague, Mgr. Jan Stebel, Ph.D.,
+who never refused to answer any of my questions however silly or complicated they were.
+
+I am grateful to Prof. Barbara Wohlmuth for inviting me to the Technical University of Munich,
+for her hospitality during my research stay there and for the great opportunity to expand my horizons with the team at M2.
+
+I owe a~huge debt to my family and friends for spending all the extra hours at work instead of being with them.
+I would like to express my sincere gratitude to my mother, Hana Exnerov\'a, in particular, for always supporting me and believing in me.
+
+Finally, I thank with love to my soul mate, Markéta Tůmová. She has been my best friend and great companion,
+supported, encouraged, entertained and helped me through this exciting life period.
 
 
 % I want to thank someone
@@ -212,13 +223,24 @@ who never refused to answer to any of my questions on various subjects.
 \listoffigures
 \clearpage
 
-\listofgraphs
-\clearpage
+% \listofgraphs
+% \clearpage
+% 
+% \listoftables
+% \clearpage
+% 
+% \listofalgorithmes
+% \clearpage
 
 \listoftables
 \clearpage
 
+
+\begingroup
+\let\clearpage\relax
+\listofgraphs
 \listofalgorithmes
+\endgroup
 \clearpage
 
 \input th-list-of-symbols.tex
@@ -338,7 +360,7 @@ which puts us in a pioneer position at least in the Czech scientific environment
 
 
 The work was also consulted during the traineeship at Technical University in Munich at the Department of Numerical Mathematics
-lead by Prof. Barbara Wholmuth. Mainly the theoretical aspects of the work and new ideas were discussed.
+lead by Prof. Barbara Wohlmuth. Mainly the theoretical aspects of the work and new ideas were discussed.
 We got also familiarized with a~different approach for modeling singularities without using XFEM, which is being developed there.
 
 
@@ -351,7 +373,7 @@ We got also familiarized with a~different approach for modeling singularities wi
 
 A 6 months long traineeship is planned for the second half of the year 2016. A cooperation with the team lead
 by professor Barbara Wohlmuth at the Technical University in Munich is to be established. They are experts
-in the field of porous media modelling and they are also interested in models on meshes with combined dimensions
+in the field of porous media modeling and they are also interested in models on meshes with combined dimensions
 (see e.g. \cite{schwenck_2015} where fracture intersections in 2D is solved). The aim of the traineeship is to
 work together both on the theory and implementation of the XFEM in 0D-2D and 1D-3D flow model.
 
