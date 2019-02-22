@@ -2,7 +2,7 @@
 \begin{abstractCZ}
 Tato doktorská práce je zaměřena na řešení problému proudění podzemní vody v~porézním prostředí, které
 je ovlivněno přítomností vrtů či studní. Model proudění je sestaven na základě konceptu redukce dimenzí,
-který je hojně využíván při modelování rozpukaného porézního přostředí, především granitů.
+který je hojně využíván při modelování rozpukaného porézního prostředí, především granitů.
 Vrty jsou modelovány jako 1d objekty, které protínají blok horniny. 
 Propojení těchto domén v~redukovaném modelu způsobuje singularity v~řešení v~okolí vrtů.
 Vrty i~porézní médium jsou síťovány nezávisle na sobě což vede k~výpočetním sítím kombinujícím elementy
@@ -35,10 +35,10 @@ Darcyho proudění, rozpukané porézní prostředí
 In this doctoral thesis, a~model of groundwater flow in porous media intersected with wells (boreholes, channels) is developed.
 The model is motivated by the reduced dimension approach which is being often used in fractured porous media problems, especially in granite rocks.
 The wells are modeled as lower dimensional 1d objects and they intersect the surrounding bulk rock domains.
-The coupling between the wells and the rock then causes a~singular behaviour of the solution in the higher dimensional domains
+The coupling between the wells and the rock then causes a~singular behavior of the solution in the higher dimensional domains
 in the vicinity of the cross-sections. The domains are discretized separately resulting in an~incompatible mesh of combined dimensions.
 
-The core contribution of this work is in the developement of a~specialized finite element method for such model.
+The core contribution of this work is in the development of a~specialized finite element method for such model.
 Different Extended finite element methods (XFEM) are studied and new enrichments are suggested to better
 approximate the singularities and to enable the coupling of the wells with the higher dimensional domains.
 At first the XFEM is applied in a~pressure model, later an enrichment for velocity
