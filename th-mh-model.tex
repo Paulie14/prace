@@ -575,7 +575,7 @@ with the bilinear forms %$a: V\times V \rightarrow \R$, $b: V\times Q \rightarro
  \langle G, \vc v_h\rangle_{V_h^{'reg}\times V_h^{reg}} =& \sum_{i\in \mathcal I_F}
         \int_{F^i\cap \Gamma_{D}}
                  - g_{D} (\vc v_h \cdot \vc n) \dd s \nonumber\\
-                 & \color{blue} -\int_{\Gamma_w} g_w \fluct{\vc v_h \cdot \vc n}_w \dd s,\\
+                 & \color{blue} -\int_{\Gamma_w} g_w \fluct{\vc v_h \cdot \vc n}_w \dd s, \label{eqn:prob_mh_weak_simple_fluct}\\
  \langle F, \mathring{q}\rangle_{Q_h'\times Q_h} =& \sum_{i\in \mathcal I_E}
         \int_{T^i} -f q_h \dd\bx\;
         \color{blue}{ - \int_{\Gamma_w} \sigma_w P_w \mu_w \dd s}.
@@ -642,10 +642,15 @@ See \cite{lawrence_balancing_1995} for details.
 The bilinear form $c_w$ in \eqref{eqn:prob_mh_weak_simple2} is positive semidefinite.
 Considering the necessary conditions for unique solvability of Problem \ref{thm:prob_mixed_weak_simple_discrete},
 Theorem 1.2, p. 47 in \cite{brezzi_mixed_1991}, implies the existence of a~unique solution of Problem \ref{thm:prob_mh_weak_simple}.
-
 The mixed-hybrid problem \ref{thm:prob_mh_weak_simple} is conceptually compatible
 with the model implemented in Flow123d, see \cite{sistek_bddc_2015, flow123d}.
 
+At last, we address the fluctuation term in \eqref{eqn:prob_mh_weak_simple_fluct}.
+Comparing it to the primary form in Section \ref{sec:prim_discretization}, we see, that this time the fluctuation
+on $\Gamma_w$ does not influence the approximation space itself, but it appears on the right hand side.
+Since the fluctuation function $g_w$ is mostly unknown and very small in real life problems, we 
+neglect it in our model and implementation by setting it zero. As we saw in the test in Section \ref{sec:pressure_results} already,
+and as we see in further in the numerical tests in this chapter,  it does not influence the convergence rate.
 
 \subsubsection{Velocity Enrichment}
 \label{sec:velocity_enrichment}
@@ -962,12 +967,12 @@ $10^{-3}$ & {}[3.33,3.33] & 0.03 & 1.5 & 100 & 1 & 20\\
 \begin{figure}[!htb]
     \centering
     \subfloat[velocity solution (magnitude)]{
-    \includegraphics[width=0.482\textwidth]{\results mh_dirichlet_vel.pdf} }
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel.pdf} }
     %\hspace{5pt}
     \subfloat[$L_2$ elementwise error in velocity]{
-    \includegraphics[width=0.482\textwidth]{\results mh_dirichlet_vel_error.pdf} }
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_error.pdf} }
     \caption[Dirichlet problem results, zero source term.]
-    {Results of the Dirichlet problem for $f=0$. The velocity solution is displayed at refinement level 4,
+    {Results of Dirichlet problem for $f=0$. The velocity solution is displayed at refinement level 4,
     the green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_dirichlet_zero_source}
 \end{figure}
@@ -987,13 +992,13 @@ Similarly to the pressure model, the error is mainly concentrated on the edge of
 We can see that the error is higher in $y=x$ direction than in $y=6.66-x$ direction which is caused by the shape of the
 elements in the structured mesh.
 
-\vspace{1cm}
 The convergence results for both cases are gathered in Table \ref{tab:convergence_mh_dirichlet}.
 As a~reference, we provide also the convergence of the regular problem (non-zero source term, without singularity)
 in the third column.
 The first column shows the convergence results in this case, the convergence rate is closing to optimal.
 %
 \begin{table}[!htb]
+\vspace{0.5cm}
 \begin{center}
 \bgroup
 \def\arraystretch{1.2}
@@ -1011,7 +1016,8 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 5 & 0.039 &  0.57 $\cdot10^{-3}$  & 0.96 &  1.58 $\cdot10^{-2}$  & 0.97 & 1.56 $\cdot10^{-2}$ &  0.99 \\
 \bottomrule
 \end{tabular}
-\caption{Convergence table in mixed Dirichlet problem.}
+\caption{Convergence table in mixed Dirichlet problem.
+    MHFEM denotes the standard mixed-hybrid finite element method used in regular case.}
 \label{tab:convergence_mh_dirichlet}
 \egroup
 \end{center}
@@ -1025,7 +1031,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
     \subfloat[$L_2$ elementwise error in velocity]{
     \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f_error.pdf} }
     \caption[Dirichlet problem results, nonzero source term.]
-    {Results of the Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
+    {Results of Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
     the green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_dirichlet_source}
 \end{figure}
@@ -1040,11 +1046,10 @@ The convergence rate is again nearly optimal, the magnitude of the error is clos
 \begin{graph}[!htb]
     \centering    
     \includegraphics[width=0.8\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
-    \caption[Numerical verification of inf-sup condition.]
-  {Graph representing numerical verification of inf-sup condition of Dirichlet problem.
+    \caption[Numerical test of inf-sup stability.]
+  {Graph representing numerical test of the LBB condition of Dirichlet problem.
   The red line is for the case without singularity, the blue line is for the case including the singularity.
-  The fraction of the smallest eigenvalue $\eta_{min}/h$ and element size is nearly constant with mesh refinement,
-  indicating the problem is inf-sup stable.}
+  The smallest eigenvalue $\mathring\eta_{min}$ decreases linearly with $h$.}
   \label{graph:mh_dirichlet_inf-sup}
 \end{graph}
 

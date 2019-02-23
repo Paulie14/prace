@@ -917,7 +917,7 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 3 & 0.878 &  $1.62\cdot10^{-1}$  & 0.93 & $1.59\cdot10^{-1}$ & 0.93 &  $1.59\cdot10^{-2}$ &  0.92 \\
 4 & 0.681 &  $1.25\cdot10^{-1}$  & 1.01 & $1.23\cdot10^{-1}$ & 1.01 &  $1.23\cdot10^{-2}$ &  1.02 \\
 5 & 0.515 &  $9.55\cdot10^{-2}$  & 0.98 & $9.39\cdot10^{-2}$ & 0.98 &  $9.31\cdot10^{-2}$ &  0.99 \\
-6 & 0.416 &  $7.75\cdot10^{-2}$  & 0.97 & $-$                & -    &  $7.54\cdot10^{-2}$ &  0.98 \\
+6 & 0.416 &  $7.75\cdot10^{-2}$  & 0.97 &   -                & -    &  $7.54\cdot10^{-2}$ &  0.98 \\
 \bottomrule
 \end{tabular}
 \caption{Convergence table in Test case 6.}
@@ -934,12 +934,21 @@ Considering the model with the setting TC6-b, we see that the singularities are 
 and the dominant error is in the regular part of the solution. The optimal convergence is comparable to the regular case TC6-c.
 
 \section{Summary}
-In this chapter we developed a~new XFEM method for approximation of singularities both in 2 and 3 dimensions.
-The model was formulated in the mixed-hybrid form following the concept of the software Flow123d.
+In this chapter we developed an XFEM in mixed-hybrid form for approximation of singularities for both 2d and 3d problems.
+The model was formulated following the concept of the software Flow123d and using the Lagrange multipliers for dimnesional coupling.
 We used what we have learned in Chapter \ref{chap:xfem_pressure} and transferred our experience into creating
 an SGFEM like enrichment of velocity in the vicinity of the singularities to improve the approximation.
+The numerical validation of the inf-sup stability was discussed, however this topic if left open for further research.
 
-Regarding the reduced dimensional modeling, our approach enables coupling of non-coplanar 1d and 2d domains
-(lines intersecting planes in a~single point) and coupling of co-dimension 2 in 3d (lines intersecting 3d volume).
-The possibility to compute such problems on incompatible meshes is a~huge advantage.
+Regarding the reduced dimensional modeling, our approach enables coupling of non-planar 1d-2d domains
+and coupling of co-dimension 2 in 3d. The possibility to compute such problems on incompatible meshes is a~significant advantage.
+
+The models were implemented as a~part of the software Flow123d.
+Some of the technical aspects of the code extensions were discussed.
+The input file, the adaptive integration and the output mesh refinement in particular.
+
+At last, an extensive set of numerical tests was performed and convergence results were presented.
+Although pressure converges suboptimally, since its FE approximation is not enriched, velocity error
+reaches optimal order of convergence.
+
 
