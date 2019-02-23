@@ -361,7 +361,7 @@ and the discrete space for pressure consisting of piecewise constant functions
 One can then read the discrete counterpart of Problem \ref{thm:prob_mixed_weak_simple} as follows
 \thmproblem{ \label{thm:prob_mixed_weak_simple_discrete}
 Find $\vc u_h\in \tilde V_h$ and $p_h\in Q_h$ satisfying
-\begin{subequations}
+\begin{subequations} \label{eqn:prob_mixed_weak_simple_discrete}
 \begin{align}
     a(\vc u_h,\vc v_h) + b(\vc v_h, p_h) &= \langle G, \vc v_h\rangle_{V'\times V} &&
         \forall \vc v_h\in \tilde V_h, \label{eqn:mixed_saddle_discrete1}\\
@@ -804,7 +804,7 @@ Additional enrichment of the constant Lagrange multipliers, that would strengthe
 might be worth trying.
 
 The $\mathbb P^1$ partition of unity goes against the hybridization, since we have the regular part disconnected
-and the enriched part continuous over element faces. We were looking for proper Lagrange multiplicators
+and the enriched part continuous over element faces. We were looking for proper Lagrange multipliers
 for hybridization of the enriched part, but we were unsuccessful in this matter.
 
 A step back to solving the mixed model \ref{thm:prob_mixed_weak_simple_discrete} and implementing an enrichment
@@ -850,43 +850,81 @@ Finally, we define the enriched velocity in the form:
 We use this kind of enrichment later on, in our implementation in Flow123d and in all our test cases.
 
 % Below following the proof in 'numpde.pdf' from page 108, 'Brezzi' p.42
-\paragraph{Coercivity of $a$ on $V_{0h}=\ker B_h$.}
-Since we enriched space $V_h$, we no longer have $\div\,V_{h}\subset Q_h$
-($\div\,V_{h}$ is not the space of piecewise constant functions anymore).
-Therefore the simple restriction $V_{0h}\not\subset V_0$ does not hold and 
-we need to check the coercivity
-\[a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in V_{0h}\].
+% \paragraph{Coercivity of $a$ on $V_{0h}=\ker B_h$.}
+% Since we enriched space $V_h$, we no longer have $\div\,V_{h}\subset Q_h$
+% ($\div\,V_{h}$ is not the space of piecewise constant functions anymore).
+% Therefore the simple restriction $V_{0h}\not\subset V_0$ does not hold and 
+% we need to check the coercivity
+% \[a(\vc v_h,\vc v_h)\geq \norm{\vc v_h}^2_V  \qquad \forall \vc v_h\in V_{0h}\].
+% 
+% \notePE{
+%     Instead it might be sufficient to prove one of the weaker conditions:
+%     \begin{eqnarray}
+%     \inf_{\vc u_h\in V_{0h}}\sup_{\vc v_h\in V_{0h}}
+%         \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
+%     \geq \alpha_{1h}, \\
+%     \inf_{\vc v_h\in V_{0h}}\sup_{\vc u_h\in V_{0h}}
+%         \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
+%     \geq \alpha'_{1h},
+%     \end{eqnarray}
+%     (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
+% }
 
-\notePE{
-    Instead it might be sufficient to prove one of the weaker conditions:
-    \begin{eqnarray}
-    \inf_{\vc u_h\in V_{0h}}\sup_{\vc v_h\in V_{0h}}
-        \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
-    \geq \alpha_{1h}, \\
-    \inf_{\vc v_h\in V_{0h}}\sup_{\vc u_h\in V_{0h}}
-        \frac{a(\vc u_h, \vc v_h)}{\norm{\vc u_h}_V \norm{\vc u_h}_V}
-    \geq \alpha'_{1h},
-    \end{eqnarray}
-    (Brezzi p.52, for finite-dimensional case, surjectivity and injectivity are equivalent).
-}
+\subsection{Numerical Verification of LBB Condition.}
+\label{sec:numerical_lbb}
+% \notePE{We can do the LBB numerically but we must somehow show that the form $a_h$
+% is coercive on kernel of $B$. That is a prerequisite.}
 
-\subsubsection{Numeric Verification of LBB Condition.}
-\notePE{We can do the LBB numerically but we must somehow show that the form $a_h$
-is coercive on kernel of $B$. That is a prerequisite.}
+Proving the discrete LBB condition for enriched mixed finite element spaces is non-trivial.
+For a~mixed problem, there exits a~numerical validation technique how to test
+the inf-sup stability experimentally, e.g. in~\cite{chapelle_infsup_1993} for problems in incompressible elasticity.
 
-Proving the discrete LBB condition for such enrichment is non-trivial,
-therefore we use a~kind of numeric indicator on the inf-sup stability on our test cases.
-The numeric validation is done at the discrete level, inspecting the eigenvalues of the system matrix.
-We rewrite equations \eqref{eqn:prob_mh_weak_simple} using the matrix notation
+The numerical validation is done at the discrete level, inspecting the eigenvalues of an~associated eigenvalue problem.
+% We rewrite equations \eqref{eqn:prob_mh_weak_simple} using the matrix notation
+We rewrite equations \eqref{eqn:prob_mixed_weak_simple_discrete} using the matrix notation
 \begin{align}
     \mat A \mat u + \mat B^T\mat p &= \mat f, \\
     \mat B \mat u - \mat C  \mat p &= \mat g.
 \end{align}
-The matrix $\mat C$ is zero in this case, although later it will represent the coupling terms between dimensions.
-We derive the Schur complement of $\mat A$ by elimination of velocity $\mat u$ from the system:
-\begin{equation}
+The matrix $\mat C$ is zero in this particular form, although later it represent the coupling terms between dimensions.
+The Schur complement of $\mat A$ is derived by elimination of velocity $\mat u$ from the system:
+\begin{equation} \label{eqn:infsup_schur1}
     (\mat C + \mat B\mat A^{-1}\mat B^T) \mat p = \mat B \mat A^{-1} \mat f - \mat g.
 \end{equation}
+The equation \eqref{eqn:infsup_schur1} includes only pressure variable.
+According to \cite{brezzi_mixed_1991}, p.76, we can construct a~generalized eigenvalue problem
+\begin{equation} \label{eqn:infsup_singular_values}
+    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat S \mat v_i
+\end{equation}
+where $\mat S$ is a~matrix associated with the scalar product of $Q_h$ and $\eta_i$ are the singular values of $\mat B$.
+The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
+according to \cite{brezzi_mixed_1991}, p.76.
+
+The generalized eigenvalue problem \eqref{eqn:infsup_singular_values} is solved for several refined meshes
+and the values of $\eta_{min}$ are obtained. If $\eta_{min}$ is independent of the refinement, i.e.
+it is constant for different mesh parameter $h$, then it indicates the in-sup stability.
+This of course cannot replace a~mathematical proof, however, it might be used for problems where the proof is not available
+or is hard to obtain.
+
+The problem in our case is that we actually solve the mixed-hybrid form \eqref{thm:prob_mh_weak_simple}.
+Therefore, by computing the Schur complement as in \eqref{eqn:infsup_schur1}, we obtain an equation
+\begin{equation} \label{eqn:infsup_schur1_hybrid}
+    (\mat C_h + \mat B_h\mat A_h^{-1}\mat B_h^T) \mathring{\mat p} = \mat B_h \mat A_h^{-1} \mat f - \mat g.
+\end{equation}
+for $\mathring{\mat p}=[\mat p,\vc \lambda,\vc \lambda_w]$, pressure on elements and pressure on element sides/well edges (Lagrange multipliers).
+We suggest a~new generalized eigenvalue problem
+\begin{equation} \label{eqn:infsup_singular_values_hybrid}
+    (\mat B_h\mat A_h^{-1}\mat B_h^T) \mat v_i = \mathring\eta^2_i \mat S_h \mat v_i
+\end{equation}
+where we associate the matrix $\mat S_h$ with the scalar products of $Q_h$, $\Lambda_h(\mathcal{F})$, $\Lambda^{enr}_h$
+which are subsets of $L_2$ spaces on $\Omega$, $\mathcal{F}\setminus\partial\Omega$ and $\Gamma_w$, respectively. 
+
+However, we are not sure about the relationship between $\eta_{min}$ and $\mathring\eta_{min}$.
+Apparently, $\mathring\eta_{min}$ does not indicate inf-sup stability even for the regular case (without singularities),
+as we see below in a~numerical experiment.
+We are aware of this shortcoming, the topic shall be pursued further. Better insight might give us the implementation
+of the mixed problem without hybridization, which is currently unavailable in Flow123d.
+
 % We construct a~generalized eigenvalue problem
 % \begin{equation}
 %     (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat C \mat v_i
@@ -897,16 +935,6 @@ We derive the Schur complement of $\mat A$ by elimination of velocity $\mat u$ f
 %     (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i (\mat I+ \mat C) \mat v_i
 % \end{equation}
 % }
-
-According to \cite{brezzi_mixed_1991}, p.76, we can construct a~generalized eigenvalue problem
-\begin{equation}
-    (\mat B\mat A^{-1}\mat B^T) \mat v_i = \eta^2_i \mat S \mat v_i
-\end{equation}
-where $\mat S$ is associated with the scalar product of $Q_h$ and $\eta_i$ are the singular values of $\mat B$.
-The smallest non-zero singular value corresponds to the discrete inf-sup constant $\eta_{min} = \beta_{1h}$
-according to \cite{brezzi_mixed_1991}, p.76.
-In regular case the singular value decreases linearly with mesh refinement $\eta_{min}(h)$.
-
 
 \subsection{Numerical Test for Dirichlet Problem.}
 We provide the first numerical results for the Dirichlet problem \ref{thm:prob_mixed_simple}.
@@ -929,54 +957,41 @@ $10^{-3}$ & {}[3.33,3.33] & 0.03 & 1.5 & 100 & 1 & 20\\
 \label{tab:test_case_10_data}
 \end{center}
 \end{table}
-%
-Two cases are computed similarly as in Section \ref{sec:2d_results_single},
-the first setting a~zero source term $f=0$,
-the second considering the source term $f=U\sin(\omega x)$.
-
-The solution error is computed against a~pseudo-analytic solution determined according to Section \ref{sec:prim_analytic_solution},
-while setting the pressure in the well to constant $P_w$. The pseudo-analytic solution is used to set the Dirichlet boundary condition
-on the exterior boundary $g_D$, velocity is derived from the pressure $\vc u= -\vc K \grad p$.
-
+% \vspace{-30pt}
 %
 \begin{figure}[!htb]
     \centering
     \subfloat[velocity solution (magnitude)]{
-    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel.pdf} }
+    \includegraphics[width=0.482\textwidth]{\results mh_dirichlet_vel.pdf} }
     %\hspace{5pt}
     \subfloat[$L_2$ elementwise error in velocity]{
-    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_error.pdf} }
+    \includegraphics[width=0.482\textwidth]{\results mh_dirichlet_vel_error.pdf} }
     \caption[Dirichlet problem results, zero source term.]
     {Results of the Dirichlet problem for $f=0$. The velocity solution is displayed at refinement level 4,
     the green circle indicates the enrichment radius $R_w$.}
     \label{fig:mh_dirichlet_zero_source}
 \end{figure}
+%
+
+Two cases are computed similarly as in Section \ref{sec:2d_results_single},
+the first setting a~zero source term $f=0$,
+the second considering the source term $f=U\sin(\omega x)$.
+%
+The solution error is computed against a~pseudo-analytic solution determined according to Section \ref{sec:prim_analytic_solution},
+while setting the pressure in the well to constant $P_w$. The pseudo-analytic solution is used to set the Dirichlet boundary condition
+on the exterior boundary $g_D$, velocity is derived from the pressure $\vc u= -\vc K \grad p$.
+
 The results of the Dirichlet problem with zero source term can be seen in \fig{fig:mh_dirichlet_zero_source}.
+The singular velocity solution is displayed on the left, while the $L_2$ elementwise error of velocity is on the right.
 Similarly to the pressure model, the error is mainly concentrated on the edge of the enriched zone.
 We can see that the error is higher in $y=x$ direction than in $y=6.66-x$ direction which is caused by the shape of the
 elements in the structured mesh.
-The first column of Table \ref{tab:convergence_mh_dirichlet} shows the convergence results in this case.
-The convergence rate is nearly optimal.
-\begin{figure}[!htb]
-    \centering
-    \subfloat[velocity solution (magnitude)]{
-    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f.pdf} }
-    %\hspace{5pt}
-    \subfloat[$L_2$ elementwise error in velocity]{
-    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f_error.pdf} }
-    \caption[Dirichlet problem results, nonzero source term.]
-    {Results of the Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
-    the green circle indicates the enrichment radius $R_w$.}
-    \label{fig:mh_dirichlet_source}
-\end{figure}
-%
-Analogically the results of the Dirichlet problem with the sinusoidal source term can be seen in \fig{fig:mh_dirichlet_source}.
-The highest error is again concentrated on the edge of the enriched zone but it also appears
-inside the enrichment zone. 
 
-
-The first column of Table \ref{tab:convergence_mh_dirichlet} shows the convergence results in this case.
-The convergence rate is nearly optimal.
+\vspace{1cm}
+The convergence results for both cases are gathered in Table \ref{tab:convergence_mh_dirichlet}.
+As a~reference, we provide also the convergence of the regular problem (non-zero source term, without singularity)
+in the third column.
+The first column shows the convergence results in this case, the convergence rate is closing to optimal.
 %
 \begin{table}[!htb]
 \begin{center}
@@ -986,7 +1001,7 @@ The convergence rate is nearly optimal.
 % \begin{tabular}{r|c|c|c|c|c|r|r}
 \begin{tabular}{rc|cc|cc|cc}
 \toprule
-\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ SGFEM, $f=0$} & \multicolumn{2}{c|}{SGFEM} & \multicolumn{2}{c}{$\textrm{FEM}_{reg}$}\\ [3pt] %\midrule
+\multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ SGFEM, $f=0$} & \multicolumn{2}{c|}{SGFEM} & \multicolumn{2}{c}{MHFEM}\\ [3pt] %\midrule
 i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$
     & order & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
 1 & 0.625 &  7.12 $\cdot10^{-3}$  &  -   &  2.42 $\cdot10^{-1}$  &  -   & 2.42 $\cdot10^{-1}$  &   -   \\
@@ -1001,11 +1016,30 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
 \egroup
 \end{center}
 \end{table}
-
 %
-\begin{graph}[!hb]
+\begin{figure}[!htb]
+    \centering
+    \subfloat[velocity solution (magnitude)]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f.pdf} }
+    %\hspace{5pt}
+    \subfloat[$L_2$ elementwise error in velocity]{
+    \includegraphics[width=0.45\textwidth]{\results mh_dirichlet_vel_f_error.pdf} }
+    \caption[Dirichlet problem results, nonzero source term.]
+    {Results of the Dirichlet problem for $f=U\sin(\omega x)$. The velocity solution is displayed at refinement level 4,
+    the green circle indicates the enrichment radius $R_w$.}
+    \label{fig:mh_dirichlet_source}
+\end{figure}
+
+Analogically the results of the Dirichlet problem with the sinusoidal source term can be seen in \fig{fig:mh_dirichlet_source}.
+The singular velocity solution is displayed on the left, while the $L_2$ elementwise error of velocity is on the right.
+The highest error is again concentrated on the edge of the enriched zone but it also appears
+inside the enrichment zone. 
+The convergence results in this case are shown in the second column of Table \ref{tab:convergence_mh_dirichlet}.
+The convergence rate is again nearly optimal, the magnitude of the error is closing to the error in the regular case.
+%
+\begin{graph}[!htb]
     \centering    
-    \includegraphics[width=0.85\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
+    \includegraphics[width=0.8\textwidth]{\results mh_dirichlet_inf-sup.pdf} 
     \caption[Numerical verification of inf-sup condition.]
   {Graph representing numerical verification of inf-sup condition of Dirichlet problem.
   The red line is for the case without singularity, the blue line is for the case including the singularity.
@@ -1013,8 +1047,13 @@ i & h & $\|\vc u-\vc u_h\|_{L^2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L^2(\O
   indicating the problem is inf-sup stable.}
   \label{graph:mh_dirichlet_inf-sup}
 \end{graph}
-%
 
+Finally, we present the inf-sup test results in \gref{graph:mh_dirichlet_inf-sup} according to \eqref{eqn:infsup_singular_values_hybrid}.
+In both cases, $\mathring\eta_{min}$ decreases linearly with $h$ (note the fraction $\mathring\eta_{min}/h$ in the graph).
+This is in contrast to what we expect, in particular in the regular case where the LBB condition is proved theoretically~\cite{sistek_bddc_2015}.
+However, as we pointed it out in Section \ref{sec:numerical_lbb}, we do not have deep knowledge of the inf-sup indicator in the hybridized case
+and therefore the result is not trustworthy. On the other hand, the optimal convergence result itself can be viewed as a~confirmation
+of stability of our problem.
 
 \section{Coupled 1d-2d Model}
 \label{sec:coupled_12d}
