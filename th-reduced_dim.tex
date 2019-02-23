@@ -39,16 +39,16 @@ but they cannot capture the local effects accurately.
 
 % Discrete approach (reduced dimensions)
 % - more computationaly costly - representation of discrete fractures
-% - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, on the meshing level.
-% - the equivalent continuum concept is still applied on the lower level of details (inside fractures/channels, in 3d bulk between fractures)
+% - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, at the meshing level.
+% - the equivalent continuum concept is still applied at the lower level of details (inside fractures/channels, in 3d bulk between fractures)
 % - leads to reduced dimensional models (fracture in 3d is a~plane -- averaging in the thickness axis, channel is a~line -- averaging in circular cross-section )
 % 
 % - discrete fracture network (DFN) - only fracture network vs coupling with 3d
 
 The other approach considers the disruptions in a~discrete sense, keeping its sizes and properties explicitly in the model.
-This brings more demanding work on the geometric level, where the disruptions have to be represented so that a~suitable computational mesh can be built.
+This brings more demanding work at the geometric level, where the disruptions have to be represented so that a~suitable computational mesh can be built.
 A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible,
-and to represent these as lower dimensional objects. This means on the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
+and to represent these as lower dimensional objects. This means at the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
 This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
 
@@ -61,8 +61,8 @@ the fracture network itself, without considering the bulk domain between fractur
 in concentration transport problems, assuming the transport through the bulk domain is negligible. The other model takes the processes running in the bulk domain
 into account, so it needs to solve the communication between the fracture and bulk domains in addition, which puts an extra effort on discretization,
 coupling conditions and solution of the underlying linear system.
-Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN on the most refined level and only the most influential
-parts of the DFN (or none) on the coarsest level.
+Some upscaling techniques regarding DFN are also being developed, where the idea is to have a very complex DFN at the most refined level and only the most influential
+parts of the DFN (or none) at the coarsest level.
 
 Having the geometry of a~reduced dimensional model prepared, the space discretization then follows,
 leading to the meshes of combined dimensions, i.e. composed of elements of different dimension.
@@ -153,7 +153,7 @@ Therefore we look for models not requiring the compatible meshes.
 
 \emph{An incompatible mesh}, also referred as non-conforming or non-matching, does not have to satisfy the compatibility equations above.
 The creation of the mesh is much simpler when it can be done independently per domain.
-On the other hand, there are three main challenges on the next levels of the model solution.
+On the other hand, there are three main challenges at the next levels of the model solution.
 First, the intersections of the mesh elements must be computed efficiently and the intersection data
 must be represented in such a way that it can be used simply and cheaply in the FEM code.
 Second, an efficient numerical integration must be available on the intersecting polygons.
@@ -380,7 +380,7 @@ However, keeping the real scale of the intersections in the model by means of \e
 at finite height and get rid of the singular solution part running to infinity.
 Still there is left the problem of capturing the intersections and adjacent steep gradients in the solution by the numerical discretization.
 This is the same motivation found in models in \cite{gracie_modelling_2010,craig_using_2011,koppl_vidotto_2018} and ours,
-although treated very differently on the numerical level in each of the works.
+although treated very differently at the numerical level in each of the works.
 
 \subsection{1d-3d Model}
 In this model the aquifer domain is not reduced to a plane but it is represented as a~3d domain.

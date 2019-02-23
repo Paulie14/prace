@@ -301,8 +301,7 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 %
 Table \ref{tab:convergence_test3} shows the convergence of the shifted XFEM and SGFEM for Test case 3.
 In the column $\textrm{FEM}_{reg}$ the optimal convergence with the order 2.0 of the standard FEM on the regular problem is displayed as a~reference.
-We see that both shifted XFEM and SGFEM converge also with the optimal convergence order 2.0 and that there is no significant difference in the error 
-from the refinement level 2. The error of both enrichment methods is a bit higher than the error of $\textrm{FEM}_{reg}$, we would further diminish this
+We see that both shifted XFEM and SGFEM converge also with the optimal convergence order 2.0. The error of both enrichment methods is a bit higher than the error of $\textrm{FEM}_{reg}$, we would further diminish this
 difference by enlarging the enrichment radius. Looking at the graph in \fig{fig:error_distribution_test3} where the error distribution is plotted,
 we see that the error is concentrated outside the enrichment radius circle. It is caused due to the insufficient approximation of the singularity
 by the standard FE shape functions. We also see from this figure that the approximation quality of the quadrilateral FEs on structured mesh is direction dependent.
@@ -370,7 +369,7 @@ i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & orde
 \end{table}
 
 Then the error of the enrichment methods does not decrease as expected at the refinement level 7 and partially 6. 
-To explain this behavior we plot the error distribution in two different refinement levels in \fig{fig:error_distribution_test4}.
+To explain this behavior we plot the error distribution at two different refinement levels in \fig{fig:error_distribution_test4}.
 On the left side, the error in the regular part is dominating. On the right side, the error of the singular part dominates in the center
 and it spreads in $x$ direction. Closer look at the solution on the well edge shows that the pressure on the well edge is incorrect.
 The problem has been solved several times for different $\rho_w$ (smaller and larger) and this error always shows up when there is 
@@ -872,7 +871,7 @@ $g^w_{1D}$  & -150 & -30 & 120 & -50 & 100 \\
 We show the convergence results of the SGFEM in Table \ref{tab:convergence_test6}. The problem is solved with
 two different enrichment radii $R_w$, the smaller one assures non-overlapping enrichment zones.
 The convergence order is still satisfying, although in case of the larger $R_w$ the error did not decreased enough
-in the last refinement level for an unknown reason.
+at the last refinement level for an unknown reason.
 \begin{table}[!htb]
 \begin{center}
 \bgroup
