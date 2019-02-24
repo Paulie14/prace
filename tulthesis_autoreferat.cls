@@ -46,7 +46,7 @@
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions\relax
 
-\LoadClass[a5paper,11pt]{report}
+\LoadClass[a5paper,10pt]{report}
 
 \RequirePackage[noheader]{tul}
 \noTULfooter

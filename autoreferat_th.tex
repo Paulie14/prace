@@ -1,4 +1,4 @@
-\documentclass[bibliography=totocnumbered,dvipsnames,FM,Dis]{tulthesis_autoreferat}
+\documentclass[bibliography=totocnumbered,dvipsnames,FM,Dis, EN]{tulthesis_autoreferat}
 
 \usepackage[a5paper]{geometry}
 
@@ -87,9 +87,9 @@
 \begin{document}
 
 
-%\ThesisStart{male}
-\ThesisTitle{CZ}
+% \ThesisStart{male}
 \ThesisTitle{EN}
+\ThesisTitle{CZ}
 
 
 \begin{abstractCZ}
@@ -140,15 +140,6 @@ a~proper choice of the enrichment zone or a~conditioning of the resulting linear
 The properties of the suggested XFEM are validated on a~set of numerical tests and the optimal convergence
 rate is demonstrated. The XFEM is implemented as a~part of the open-source software Flow123d.
 
-
-% Darcy’s law
-% reduced dimension approach
-% meshes of combined dimensions
-% singularity
-% Extended finite element method (XFEM)
-% mixed form
-% implemented in software Flow123d
-
 \end{abstractEN}
 
 \begin{keywordsEN}
@@ -162,21 +153,7 @@ Darcy flow, Fractured porous media
 \clearpage
 
 
-% \begin{abbrList}
 
-% TODO:
-% FVM, FDM, FEM
-% XFEM, GFEM, SGFEM
-% Fig. vs Figure, ?? the ?? Figure
-% use of subequations ??
-% definition of seminorm in enrichment radius estimate section
-
-% \textbf{TUL} & Technická univerzita v~Liberci \\
-% \textbf{FM} & Fakulta mechatroniky, informatiky a mezioborových studií
-% Technické univerzity v~Liberci
-% \end{abbrList}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Introduction}
 
@@ -186,252 +163,171 @@ Darcy flow, Fractured porous media
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-Mathematical modelling plays a~very important role in science and also our daily lives throughout many different
-fields of knowledge. Using modern finite element methods, we are able to simulate, investigate and predict
-various phenomena of both nature and industrial character. Recent advances in the field of finite element methods
-enable us to solve models of various scales, dimensions, to overcome numerical problems and also 
-to couple interfering features together.
-
-A large set of problems with finite element (FE) models, that people nowadays deal with, is connected with 
-insufficient accuracy in cases where the model includes large and very small scale phenomena at once.
-We can imagine a~simulation of groundwater flow in a~large domain (hundreds of meters) which can be significantly
-influenced by thin fractures in the porous media or artificial wells and boreholes (several centimeters in diameter).
-These disturbances bring discontinuities and singularities into the model and the finite elements are
-unable to capture them accurately enough.
-
-Adaptive meshes can be used in such cases, but it can cost a~lot of computational power to build a~very fine mesh,
-and solve the problem with increasing number of degrees of freedom.
-It also requires very robust meshing techniques when complex geometries are in question.
-
-Alternatively, models combining different dimensions are being developed. These decompose the geometry
-in objects of different dimension (e.g. 2D fractures, 1D wells, 0D point sources), create meshes of the objects independently,
-and then they must deal with coupling of the modelled processes among the dimensions. 
-Compatible meshes, where the intersections are at nodes and sides of elements, are easier to treat, but harder
-or nearly impossible to construct in a~general case. On the other hand, incompatible meshes with arbitrary intersections are easier to construct, 
-but bring a~whole new set of problems in the coupling.
-
-Next, there are the so called extended finite element methods (XFEM); or partition of unity methods (PUM) or generalized
-finite element methods (GFEM), which names are sometimes used interchangeably. 
-These methods enable us to take advantage of an a~priori knowledge of the model solution character.
-Then, we are able to locally incorporate non-polynomial functions, like a~jump or a~singularity, into the finite element solution
- in places, where we expect these features to appear. See an example of XFEM usage in 0D-2D coupling in \fig{fig:aquifers}.
-%\newline{}
-\begin{figure}[!htb]
-%   \vspace{0pt}
-  \centering    
-    \includegraphics[width=0.6\textwidth]{\figpath 2_aquifers-5_wells_mesh_whitebg_crop.pdf}
-  \caption{0D-2D coupling example from my previous work. Distribution of pressure in 2 aquifers (horizontal planes) with 5 wells 
-          (vertical lines). The XFEM is used on a~coarse mesh (at the bottom). }
-  \label{fig:aquifers}
-\end{figure}
-
-The thesis is aimed at further development of the XFEM and its usage in multidimensional models. 
-We intend to create a~model with incompatible mesh, where elements of different dimensions intersect
-arbitrarily, and then use the XFEM to glue the processes in different dimensions back together. 
-This of course is a~very ambitious idea, therefore we narrow our plan to 0D-2D and 1D-3D coupling. 
-
-Our research domain is groundwater modelling, therefore we apply the method on such model.
-There are, of course, various other applications for such models apart from groundwater flow and transport in fractured porous media:
-geothermal problematic and gathering geothermal energy; oil and gas extraction and also gas storage;
-construction of safe underground nuclear waste deposits; investigation of transport of substances in human body
-and more.
-
-\section{Flow123d} \label{sec:soa_flow123d}
-
-The software Flow123d (latest stable version 1.8.2 in 2015, online documentation in \cite{flow123d_doc_2015}) 
-is a~simulator of underground water flow, solute and heat transport in fractured porous media. The software is
-developed as an open source code under the versioning system Git where the eponymous project can be found, or 
-one can find it on the web page
-\begin{center}
-\url{http://flow123d.github.io/}
-\end{center}
-It has been developed at the Technical University of Liberec approximately since 2007.
-The main feature of the software is a~computation on complex compatible meshes of combined dimensions, described in
-previous section. Therefore, the continuum models and discrete fracture network models can be combined.
-%
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
-  \caption{Logo of Flow123d.}
-  \label{fig:logo_flow123d}
-\end{figure}
-%
-Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, finite volume model 
-and discontinuous Galerkin model for solute transport of several substances and heat transfer model. 
-Using operator splitting, models for various local processes are supported including dual porosity, sorption, decays 
-and simple reactions.
-
-
-Development of the software is an important practical part of the thesis. The aim is to implement support 
-of incompatible meshes in the Darcy flow model. More details about implementation goals will be given in
-Section \ref{chap:aims}.
-
-%%
-% The actuality of these themes is demonstrated by the several conferences with attendants from all over the world.
-% We mention the X-DMS (eXtended Discretization Methods), are being held since 2013 including the preceding  XFEM conferences.
-% The main topics includes the state-of-art methods for discretization of complex problems on complex domains, with a stress
-% on XFEM methods.
-% The other conference if DFNE focused on everything concerning the discrete fracture network with main interest in geology.
-
-
-\section{Aims of the Thesis}\label{chap:aims}
-% define aims, characterize and briefly explain solution
-
-The research aims of the thesis can be summarized in two major points
-\begin{itemize}
-  \item Propose suitable enrichments for the pressure and the velocity that are stable (satisfy inf-sup condition). 
-        If possible, emphasise a~good approximation of the velocity field which is necessary for the transport equation.
-        
-  \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
-\end{itemize}
-
-\subsection{Research aims}
-
-The following types of enrichments can be considered: wells (point source in 2D, line source in 3D), 
-fractures (discontinuity in velocity), boundary of 1D and 2D fractures. 
-To narrow the ambitious plan, we will focus on the enrichment for 0D-2D and 1D-3D interactions.
-
-The model with the mixed-hybrid formulation as in \cite{brezina_mixed-hybrid_2010, sistek_bddc_2015} will be followed.
-The enrichment will be chosen and incorporated in the formulation so that the singularities in 0D-2D and
-1D-3D are better approximated and incompatible meshes can be used. 
-We shall start by enriching the pressure field with a~logarithmic function like we
-do in Section \ref{sec:model_aquifer} and investigate the consequences in the mixed and mixed-hybrid formulation.
-
-Secondly the velocity field will be enriched. We will look for a~proper vectorial enrichment functions.
-The accuracy of the velocity field, in particular the flow across the elements edges, is very important for
-the transport equation which is in the main focus in most of the applications.
-
-In a consequence of the enrichment, the discrete spaces will be extended. The influence of the enrichment on the inf-sup 
-condition will be investigated and the proof of stability for the enriched formulation should be provided.
-The aim is to understand the stability condition good enough so that some constraints on the choice of the enrichment 
-functions can be defined. 
-
-The realization of the model in the means of code implementation will require several non-standard techniques.
-Efficient data structure must be provided for the enrichment implementation in finite element classes.
-The intersections of the mesh domains of different dimensions must be computed. A specialized integration
-on the intersected elements is needed to assembly the integrals in the system matrix. 
-Solving the final linear algebraic system will require an efficient numerical method.
-Each of these sub-problems is not trivial and requires a new approach or at least extending the existing one.
-The steps of the realization are summarized below in Section \ref{sec:realization}.
-
-\subsection{Realization} \label{sec:realization}
-The suggested numerical model will be implemented and tested in the software Flow123d.
-The following upgrades and changes are to be considered.
-
-The enrichment functions need to be defined and support for the enrichment in the finite element classes must be implemented. 
-A class that handles the degrees of freedom must be then updated to include the additional enriched degrees of freedom
-and the structure of the linear system must be reorganized accordingly.
-
-The enriched elements are in 3D domain. A module in Flow123d that is able to lookup the element intersections
-of different dimensions is now being finished (see Chapter \ref{chap:intersections}). The enrichment will propagate from the intersected 3D elements.
-The choice of the size of the enrichment area is not straightforward. In case of discontinuities, one layer of elements
-near the discontinuity would be suitable, but in case of singularity, the area must be large enough so that 
-the large gradients in the quantities are well approximated. For simplicity, the area size can be given as
-a~constant parameter.
-
-Then the assembly routines of the enriched terms into the linear system must be provided.
-Since the enrichment function would not be polynomial, accurate integration on the enriched elements is required. 
-The adaptive elements sub-refinement approach can be used to obtain more precise quadrature, 
-or quadrature points defined in cylindrical coordinate system in the vicinity of 1D elements intersections
-might be suitable in this case.
-
-Finally, a~reasonable output post-processing should be developed, so that the XFEM solution (piecewise non-polynomial solution)
-can be visualized properly. A~kind of adaptive refinement of the output mesh would be suitable.
-
-
-\section{Document Structure} \label{sec:structure}
-
-Chapter \ref{chap:soa} concludes the research on the related works and represents the current state of the art
-on the problematic. Modelling on meshes of combined dimension is addressed in Section \ref{sec:soa_model_combined},
-survey on the XFEM is presented in Section \ref{sec:soa_xfem} and works regarding the usage of the XFEM on
-meshes of combined dimensions are commented in Section \ref{sec:soa_xfem_combined}. Then 
-the software Flow123d is described briefly in Section \ref{sec:soa_flow123d}.
-
-Chapter \ref{chap:aims} summarizes the aims of the thesis.
-
-The finished and ongoing work is presented in Chapter \ref{chap:results}. Section \ref{sec:model_aquifer} 
-covers a~well-aquifer model of groundwater flow with the XFEM resolving a~point singularity in 2D.
-Chapter \ref{chap:intersections} introduces a~new approach for inspecting simplicial elements intersections
-of different dimensions using Pl{\"u}cker coordinates.
-
-Chapter \ref{chap:publications} contains a~list of author's publications and attended conferences.
-The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by the literature.
-
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \chapter{Reduced Dimensional Models in Flow Problems} \label{chap:reduced}
-% 
-% % Mesh of Combined Dimensions
-% % Dirac sources models - 1d-2d, 1d-3d (Schwenk, Koeppl, Zunino, D'Andelo)
-% % xfem concept of Fumagalli, Scotti, D'Angelo ...
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \input th-reduced_dim.tex
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \chapter{XFEM in Pressure Model with Singularities} \label{chap:xfem_pressure}
-% 
-% % XFEM - state of the art
-% % well aquifer model
-% % singular enrichment
-% % numerical results
-% % aspects - enr radius, adaptive qudrature, conditioning
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \input th-xfem.tex
-% 
-% \input th-result-pressure.tex
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \chapter{Singular Enrichment for Velocity} \label{chap:xfem_mh}
-% 
-% % Flow123d concept
-% % Mixed-hybrid formulation
-% % current research on the problematics MH + XFEM
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \input th-model.tex
-% 
-% \input th-results-flow123d.tex
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % \chapter{Achieved Results} \label{chap:results}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% % In this chapter, we shall describe the work that has already been done. First part (Section \ref{sec:model_aquifer}) 
-% % is regarding a~model of a~well-aquifer system where the XFEM is applied to resolve a~point singularity in 2D domain. 
-% % The second part (Section \ref{sec:elements_intersections}) is aimed at a~geometrical problem of finding 
-% % intersections of incompatible meshes of different dimensions.
-% 
-% 
-% 
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \chapter{Mesh Intersection Algorithms} \label{chap:intersections}
-% 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% \input th-intersections.tex
+\input auto-intro.tex
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\chapter{Reduced Dimensional Models} \label{chap:reduced}
+
+% Mesh of Combined Dimensions
+% Dirac sources models - 1d-2d, 1d-3d (Schwenk, Koeppl, Zunino, D'Andelo)
+% xfem concept of Fumagalli, Scotti, D'Angelo ...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \input auto-reduced_dim.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Extended Finite Element Method} \label{chap:xfem_soa}
+
+% XFEM - state of the art
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \input auto-xfem.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Pressure Model with Singularities} \label{chap:xfem_pressure}
+
+% well aquifer model
+% singular enrichment
+% numerical results
+% aspects - enr radius, adaptive qudrature, conditioning
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \input auto-pressure-model.tex
+
+% \input auto-pressure-results.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Mixed Model with Singularities} \label{chap:xfem_mh}
+
+% Flow123d concept
+% Mixed-hybrid formulation
+% current research on the problematics MH + XFEM
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \input auto-mh-model.tex
+
+% \input auto-mh-results.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Mesh Intersection Algorithms} \label{chap:intersections}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \input auto-intersections.tex
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Conclusion} \label{chap:summary}
+% closure - what is done, further plan, mention traineeship
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Based on the research of the related works and experience gained at the conferences
+(in particular MAMERN VI '15, X-DMS '15-17 and CMWR '18),
+we are convinced that we dedicated our efforts to a~very interesting and hot topic with wide range of applications.
+We are also not aware of any closely connected work to this topic in the Czech Republic
+which puts us in a pioneer position, in the Czech scientific environment at least.
+
+In the first part of this work, a~reduced dimension concept was described and a~model for coupling
+groundwater flow in non-planar 1d-2d and 1d-3d domains intersecting each other was suggested. 
+The drawbacks of several approaches in FE approximation in such models were discussed leading us to
+our solution: incompatible meshing of the domains and using the XFEM to couple them back together and to improve
+FE approximation of arisen singularities by proper discrete space enrichments.
+
+We provided an~extensive study of the currently available XFEM \cite{fries_xfem_overview_2010, babuska_stable_2012} in Chapter \ref{chap:xfem_soa}
+and we addressed the singular enrichments in particular. 
+Then in Chapter \ref{chap:xfem_pressure} we created a~model simulating pressure in a~well-aquifer system, inspired by \cite{gracie_modelling_2010, craig_using_2011}.
+We studied different types of enrichments and compared them in terms of
+convergence rate, linear system conditioning and sensitivity to mesh -- singularity alignment.
+In the view of our numerical results, we found the SGFEM to be the most promising method
+for singularity approximation in our model.
+Apart from that we focused on implementation aspects of the XFEM and we improved adaptive quadrature rules
+for an accurate integration on enriched elements. We also investigated the optimal enrichment zone
+of singular enrichments and we verified our model on a~set of numerical test cases.
+Our early work was summarized in \cite{exner_2016}.
+
+
+Chapter \ref{chap:xfem_mh} was dedicated to the XFEM application in a~mixed problem
+in order to extend the possibilities of the groundwater model in \cite{sistek_bddc_2015, flow123d}.
+The mixed-hybrid form was carefully derived for both non-planar 1d-2d and 1d-3d case.
+We suggested a~new singular SGFEM like enrichment of the standard Raviart-Thomas finite elements
+and we applied it to the velocity discrete space.
+We implemented the model as an~experimental part of the software Flow123d
+and we provided a~set of numerical tests.
+Since velocity is important in the attached processes (e.g. transport),
+we put a~stress on the velocity precision and we traced the velocity convergence rate.
+The optimal order of convergence was observed in both 1d-2d and 1d-3d tests,
+which included single and multiple wells, overlapping enrichment zones and non-zero source prescribed.
+
+The difficulty of the suggested vector enrichment is that it shares a~single degree of freedom per singularity
+over its whole enrichment zone. This is a~source of two problems. First, the system matrix has some non-sparse rows,
+which can then lead to loosing the sparsity when applying a~preconditioner based on elimination.
+Second, any heterogeneity, e.g. in conductivity, inside the enrichment zone cannot be captured by
+a~single singular enrichment function.
+We tried to find proper elementwise enrichment functions, similarly to the ones used in the pressure model,
+however we struggled with the hybridized form, where such enrichment functions must be accompanied
+by some corresponding Lagrange multipliers.
+So far we were unsuccessful in performing a~numerical test of the inf-sup stability
+of the mixed-hybrid form, this problem had to be left open.
+We intend to further study the suggested elementwise enrichment functions and the inf-sup test in the mixed problem without hybridization,
+however such model is not available in Flow123d yet.
+
+
+A~necessary prerequisite for computations on incompatible meshes is the ability to determine
+the intersections of the different meshed domains. In Chapter \ref{chap:intersections} we developed
+a~fast and robust algorithm to compute such intersections on simplicial meshes.
+Although we do need to solve only the non-planar 1d-2d and 1d-3d cases in our singular models,
+we extended the algorithms also to higher dimensions, namely 2d-2d, 2d-3d.
+New models in these cases are in focus of our future work and further development of the software Flow123d.
+We exploited the properties of the \plucker coordinates \cite{platis_fast_2003, joswig_plucker_2013}
+in the element-element intersection algorithms which provide not only the coordinates but also additional topological information.
+This was then used in the global mesh intersection algorithms together with other modern techniques
+such as BIH of axes aligned bounding boxes and advancing front tracing.
+The suggested algorithms were shown to be competitive to other works \cite{moller_fast_1997, haines_fast_1991}.
+The global mesh intersection algorithms were tested in Flow123d on an artificial and a~real case benchmarks
+and they exhibit linear time complexity. The results were summarized in \cite{brezina_2017}.
+Possible further improvements include a~deeper study on the precision of the used geometric predicates,
+e.g. regarding the adaptivity in \cite{shewchuk_adaptive_1997}, and thorough code optimization in Flow123d.
+
+
+The work was also consulted during the author's traineeship at Technical University in Munich at the Department of Numerical Mathematics
+lead by Prof. Barbara Wohlmuth. Mainly the theoretical aspects of the work and new ideas were discussed.
+We got also familiarized with a~different approach for problems with Dirac delta sources \cite{koppl_tum_2015, koppl_vidotto_2018}
+as a~coupling method for inclusions.
+
+
+The goals of this thesis as set in the introduction were fulfilled to a great extent.
+We studied the XFEM intensively and researched its usage in singular problems.
+Apart from the created pressure model, we managed to suggest a~new velocity enrichment in the mixed-hybrid form
+and implement a~working model in Flow123d. The model was derived and formulated in detail.
+A~lot of technical work was done while preparing all the building blocks for the XFEM in the software.
+Eventually, we left several open issues which were addressed above.
+
+As we already pointed out, the future work may concern a~study of the vector enrichments in the mixed form.
+Extensions of the discretization for 1d objects that are not straight might be of interest.
+A~specialized iterative method can be suggested in order to solve the linear algebraic system efficiently,
+including a~proper preconditioner.
+Finally, some processes attached to the groundwater model may be considered using the velocity solution.
+These processes, namely transport of substances, poroelasticity or heat transfer, then may require
+similar kind of enrichment for scalar/vector quantities of interest. 
+
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-\chapter{Author's Publication Activity} \label{chap:publications}
+\chapter{Author's Publications} \label{chap:publications}
 % % presentations at conferences, sborniky z nich
 % % article
 % % Flow123d
@@ -445,19 +341,19 @@ The summary of the thesis is in Chapter \ref{chap:summary} and it is followed by
 M. Hokr, J. B{\v r}ezina, J. Kr{\' a}lovcov{\' a}, J. {\v R}{\' i}ha, P. Exner, I. Han{\v c}ilov{\' a}, A. Balv{\' i}n,
 \href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}
 {Multidimensional Model of Flow and Transport in Fractured Rock for Support of Czech Deep Geological Repository Program},
-\emph{Proceedings of 2nd International Discrete Fracture Network Engineering Conference, Seattle}, ARMA-DFNE-18-1386,
-American Rock Mechanics Association. November 2018,\\
-\href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}.
+\emph{Proceedings of 2nd International Discrete Fracture Network Engineering Conference, Seattle} (2018), ARMA-DFNE-18-1386, \\
+American Rock Mechanics Association.\\
+\url{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}.
 
 \item
-J. B{\v r}ezina, P. Exner, \href{http://www.sciencedirect.com/science/article/pii/S0898122117300792}{Fast algorithms for intersection of non-matching grids using Plücker coordinates},
-\emph{Computers and Mathematics with Applications}, Volume 74, July 2017, pp. 174-187, ISSN 0898-1221,\\
-\href{https://doi.org/10.1016/j.camwa.2017.01.028}{doi.org/10.1016/j.camwa.2017.01.028}.
+J. B{\v r}ezina, P. Exner, \href{http://www.sciencedirect.com/science/article/pii/S0898122117300792}{Fast algorithms for intersection of non-mat\-ching grids using Plücker coordinates},
+\emph{Computers and Mathematics with Applications} 74 (2017) pp. 174-187. ISSN 0898-1221. \\
+\href{https://doi.org/10.1016/j.camwa.2017.01.028}{\texttt{doi.org/10.1016/j.camwa.2017.01.028}}.
 
 \item
 P. Exner, J. B{\v r}ezina, \href{http://www.sciencedirect.com/science/article/pii/S0096300315012862}{Partition of unity methods for approximation of point water sources in porous media},
-\emph{Applied Mathematics and Computation}, Volume 273, January 2016, pp. 21-32, ISSN 0096-3003,\\
-\href{http://dx.doi.org/10.1016/j.amc.2015.09.048}{doi:10.1016/j.amc.2015.09.048}.
+\emph{Applied Mathematics and Computation} 273 (2016) pp. 21-32. ISSN 0096-3003.\\
+\href{http://dx.doi.org/10.1016/j.amc.2015.09.048}{\texttt{doi:10.1016/j.amc.2015.09.048}}.
 
 \item
 O. Sever{\' y}n, J. Stebel, P. Exner, Applied mathematics -- methodical handbook for AP course,
@@ -466,74 +362,87 @@ Technical University of Liberec, 2015.
 
 \item
 P. Exner, J. B{\v r}ezina, \href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{Adaptive integration of singularity in partition of unity methods},
-in proceedings of \emph{Seminar on Numerical Analysis 2015}, Institute of Geonics AS CR, Ostrava, 2015, pp. 29-32, ISBN 978-80-86407-55-5, \\
-\href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}.
+in proceedings of \emph{Seminar on Numerical Analysis 2015}, Institute of Geonics AS CR, Ostrava, (2015) pp. 29-32. ISBN 978-80-86407-55-5. \\
+\url{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}.
 
 \item
 P. Exner, \href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{Partition of unity methods for approximation of point water sources in porous media},
-in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Computer Science AS CR, Prague, 2014, pp. 29-32, ISBN 978-80-87136-16-4, \\
-\href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{http://www.cs.cas.cz/sna2014/sbornik.pdf}.
+in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Computer Science AS CR, Prague, (2014) pp. 29-32. ISBN 978-80-87136-16-4.\\
+\url{http://www.cs.cas.cz/sna2014/sbornik.pdf}.
+}
+% 
+% 
+% {\small
+% \item
+% M. Hokr, J. B{\v r}ezina, J. Kr{\' a}lovcov{\' a}, J. {\v R}{\' i}ha, P. Exner, I. Han{\v c}ilov{\' a}, A. Balv{\' i}n,
+% \href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}
+% {Multidimensional Model of Flow and Transport in Fractured Rock for Support of Czech Deep Geological Repository Program},
+% \emph{Proceedings of 2nd International Discrete Fracture Network Engineering Conference, Seattle}, ARMA-DFNE-18-1386,
+% American Rock Mechanics Association. November 2018,\\
+% \href{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}{https://www.onepetro.org/conference-paper/ARMA-DFNE-18-1386}.
+% 
+% \item
+% J. B{\v r}ezina, P. Exner, \href{http://www.sciencedirect.com/science/article/pii/S0898122117300792}{Fast algorithms for intersection of non-matching grids using Plücker coordinates},
+% \emph{Computers and Mathematics with Applications}, Volume 74, July 2017, pp. 174-187, ISSN 0898-1221,\\
+% \href{https://doi.org/10.1016/j.camwa.2017.01.028}{doi.org/10.1016/j.camwa.2017.01.028}.
+% 
+% \item
+% P. Exner, J. B{\v r}ezina, \href{http://www.sciencedirect.com/science/article/pii/S0096300315012862}{Partition of unity methods for approximation of point water sources in porous media},
+% \emph{Applied Mathematics and Computation}, Volume 273, January 2016, pp. 21-32, ISSN 0096-3003,\\
+% \href{http://dx.doi.org/10.1016/j.amc.2015.09.048}{doi:10.1016/j.amc.2015.09.048}.
+% 
+% \item
+% O. Sever{\' y}n, J. Stebel, P. Exner, Applied mathematics -- methodical handbook for AP course,
+% project Education For Effective Transfer Of Technology And Knowledge In Science And Engineering (EE2.3.45.0011),
+% Technical University of Liberec, 2015.
+% 
+% \item
+% P. Exner, J. B{\v r}ezina, \href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{Adaptive integration of singularity in partition of unity methods},
+% in proceedings of \emph{Seminar on Numerical Analysis 2015}, Institute of Geonics AS CR, Ostrava, 2015, pp. 29-32, ISBN 978-80-86407-55-5, \\
+% \href{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}{http://www.ugn.cas.cz/actually/event/2015/sna/sna-sbornik.pdf}.
+% 
+% \item
+% P. Exner, \href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{Partition of unity methods for approximation of point water sources in porous media},
+% in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Computer Science AS CR, Prague, 2014, pp. 29-32, ISBN 978-80-87136-16-4, \\
+% \href{http://www.cs.cas.cz/sna2014/sbornik.pdf}{http://www.cs.cas.cz/sna2014/sbornik.pdf}.
+% }
+\end{itemize}
+%
+\vspace{0.5cm}
+%
+{\noindent\large\textsc{Software}}
+\begin{itemize}[label={}, leftmargin=*]
+{\small
+\item
+J. B{\v r}ezina, J. Stebel, D. Flanderka, P. Exner, J. Hyb{\v s}, Flow123d, 
+Technical University of Liberec, 2011--2019, \\
+\href{http://flow123d.github.com}{http://flow123d.github.com}.
 }
 \end{itemize}
 %
 \vspace{0.5cm}
 %
-{\large\textsc{Software}}
-\begin{itemize}[label={}, leftmargin=*]
-\item
-J. B{\v r}ezina, J. Stebel, D. Flanderka, P. Exner, J. Hyb{\v s}, Flow123d, 
-Technical University of Liberec, 2011--2019, \\
-\href{http://flow123d.github.com}{http://flow123d.github.com}.
-\end{itemize}
-%
-\vspace{0.5cm}
-%
-{\large\textsc{Conferences}}
+{\noindent\large\textsc{Conferences}}
 %
 \begin{itemize}[label={}, leftmargin=*]
+{\small
 \item DFNE '18, Seattle (US) \\ Multidimensional model of flow and transport in fractured
 rock for support of Czech DGR program (presentation)
 \item CMWR '18, Saint Malo (FR) \\ Darcy Flow on Incompatible Meshes of
-Combined Dimensions (presentation)
+Combined Dimensions \\ (presentation)
 \item X-DMS '17, Ume{\o a} (SE) \\ Singular Enrichment of XFEM on Meshes of
-Combined Dimensions (presentation)
+Combined Dimensions \\ (presentation)
 \item FEM Symposium '16, Chemnitz (DE) \\ Extended Finite Element Methods Dealing with Singularities on Meshes of Combined Dimensions (presentation)
-\item X-DMS '15, Ferrara, (IT) \\ eXtended Discretization Methods (presentation, short course attendance)
-\item MAMERN VI '15, Pau, (FR) \\ The International Conference on Approximation Methods and Numerical Modelling in Environment and Natural Resources (presentation)
+\item X-DMS '15, Ferrara, (IT) \\ eXtended Discretization Methods \\ (presentation, short course attendance)
+\item MAMERN VI '15, Pau, (FR) \\ The International Conference on Approximation Methods and Numerical Modelling in Environment and Natural Resources \\ (presentation)
 \item SNA '15, Ostrava, (CZ) \\ Seminar on Numerical Analysis (presentation)
 \item ESCO '14, Plze{\v n}, (CZ) \\ European Seminar on Computing (presentation)
-\item Stanford, (US) \\ 40th Stanford Geothermal Workshop (attendance only)
+\item Stanford, 2014, (US) \\ 40th Stanford Geothermal Workshop (attendance only)
 \item SNA '14, Nymburk, CZ \\ Seminar on Numerical Analysis (presentation)
 \item Student conference 2013, Liberec, CZ \\ Student conference at the Faculty of Mechatronics, Informatics and Interdisciplinary Studies, TUL (poster)
+}
 \end{itemize}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Summary} \label{chap:summary}
-% closure - what is done, further plan, mention traineeship
-
-Based on the research of the related works in Chapter \ref{chap:soa} and the experience gained at the conferences
-(in particular X-DMS '15 and MAMERN VI), we are convinced that this is an interesting hot topic which deserves
-our attention. On the other hand, we are not aware of any closely connected work to this topic in the Czech Republic
-which puts us in a pioneer position at least in the Czech scientific environment.
-
-The aims of the thesis are stated in the Chapter \ref{chap:aims} and these are both of theoretic and practical nature.
-There is a lot work to do in the code implementation part but some of the work has been done already 
-(Chapter \ref{chap:intersections}). The rest will be done, possibly with some support of the Flow123d development team. 
-
-So far, we studied the well-aquifer model (Section \ref{sec:model_aquifer}). We compared several different XFEM methods, 
-dealt with the integration accuracy and investigated some other aspects of the XFEM usage. The results
-of our work were presented at several conferences and concluded in an article (list in Chapter \ref{chap:publications}).
-
-A 6 months long traineeship is planned for the second half of the year 2016. A cooperation with the team lead
-by professor Barbara Wohlmuth at the Technical University in Munich is to be established. They are experts
-in the field of porous media modelling and they are also interested in models on meshes with combined dimensions
-(see e.g. \cite{schwenck_2015} where fracture intersections in 2D is solved). The aim of the traineeship is to
-work together both on the theory and implementation of the XFEM in 0D-2D and 1D-3D flow model.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
