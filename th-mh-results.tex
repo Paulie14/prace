@@ -933,6 +933,62 @@ although it is not that significant as in previous cases.
 Considering the model with the setting TC6-b, we see that the singularities are well approximated
 and the dominant error is in the regular part of the solution. The optimal convergence is comparable to the regular case TC6-c.
 
+\subsubsection{Test Case 7}
+In this test case we want to demonstrate more general setting including 10 wells of different tilt.
+All the wells are set with the following parameters: $\sigma_w=100,\; \vc K_1=100,\; \rho_w=0.03,\; R_w=0.8$.
+% The pressure is approximately constant in the wells and is set: $g^1_{1D}=150$, $g^2_{1D}=100$, $g^3_{1D}=200$,
+% $g^4_{1D}=100$, $g^5_{1D}=300$, $g^6_{1D}=-50$, $g^7_{1D}=100$, $g^8_{1D}=200$, $g^9_{1D}=-50$ and $g^{10}_{1D}=200$.
+Instead of setting pressure in the wells, we prescribe fluxes by the means of the inhomogenous Neumann boundary condition
+at the top of the wells. The fluxes are gathered in the first row of Table \ref{tab:tc7_data}, the second row
+contents the fluxes scaled by the cross-section, i.e. flux density for Flow123d input.
+The rock block conductivity is set to $10^{-2}$, Dirichlet boundary condition $g_{3D}=25(3-z)$
+is applied on the sides and homogenous Neumann boundary condition is set at the bases.
+%
+\begin{table}[!htb]
+\begin{center}
+\begin{tabular}{r|cccccccccc}
+\toprule
+% \multicolumn{2}{c}{Item} \\
+% \cmidrule(r){1-2}
+$w$ & 1  & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \midrule
+$g^w_{1N}$ & 1.414 & 0.848 & 0.565 & 1.414 & 1.131 & -1.131 & 0.848 & 0.848 & -1.131 & 0.565\\
+$g^w_{1N} / \delta_1$ & 500  & 300 & 200 & 500 & 400 & -400 & 300 & 300 & -400 & 200\\
+\bottomrule
+\end{tabular}
+\caption{Prescribed fluxes at the top of the wells in Test case 7.}
+\label{tab:tc7_data}
+\end{center}
+\end{table}
+
+% \begin{figure}[!htb]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{\results tc_30_10w.pdf}
+%     \caption[Error distribution in Test case 7.]
+%     {Results of Test case 7. Ten wells are represented symbolically by the blue tubes.
+%     The block is clipped so that we can see inside. The magnitude of velocity is displayed.}
+%     \label{fig:mh_tc7_error}
+% \end{figure}
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\results tc_40_10w.pdf}
+    \caption[Error distribution in Test case 7.]
+    {Results of Test case 7. Ten wells are represented symbolically by the blue tubes.
+    The block is clipped so that we can see inside. The magnitude of velocity is displayed.}
+    \label{fig:mh_tc7_error}
+\end{figure}
+
+An analytical solution is not available in this case, we can only inspect the discrete solution qualitatively,
+see the solution of velocity \fig{fig:mh_tc7_error}.
+The block is meshed regularly, the element size can be noticed along the edges of the lower base.
+The refined solution in the vicinity of the wells is due to the refined output mesh.
+
+We calculate the water balance over the domain boundaries.
+There is zero flux on the bases of the block and also at the bottom of the wells.
+The sum of the fluxes at the top of the wells is equal 5.372, while the flux over the 
+block sides is -5.376, i.e. the difference is between what flows into and out of the system is 0.004.
+Thus we can conclude, that the communication between the wells and the block 
+is well approximated in terms of the water balance.
+
 \section{Summary}
 In this chapter we developed an XFEM in mixed-hybrid form for approximation of singularities for both 2d and 3d problems.
 The model was formulated following the concept of the software Flow123d and using the Lagrange multipliers for dimnesional coupling.
