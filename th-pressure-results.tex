@@ -151,6 +151,7 @@ on the unenriched elements and adaptive quadrature in the enriched area, as defi
 
 \subsubsection{Test Case 1}
 Let us start with Test case 1 and present the results achieved in \cite{exner_2016}.
+The parameters are gathered in Table \ref{tab:test_case_1_data}.
 %
 \begin{table}[!htb]
 \begin{center}
@@ -168,18 +169,8 @@ $l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$\\
 \end{center}
 \end{table}
 %
-The parameters are gathered in Table \ref{tab:test_case_1_data}.
 Convergence of all used methods is measured on a~set of uniformly refined meshes, 
 see the convergence rate in \gref{graph:convergence01}.
-%
-\begin{graph}[!htb]
-%   \vspace{0pt}
-  \centering    
-  \includegraphics[width=\textwidth]{\results convergence01.pdf}
-  \caption[Convergence graph in Test case 1.]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
-  \label{graph:convergence01}
-\end{graph}
-%
 At first, we solve the problem by the standard FEM using $h$ adaptivity.
 Kelly's error estimator from Deal II library is used to determine 30\% of the elements
 with the highest error which are refined in the next step.
@@ -189,6 +180,14 @@ From the graph of "FEM\_adapt" it is apparent that the convergence is slow until
 well cross-section and one of the mesh nodes gets inside. 
 Therefore the graph is divided into two parts with different convergence orders 0.56 and 1.27.
 %We see that a very fine mesh is needed to capture the singularity but the error is still high.
+%
+\begin{graph}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=\textwidth]{\results convergence01.pdf}
+  \caption[Convergence graph in Test case 1.]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
+  \label{graph:convergence01}
+\end{graph}
 
 Next we look at the convergence of the enrichment methods in the XFEM.
 The standard XFEM pushes the error down by three orders of magnitude. Its convergence rate is nearly optimal with the order closing to 2.0.
@@ -318,6 +317,7 @@ by the standard FE shape functions. We also see from this figure that the approx
 \end{figure}
 %
 
+\pagebreak
 \subsubsection{Test Case 4}
 The last case of our test series demonstrates the necessity of the averaged terms in the model formulation.
 The parameters are gathered in Table \ref{tab:test_case_4_data}.
@@ -654,7 +654,7 @@ Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calcu
 \end{equation}
 on every element $T$ of the sequence of refined meshes using a~$5\times5$ Gaussian quadrature for the estimation of the $H^1$ norm.
 %
-\begin{table}[!ht]
+\begin{table}[!htb]
 \centering
 \begin{tabular}{crr}
 \toprule
@@ -675,12 +675,6 @@ meshes with element size $h$. Validation of the estimate \eqref{eq:grad_estimate
 \label{tab:log_h1_estimate}
 \end{table}
 %
-Table \ref{tab:log_h1_estimate} reports the minimum and the maximum values of the ratio over all elements of every mesh.
-The minimum values are close to 1 independently of $h$ which is in perfect agreement with \eqref{eq:grad_estimate_on_square}.
-Moreover, the minimum value is attained on the majority of
-elements, see \fig{fig:log_estimate_b}. Both parts of \fig{fig:log_estimate} demonstrate also higher convergence rate on diagonal elements
-where the nonlinear term of the bilinear finite elements allows better approximation of the saddle shaped logarithmic surface.
-%
 \begin{figure}[!htb]
 %   \vspace{0pt}
   \centering    
@@ -691,12 +685,17 @@ where the nonlinear term of the bilinear finite elements allows better approxima
     \includegraphics[width=0.47\textwidth]{\results log_estimate_ratio.pdf} }
   \caption[Log error estimate.]
   {
-  Results of the numerical validation of the estimate \eqref{eq:grad_estimate_on_square}. The elements are left out 
+  Numerical validation of the estimate \eqref{eq:grad_estimate_on_square}. The elements are left out 
   in the center where the $\log$ singularity is situated and where the function is cut off.
   }
   \label{fig:log_estimate}
 \end{figure}
-%
+
+Table \ref{tab:log_h1_estimate} reports the minimum and the maximum values of the ratio over all elements of every mesh.
+The minimum values are close to 1 independently of $h$ which is in perfect agreement with \eqref{eq:grad_estimate_on_square}.
+Moreover, the minimum value is attained on the majority of
+elements, see \fig{fig:log_estimate_b}. Both parts of \fig{fig:log_estimate} demonstrate also higher convergence rate on diagonal elements
+where the nonlinear term of the bilinear finite elements allows better approximation of the saddle shaped logarithmic surface.
 
 \begin{graph}[!htb]
 %   \vspace{0pt}
@@ -710,6 +709,20 @@ where the nonlinear term of the bilinear finite elements allows better approxima
   \caption[Convergence for different enrichment radii.]{Convergence graph for different enrichment radii. The "FEM reg"
   data comes from the problem without the singularity solved by the standard FEM -- it has the optimal convergence order 2.0.}
   \label{graph:radius_conv_1}
+\end{graph}
+%
+\begin{graph}[!htb]
+%   \vspace{0pt}
+  \centering    
+  \includegraphics[width=0.9\textwidth]{\results radius_convergence_02.pdf}
+%   \subfloat[rozdìlený element s vrtem]{\label{fig:adapt_ref_a} 
+%     \includegraphics[width=70mm]{\figpath adaptive_ref.pdf} }
+%   \hspace{0pt}
+%   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
+%     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
+  \caption[Optimal enrichment radius.]{Dependence of the error on the enrichment radius for different
+  element sizes $h$.}
+  \label{graph:radius_conv_2}
 \end{graph}
 %
 Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Test case 3
@@ -733,36 +746,12 @@ This value roughly matches a~point in the plots of the error as a~function of $R
 \gref{graph:radius_conv_2}, from which the error is not decreasing any more.
 
 
-
-\begin{graph}[!htb]
-%   \vspace{0pt}
-  \centering    
-  \includegraphics[width=0.9\textwidth]{\results radius_convergence_02.pdf}
-%   \subfloat[rozdìlený element s vrtem]{\label{fig:adapt_ref_a} 
-%     \includegraphics[width=70mm]{\figpath adaptive_ref.pdf} }
-%   \hspace{0pt}
-%   \subfloat[detail hranice vrtu]{\label{fig:adapt_ref_b} 
-%     \includegraphics[width=72mm]{\figpath adaptive_ref_detail.pdf} }
-  \caption[Optimal enrichment radius.]{Dependence of the error on the enrichment radius for different
-  element sizes $h$.}
-  \label{graph:radius_conv_2}
-\end{graph}
-
-
 \subsection{Test Cases with Multiple Wells}
 \label{sec:2d_results_multiple}
 In this section, more complex test cases are solved, including more than one well intersecting the aquifer.
 We test the enrichment methods, shifted XFEM and SGFEM in particular, whether they
 still have such good convergence properties when the wells influence each other and when the enrichment zones coincide with each other.
 
-%
-\begin{figure}[!htb]
-%   \vspace{0pt}
-  \centering    
-    \includegraphics[width=0.8\textwidth]{\results test_2w_exact.pdf}
-  \caption{Solution of Test case 5.}
-  \label{fig:test_2w_exact}
-\end{figure}
 \subsubsection{Test Case 5}
 At first we consider two wells intersecting a~square aquifer $\Omega_2 = [0,10]\times[0, 10]$ at points $\bx_1 = [4.1, 4.3]$ and $\bx_2 = [5.7, 5.9]$.
 The pressure at the top of the wells is set $g^1_{1D}=150$ and $g^2_{1D}=100$ respectively.
@@ -770,6 +759,13 @@ Remaining parameters are set the same for both wells: $\rho_w = 0.003$, $\sigma_
 The hydraulic conductivity of the aquifer is set $K_2=10^{-3}$ and the aquifers thickness is set $\delta_2=1$.
 The source term is sinusoidal as in Test case 4, i.e. $f_2 = K_2U\omega^2\sin(\omega x)$, with parameters $\omega=1$, $U=80$.
 The solution is shown in \fig{fig:test_2w_exact}.
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.8\textwidth]{\results test_2w_exact.pdf}
+  \caption{Solution of Test case 5.}
+  \label{fig:test_2w_exact}
+\end{figure}
 
 \begin{figure}[!htb]
 %   \vspace{0pt}
@@ -860,6 +856,10 @@ $g^w_{1D}$  & -150 & -30 & 120 & -50 & 100 \\
 \end{center}
 \end{table}
 
+We show the convergence results of the SGFEM in Table \ref{tab:convergence_test6}. The problem is solved with
+two different enrichment radii $R_w$, the smaller one assures non-overlapping enrichment zones.
+The convergence order is still satisfying, although in case of the larger $R_w$ the error did not decreased enough
+at the last refinement level for an unknown reason.
 %
 \begin{figure}[!htb]
 %   \vspace{0pt}
@@ -869,11 +869,6 @@ $g^w_{1D}$  & -150 & -30 & 120 & -50 & 100 \\
   \label{fig:test_5w_exact}
 \end{figure}
 %
-
-We show the convergence results of the SGFEM in Table \ref{tab:convergence_test6}. The problem is solved with
-two different enrichment radii $R_w$, the smaller one assures non-overlapping enrichment zones.
-The convergence order is still satisfying, although in case of the larger $R_w$ the error did not decreased enough
-at the last refinement level for an unknown reason.
 \begin{table}[!htb]
 \begin{center}
 \bgroup
