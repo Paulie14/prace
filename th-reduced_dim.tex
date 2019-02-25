@@ -17,26 +17,23 @@ In the past years, two different approaches for incorporating these features int
 % - smooths out the discontinuities; instead of modelling 3d domain with fractures, a~3d domain with equivalent properties (in the means of global behaviour) is applied
 
 The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modeled volume
-(increased/decreased hydraulic conductivity, porosity, diffusivity or other rock properties).
-This approach smears the local effects of the disruptions but the model can still provide a~valid approximation for an initial global view of the system.
-For example, instead of having a~bulk rock with a~complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
-and the domain can be simply discretized without taking the fractures into account any further.
+(increased/decreased hydraulic conductivity, porosity or other rock properties).
+This approach smears local effects of the disruptions but the model can still provide a~valid approximation for an initial global view of the system.
+For example, instead of having a~rock with a~complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
+and the domain can be simply discretized without taking the fractures into account.
 The concept is also suitable due to the lack of detailed data which people suffer from in most applications.
-%TODO FVM, FDM, FEM abbreviations
 The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM),
 the macroscopic effects (larger fractures) can be modeled by equivalent continuum.
 Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationally cheap,
 but they cannot capture the local effects accurately.
 
-
-\begin{figure}[!ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=10cm]{\figpath ground_fractures}
 \caption[Reduced dimensional model scheme.]{
     Scheme of a~problem with domains of multiple dimensions, (taken from the Flow123d documentation~\cite{flow123d_doc_2018}).}
 \label{fig:multi-dim}
 \end{figure}
-
 % Discrete approach (reduced dimensions)
 % - more computationaly costly - representation of discrete fractures
 % - enables to neglect the 3d or 2d dimensions of fracture or channel, respectively, at the meshing level.
@@ -50,7 +47,7 @@ This brings more demanding work at the geometric level, where the disruptions ha
 A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible,
 and to represent these as lower dimensional objects. This means at the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
 neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
-This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
+This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}. See \fig{fig:multi-dim} for illustration.
 
 Within the scope of geology or hydrogeology, the reduced dimension concept is used in the Discrete Fracture Network (DFN) models.
 There is a~world-wide community around the DFN problematic, see e.g. \cite{jing_fundamentals_dfn_2007, lei_use_dfn_2017} for an overview.
@@ -168,10 +165,7 @@ for computation of intersections of incompatible meshes.
 % is apparently bidirectional, the system can hardly be decoupled (meaning solving the PDEs separately). 
 
 
-
-
-
-\newpage
+% \newpage
 \section{Well-Aquifer Model}
 A~well-aquifer model that we solve in our work is defined in this section.
 We follow the reduced dimension concept and introduce a simplified underground water flow model.
