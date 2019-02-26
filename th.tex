@@ -96,9 +96,9 @@
 \TULtitle{Rozšířené metody konečných prvků pro aproximaci singularit}{Extended Finite Element Methods for Approximation of Singularities}
 % Extended finite elements for mixed-hybrid model of Darcy flow
 \TULprogramme{P3901}{Aplikované vědy v~inženýrství}{Applied Sciences in Engineering}
-\TULbranch{3901V055}{Aplikované vědy v~inženýrství}{Scientific Engineering (Mathematical Modelling)}
+\TULbranch{3901V055}{Aplikované vědy v~inženýrství}{Applied Sciences in Engineering}
 \TULauthor{Ing. Pavel Exner}
-\TULsupervisor{Mgr. Jan B{\v r}ezina, Ph.D.}
+\TULsupervisor{doc. Mgr. Jan B{\v r}ezina, Ph.D.}
 \TULyear{}
 
 
@@ -163,7 +163,7 @@ even though we cannot share the days in this world anymore.
 This work would not have been created without the great support of my colleagues, family and friends
 and therefore I would like to express the deepest appreciation to all of them.
 
-Especially, I would like to thank my supervisor, Mgr. Jan B{\v r}ezina, Ph.D., for his leadership and all the support he provided me
+Especially, I would like to thank my supervisor, doc. Mgr. Jan B{\v r}ezina, Ph.D., for his leadership and all the support he provided me
 during my doctorate and also before. His advice and his optimism helped me several times to get past a~problem
 when the solution was too blurred for my eyes.
 
@@ -387,7 +387,7 @@ which included single and multiple wells, overlapping enrichment zones and non-z
 
 The difficulty of the suggested vector enrichment is that it shares a~single degree of freedom per singularity
 over its whole enrichment zone. This is a~source of two problems. First, the system matrix has some non-sparse rows,
-which can then lead to loosing the sparsity when applying a~preconditioner based on elimination.
+which can then lead to a~loss of sparsity when applying a~preconditioner based on elimination.
 Second, any heterogeneity, e.g. in conductivity, inside the enrichment zone cannot be captured by
 a~single singular enrichment function.
 We tried to find proper elementwise enrichment functions, similarly to the ones used in the pressure model,
@@ -416,7 +416,7 @@ Possible further improvements include a~deeper study on the precision of the use
 e.g. regarding the adaptivity in \cite{shewchuk_adaptive_1997}, and thorough code optimization in Flow123d.
 
 
-The work was also consulted during the author's traineeship at Technical University in Munich at the Department of Numerical Mathematics
+The work was also consulted during the author's traineeship at the Technical University of Munich at the Department of Numerical Mathematics
 lead by Prof. Barbara Wohlmuth. Mainly the theoretical aspects of the work and new ideas were discussed.
 We got also familiarized with a~different approach for problems with Dirac delta sources \cite{koppl_tum_2015, koppl_vidotto_2018}
 as a~coupling method for inclusions.
@@ -427,7 +427,7 @@ We studied the XFEM intensively and researched its usage in singular problems.
 Apart from the created pressure model, we managed to suggest a~new velocity enrichment in the mixed-hybrid form
 and implement a~working model in Flow123d. The model was derived and formulated in detail.
 A~lot of technical work was done while preparing all the building blocks for the XFEM in the software.
-Eventually, we left several open issues which were addressed above.
+Eventually, we left open several issues which were addressed above.
 
 As we already pointed out, the future work may concern a~study of the vector enrichments in the mixed form.
 Extensions of the discretization for 1d objects that are not straight might be of interest.
@@ -484,10 +484,12 @@ in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Comput
 %
 {\noindent\large\textsc{Software}}
 \begin{itemize}[label={}, leftmargin=*]
+{\small
 \item
 J. B{\v r}ezina, J. Stebel, D. Flanderka, P. Exner, J. Hyb{\v s}, software Flow123d, 
 Technical University of Liberec, (2013--2019).
 \url{http://flow123d.github.com}.
+}
 \end{itemize}
 %
 
