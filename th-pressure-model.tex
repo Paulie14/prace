@@ -872,7 +872,7 @@ Based on the analysis presented above, we propose following adaptive quadrature 
 \begin{enumerate}
  \item If $r_{max} < \rho_w$, the subelement is not refined and the quadrature is zero.
  \item If $r_{min} < \rho_w < r_{max}$ and $\delta > 2^{-10}h$, the subelement is refined.
- \item If $r_{min} < \rho_w < r_{max}$ and $\delta \le 2^{-10}h$, $3\times3$ Gauss quadrature is used.
+ \item If $r_{min} < \rho_w < r_{max}$ and $\delta \le 2^{-10}h$, $3\times3$ Gauss quadrature is used.\\
  The weights at quadrature points lying inside the well are set to zero.
  \item If $r_{min} > \rho_w$ and $\delta > r_{min} / 2$, the subelement is refined.
  \item If $r_{min} > \rho_w$ and $\delta \le r_{min} / 2$, $3\times3$ Gauss quadrature is used.
@@ -927,14 +927,8 @@ We use $\mu$ as a~partition of unity to divide an integral into 2 parts
       \int\limits_S v(\mathbf{x}) \dd \mathbf{x} &=& \int\limits_S \mu(r_w) v(\mathbf{x}) \dd \mathbf{x} + \int\limits_S (1-\mu(r_w)) v(\mathbf{x}) \dd \mathbf{x} \nonumber\\
       &=& \int\limits_S \mu(r_w) v(\mathbf{x}) \dd \mathbf{x} + \int\limits_0^{2\pi} \int\limits_{\rho_w}^{\rho_w+\gamma} (1-\mu(r_w)) v(\mathbf{x}) r_w \dd r \dd \phi.
 \end{eqnarray}
-We see that the first integral vanishes when closing to the well edge, while the second grows. This corresponds
-to the character of the solution which is more radial in the vicinity of the well rather than far away from it.
-Therefore we transform the second integral into polar coordinates $\mathbf{x} \longleftrightarrow (r_w,\phi)$. 
-The first integral is computed using the previously described quadrature, but with much less refinement
-levels, since the well edge is now represented precisely (see \fig{fig:polar_quad_points} with
-an example of quadrature points distribution).
 %
-\begin{figure}[!htb]
+\begin{figure}[!b]
 %   \vspace{0pt}
   \centering    
   \subfloat[$\int\limits_\Omega \mu(r_w) v(\mathbf{x}) \dd \mathbf{x}$]{\label{fig:adapt_ref_polar_a} 
@@ -949,6 +943,13 @@ an example of quadrature points distribution).
   }
   \label{fig:polar_quad_points}
 \end{figure} 
+
+We see that the first integral vanishes when closing to the well edge, while the second grows. This corresponds
+to the character of the solution which is more radial in the vicinity of the well rather than far away from it.
+Therefore we transform the second integral into polar coordinates $\mathbf{x} \longleftrightarrow (r_w,\phi)$. 
+The first integral is computed using the previously described quadrature, but with much less refinement
+levels, since the well edge is now represented precisely (see \fig{fig:polar_quad_points} with
+an example of quadrature points distribution).
 
 The adaptive integration in polar coordinates has been implemented and tested.
 However, the results of are not satisfying as expected. The quadrature accuracy is very dependent on the choice of
