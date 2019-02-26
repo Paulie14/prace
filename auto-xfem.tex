@@ -1,0 +1,83 @@
+
+In this chapter we provide a~background research on the XFEM,
+describing the fundamentals and giving an overview on the evolution of the XFEM.
+Different enrichment methods and various types of enrichments are discussed.
+
+\section{Basic Concept} \label{sec:soa_xfem}
+
+The fundamentals of the XFEM are described. The history and the early development of the XFEM is well written
+in an overview article by Fries and Belytschko~\cite{fries_xfem_overview_2010}.
+
+The main feature of this method is the extension of a~space of polynomial shape functions of the finite element
+method with a~special function, that enables to better approximate some local effects. This is called \emph{enrichment}.
+The special function (enrichment function) is often non-polynomial and describes discontinuity or singularity,
+where polynomials leak accuracy.
+
+The XFEM is mainly perceived as a~method for local enrichment, which means that the enrichment is applied only
+in a~small subdomain -- several elements of the computational mesh close to the local phenomenon.
+The XFEM solution with a~single enrichment is sought in the form
+\begin{equation} \label{eqn:soa_xfem_standard_form}
+  u(\bx) = \sum_{\alpha\in\mathcal{I}}a_\alpha v_\alpha(\bx)
+    + \sum_{\alpha\in\mathcal{J}} b_{\alpha} N_\alpha(\bx)L(\bx)
+\end{equation}
+where $a_\alpha$ are the standard FE degrees of freedom and $b_{\alpha}$ are the degrees of freedom coming from
+the enrichment, $v_\alpha$ are the standard FE basis shape functions. We denote the index sets $\mathcal{I}$ and
+$\mathcal{J}$ that contain all indices of the standard and enriched degrees of freedom, respectively.
+$L$ is the actual enrichment function and $N_\alpha$ is a~linear FE basis functions used as the partition of unity
+$\sum_\alpha N_\alpha(\bx) = 1$.
+
+\subsection{Global Enrichment Functions} \label{sec:global_enrichment}
+Two different types of types of enrichments are discussed in this section -- discontinuity and singularity.
+A~discontinuity of the quantity of interest can be strong or weak, depending on whether its value
+or its derivative is discontinuous. The location of the discontinuity is often described by a~level set function,
+which itself can be a~part of searched solution.
+
+A~singularity, which is of the main interest in the thesis, is described by a~function with singularity concentrated in a~single point in 2d
+or along a~line in 3d. It has symmetric radial character and thus it is often defined in polar (2d) or cylindrical (3d) coordinate system.
+Typical global enrichment function are summarized e.g. in the Natarajan's thesis \cite{natarajan_enriched_2011}.
+
+
+\subsection{Enrichment Zone} \label{sec:glob_enr_zone}
+The choice of the enrichment zone, i.e. elements that are enriched, depends on the enrichment type.
+In case of discontinuities, only the nodes of cut elements are enriched.
+
+In case of singularity, the enrichment must well approximate the adjacent high gradients.
+To this end, the enrichment zone is typically chosen as a~radial area in the vicinity of the singularity
+of fixed (enrichment) radius, which is necessary to obtain optimal convergence rate, discussed e.g. in \cite{fries_corrected_2008}.
+The optimal size of the enrichment zone is however not addresed, apart from \cite{gupta_enr_zone_2016}, where
+an a~priori estimate for the enrichment radius dependent on $h$ is provided, although containing an unknown constant.
+This matter is investigated in detail later in the thesis.
+
+
+ 
+\section{Enrichment Methods} \label{sec:enrichment_methods}
+In this section, different types of available enrichment methods are discussed.
+In \cite{fries_corrected_2008, fries_xfem_overview_2010} the Corrected XFEM is introduced
+and the so called \emph{blending} elements (not all element nodes are enriched) and \emph{reproducing} elements
+(all element nodes enriched). The problems with lack of the partition of unity on the blending elements is addressed
+and solution suggested by means of the \emph{ramp function} $G(\bx)$ in \eqref{eqn:xfem_ramp}.
+$G(\bx)$ is equal 1 on reproducing elements, is a~ramp in blending elements and diminishes elsewhere.
+\begin{eqnarray} 
+    L(\bx) &=& G(\bx) s_(\bx), \label{eqn:xfem_ramp}\\
+    L_{\alpha}(\bx) &=& G(\bx) \left[s(\bx) - s(\bx_\alpha)\right]. \label{eqn:xfem_shift}
+\end{eqnarray}
+Further the \emph{shifted} enrichment is suggested leading to local enrichment function in \eqref{eqn:xfem_shift}.
+
+Next, the Stable Generalized FEM was developed in \cite{babuska_stable_2012, gupta_stable_2013}
+and applied in elastic fracture model. This method is supposed to solve the problem with ill-conditioning,
+which is often met when using enrichments. The local enrichment function on an element $T$ is defined
+\begin{eqnarray} 
+    L_{\alpha}|_{T}(\bx) &=& s(\bx) - \pi_T (s)(\bx), \label{eqn:sgfem_enrich} \\
+    \pi_T (s)(\bx) &=& \sum_{\beta\in\mathcal{I}_N(T)} N_\beta(\bx) s(\bx_\beta).
+\end{eqnarray} 
+where the interpolation $\pi_T$ is built using the linear shape functions
+associated with element nodes. It was later shown in \cite{zhang_robust_2016} that
+further care must be taken for different enrichment types for this method to
+yield optimal convergence and not to suffer with ill-conditioning irrespectful to mesh -- dicontinuity (or singularity) alignment.
+
+
+\section{XFEM in Flow Problems on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
+There is much less to be found on the usage of the XFEM in the field of flow modeling, especially regarding the dimensions coupling,
+than in mechanics. Apart from the references on various types of the XFEM in previous sections,
+several references dealing with fractured porous media are provided, e.g. \cite{fumagalli_numerical_2012, schwenck_2015}.
+However, no model suitable for a~singularity approximation using XFEM in groundwater flow i available.
