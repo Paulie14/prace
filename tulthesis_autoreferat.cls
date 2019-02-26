@@ -331,7 +331,7 @@ with its electronic form as saved at the IS STAG portal.
 
 \newcommand{\ThesisStart}[1]{
 \ifthenelse{\equal{\TUL@nguage}{EN}}{\ThesisTitle{EN} \ThesisTitle{CZ}}{\ThesisTitle{CZ} \ThesisTitle{EN}}
-\ifthenelse{\equal{#1}{female} \OR \equal{#1}{male}}%\Assignment
+\ifthenelse{\equal{#1}{female} \OR \equal{#1}{male}}{%\Assignment
 \Declaration{#1}}{\includepdf[pages=-]{#1}\if@twoside \else\setcounter{page}{5}\fi}
 }
 
