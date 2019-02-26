@@ -8,11 +8,11 @@
 DFN & Discrete Fracture Network \\
 FVM & Finite Volume Method \\
 FDM & Finite Difference Method \\
-FE & Finite Element \\
+% FE & Finite Element \\
 FEM & Finite Element Method \\
 MHFEM & Mixed Hybrid Finite Element Method \\
 PDE & Partial Differential Equation \\
-PU & Partition of Unity \\
+% PU & Partition of Unity \\
 PUM & Partition of Unity Method \\
 XFEM & Extended Finite Element Method \\
 GFEM & Generalized Finite Element Method \\
@@ -21,8 +21,9 @@ CG & Conjugate Gradients \\
 FLOP & Floating Point Operation \\
 AABB & Axes Aligned Bounding Boxes \\
 BIH & Boundary Interval Hiearchy \\
+IC,IP & Intersection Corner, Intersection Polygon\\
 MLMC & Multilevel Monte Carlo\\
-TUL & Technical University in Liberec
+TUL & Technical University of Liberec\\
 \end{tabularx}
 \vspace{1cm}
 
@@ -34,12 +35,14 @@ $\R$ & space of real numbers  \\
 $\mathbb N$ & space of unsigned integers \\
 $\mathbb P^k$ & space of polynomials of order $k$  \\
 $\mathbb {RT}^k$ & space of Raviart-Thomas shape functions of order $k$  \\
+$C^{\infty}$ & space of smooth functions  \\
 $L_2$ & Lebesque space \\
 $H^k, H(\div)$ & Hilbert spaces \\
 $V$ & test space of the primary variable \\
 $Q$ & test space of the secondary variable \\
+$V', Q'$ & dual spaces \\
 $\Lambda$ & test space of Lagrange multipliers\\
-$V_h, Q_h, \Lambda_h$ & discrete test spaces\\
+$V_h, Q_h, \Lambda_h$ & discrete test spaces
 \end{tabularx}
 % \vspace{1cm}
 \pagebreak
@@ -53,6 +56,7 @@ $\Omega_d$ & domain of dimension $d$ \\
 $\Gamma_{dN}$ & part of boundary of $\Omega_d$ with Neumann boundary condition \\
 $\Gamma_{dD}$ & part of boundary of $\Omega_d$ with Dirichlet boundary condition \\
 $\mathcal T_d$ & mesh consisting of elements of dimension $d$ \\
+$\mathcal F_d$ & faces of elements in $\mathcal T_d$ \\
 $h$ & mesh parameter \\
 $T^i_d, F^i_d$  & element and face of $\mathcal T_d$ \\
 $\vc x_i$ & node \\
@@ -65,9 +69,15 @@ $\mathcal W$ & index set of wells \\
 $\mathcal M$ & index set of aquifers \\
 $p_d$ & pressure in $d$-dimensional domain \\
 $\vc u_d$ & velocity in $d$-dimensional domain \\
+$\lambda_d$ & Lagrange multipliers in $d$-dimensional domain \\
+$\vc n$ & (outward) normal unit vector \\
 $\delta_d$ & cross-section of $d$-dimensional domain \\
+$f_d$ & source term in $d$-dimensional domain \\
+$g_{dD}$ & Dirichlet boundary condition in $d$-dimensional domain \\
+$g_{dN}$ & Neumann boundary condition in $d$-dimensional domain \\
 $\sigma_w, \sigma^m_w$ & permeability coefficient between well and aquifer \\
 $r_w, \rho_w, R_w$ & distance function, radius and enrichment radius of a~well $w$ \\
+$Z_w$ & enrichment zone of a~well $w$ \\
 $s_w, \vc s_w$ & scalar and vector global enrichment function\\
 $a(\cdot, \cdot)$ & bilinear form \\
 $l(\cdot)$ & linear form \\
@@ -75,4 +85,10 @@ $\norm{\cdot}_V$ & norm associated to a~space $V$\\
 $\avg{\cdot}$ & average operator \\
 $\fluct{\cdot}$ & fluctuation operator \\
 $\pi_T, \pi^{RT}_T, \pi_h$ & interpolation operators \\
+$B^T, \mat B^T$ & transposed operator, matrix \\
+$\pi_p$ & \plucker coordinates \\
+$\pi_p \odot \pi_q$ & permuted inner product \\
+$\tau_K$ & topological position in element $K$ \\
+$S_d$ & simplex of dimension $d$ \\
+$\epsilon$ & geometrical tolerance\\
 \end{tabularx}
