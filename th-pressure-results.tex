@@ -146,7 +146,7 @@ See the common geometry of the test cases in \fig{fig:test_cases_geometry}.
 We are interested in the behavior of the enrichment in the 2d domain.
 Thus we measure the convergence of the methods only inside the aquifer.
 % and we do not pay attention to the solution in the well.
-The error of the solution is measured in $L^2$ norm, which is evaluated using higher order quadrature
+The error of the solution is measured in $L_2$ norm, which is evaluated using higher order quadrature
 on the unenriched elements and adaptive quadrature in the enriched area, as defined in Section \ref{sec:adaptive_quad_rules}.
 
 \subsubsection{Test Case 1}
@@ -185,7 +185,7 @@ Therefore the graph is divided into two parts with different convergence orders 
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence01.pdf}
-  \caption[Convergence graph in Test case 1.]{Convergence of the $L^2$ norm of the approximation error in Test case 1.}
+  \caption[Convergence graph in Test case 1.]{Convergence of the $L_2$ norm of the approximation error in Test case 1.}
   \label{graph:convergence01}
 \end{graph}
 
@@ -200,7 +200,7 @@ a bit more in the next subsection \ref{sec:res_conditioning}.
 The shifted XFEM and the SGFEM behave nearly the same way and give the best results as expected.
 We alert the reader that the convergence graphs of ramp function XFEM, shifted XFEM and SGFEM overlap in \gref{graph:convergence01}.
 We only mention that the SGFEM saves small amount of degrees of freedom on blending elements in comparison
-with the shifted and the ramp function XFEM. The order of convergence in $L^2$ norm closing to 2.0 is optimal.
+with the shifted and the ramp function XFEM. The order of convergence in $L_2$ norm closing to 2.0 is optimal.
 
 
 \subsubsection{Test Case 2}
@@ -230,7 +230,7 @@ and the shape functions of the enrichment to capture the singularity.
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=\textwidth]{\results convergence02.pdf}
-  \caption[Convergence graph in Test case 2.]{Convergence of the $L^2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
+  \caption[Convergence graph in Test case 2.]{Convergence of the $L_2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
   data comes from the problem without the well solved by standard FEM and with optimal convergence order 2.0.}
   \label{graph:convergence02}
 \end{graph}
@@ -282,7 +282,7 @@ $l_\Omega$ & $\bx_w$  & $\rho_w$ & $R_w$ & $g^w_{1D}$ & $U$ \\
 \begin{tabular}{rc|cc|cc|cc}
 \toprule
 \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$\textrm{FEM}_{reg}$} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
-i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+i & h & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
 0 & 0.5000 & 2.45e-01 & --   & 2.73e-01 & --   & 2.35e-01 & --   \\ %\hline
 1 & 0.2500 & 6.12e-02 & 2.17 & 7.89e-02 & 1.79 & 6.70e-02 & 1.81 \\ %\hline
 2 & 0.1250 & 1.53e-02 & 1.95 & 1.60e-02 & 2.30 & 1.60e-02 & 2.07 \\ %\hline
@@ -311,7 +311,7 @@ by the standard FE shape functions. We also see from this figure that the approx
 %   \vspace{0pt}
   \centering    
   \includegraphics[width=0.5\textwidth]{\results error05_final.pdf}
-  \caption[Error distribution in Test case 3.]{$L^2$ error distribution in Test case 3 at the refinement level level 4 ($h=0.0312$).
+  \caption[Error distribution in Test case 3.]{$L_2$ error distribution in Test case 3 at the refinement level level 4 ($h=0.0312$).
   A green circle represents the enrichment radius $R_w$. There is no visible difference between shifted XFEM and SGFEM, so only SGFEM is plotted.}
   \label{fig:error_distribution_test3}
 \end{figure}
@@ -352,7 +352,7 @@ the error of the regular problem in $\textrm{FEM}_{reg}$ column.
 \begin{tabular}{rc|cc|cc|cc}
 \toprule
 \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$\textrm{FEM}_{reg}$} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
-i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+i & h & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
 0 & 0.5000 & 1.01e+01 & --   & 9.30e+00 & --   & 9.92e+00 & --   \\ %\hline
 1 & 0.2500 & 2.25e+00 & 2.17 & 2.21e+00 & 2.07 & 2.24e+00 & 2.15 \\ %\hline
 2 & 0.1250 & 5.84e-01 & 1.95 & 5.75e-01 & 1.94 & 5.80e-01 & 1.95 \\ %\hline
@@ -391,7 +391,7 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
   \hfill
   \subfloat[refinement level 7]{\label{fig:error_distribution_test4b} 
         \includegraphics[width=0.48\textwidth]{\results error07_07_final.pdf} }
-  \caption[Error distribution in Test case 4.]{$L^2$ error distribution in Test case 4 at the refinement level level 4 and 7.
+  \caption[Error distribution in Test case 4.]{$L_2$ error distribution in Test case 4 at the refinement level level 4 and 7.
   A green circle represents the enrichment radius $R_w$. Pay attention to the logarithmic scale in the right figure.}
   \label{fig:error_distribution_test4}
 \end{figure}
@@ -407,9 +407,9 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
 % \toprule
 % %\hline
 % %&&\multicolumn{2}{c|}{}&&\\[-15pt]
-% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L^2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
+% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L_2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
 % \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{Test case 3} & \multicolumn{2}{c|}{Test case 4} & \multicolumn{2}{c}{}\\ [3pt] %\midrule
-% i & h & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
+% i & h & $\|p-p_h\|_{L_2(\Omega)}$ & rate & $\|p-p_h\|_{L_2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
 % 0 & 0.5000 & 2.73e-01 & -    & 9.92e+00 & -    & 87 & 6         \\ %\hline
 % 1 & 0.2500 & 7.89e-02 & 1.79 & 2.24e+00 & 2.15 & 295 & 6        \\ %\hline
 % 2 & 0.1250 & 1.60e-02 & 2.30 & 5.80e-01 & 1.95 & 1110 & 21      \\ %\hline
@@ -437,9 +437,9 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
 % \toprule
 % %\hline
 % %&&\multicolumn{2}{c|}{}&&\\[-15pt]
-% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L^2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
+% % i & h & \multicolumn{2}{c|}{$\|p-p_h\|_{L_2(\Omega)}$} & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$\\ [3pt] \hline
 % \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{Test case 3} & \multicolumn{2}{c|}{Test case 4} & \multicolumn{2}{c}{}\\ [3pt] %\midrule
-% i & h & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $\|p-p_h\|_{L^2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
+% i & h & $\|p-p_h\|_{L_2(\Omega)}$ & rate & $\|p-p_h\|_{L_2(\Omega)}$ & rate & $N^{reg}_{dofs}$ & $N^{enr}_{dofs}$ \\ [3pt] \midrule
 % 0 & 0.5000 & 2.35e-01 & -    & 9.30e+00 & -    & 103 & 22       \\ %\hline
 % 1 & 0.2500 & 6.70e-02 & 1.81 & 2.21e+00 & 2.07 & 311 & 22       \\ %\hline
 % 2 & 0.1250 & 1.60e-02 & 2.07 & 5.75e-01 & 1.94 & 1134 & 45      \\ %\hline
@@ -458,7 +458,7 @@ and we do not aim in reality to compute on such fine meshes, we do not pursue so
 
 \subsubsection{Test Cases Summary}
 We solved four single well-aquifer problems with different solutions on the well-aquifer intersection and different source terms.
-We showed that the enrichment methods can sufficiently approximate the singularity and that the $L^2$ error of the approximation
+We showed that the enrichment methods can sufficiently approximate the singularity and that the $L_2$ error of the approximation
 can be pushed as low as the error of the regular part of the solution. The optimal convergence order 2.0 has been reached for all
 the enrichment methods. The standard XFEM displayed significant error on the blending elements in contrast to the ramp function XFEM.
 However, both suffered from ill-conditioning of the linear system. The most promising results were obtained using the shifted XFEM
@@ -620,12 +620,12 @@ and
 \end{equation}
 Assuming $h<r$, we can neglect higher order terms. Then, we obtain by direct integration
 \begin{align*}
- \norm{p_{sin} - \pi_h p_{sin}}^2_{L^2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
+ \norm{p_{sin} - \pi_h p_{sin}}^2_{L_2(S_{h,r})} \approx \frac14 \frac{h^6}{r^4}\int_0^1\int_0^1 \left(t^2-t-s^2+s\right)^2\,\dd s\, \dd t = \frac{1}{360}\frac{h^6}{r^4} 
 \end{align*}
 and
 \begin{equation}
     \label{eq:grad_estimate_on_square}
-    \norm{\grad(p_{sin} - \pi_h p_{sin})}^2_{L^2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
+    \norm{\grad(p_{sin} - \pi_h p_{sin})}^2_{L_2(S_{h,r})} \approx \frac{2h^4}{r^4} \int_0^1 \Big(t-\frac12\Big)^2 \dd t = \frac{1}{6}\frac{h^4}{r^4}.
 \end{equation}
 Thus for the density of squared error we have
 \[
@@ -646,7 +646,7 @@ determination of the enrichment radius.
 \subsubsection{Numeric Validation}
 Here we provide numerical validation of the results above.
 Our aim is twofold: we first validate the estimate \eqref{eq:grad_estimate_on_square}, secondly we simulate 
-the dependence of the error in $L^2$ norm on the enrichment radius numerically and compare it with \eqref{eq:singular_approx_error}.
+the dependence of the error in $L_2$ norm on the enrichment radius numerically and compare it with \eqref{eq:singular_approx_error}.
 
 Validity of the estimate \eqref{eq:grad_estimate_on_square} is verified by calculating the ratio
 \begin{equation} \label{eqn:log_h1_estimate_ratio}
@@ -725,11 +725,11 @@ where the nonlinear term of the bilinear finite elements allows better approxima
   \label{graph:radius_conv_2}
 \end{graph}
 %
-Next, we study the influence of the enrichment radius $R_w$ on the global $L^2$ error. To this end, we solve Test case 3
+Next, we study the influence of the enrichment radius $R_w$ on the global $L_2$ error. To this end, we solve Test case 3
 using the SGFEM for different mesh steps and different values of $R_w$.
-Let us remind that $O(h^p)$ convergence of the solution in the $H^1$ norm translates to the $O(h^{p+1})$ convergence of the solution in the $L^2$ norm 
+Let us remind that $O(h^p)$ convergence of the solution in the $H^1$ norm translates to the $O(h^{p+1})$ convergence of the solution in the $L_2$ norm 
 for the linear elliptic problems (cf. \cite[Theorem 19.2]{ciarlet_basic_1991}). According to the estimates \eqref{eq:std_err_estimate}
-and \eqref{eq:singular_approx_error}, we expect $O(h^2)$ convergence of $L^2$ norm independently of the enrichment radius. This is 
+and \eqref{eq:singular_approx_error}, we expect $O(h^2)$ convergence of $L_2$ norm independently of the enrichment radius. This is 
 clearly demonstrated in \gref{graph:radius_conv_1}. For comparison, we plot also the error of the regular part $p_{reg}$ of the solution
 % \[
 %   p_{reg}(x,y) = U(r_w-\rho_w)^2 \sin(\omega x)
@@ -775,7 +775,7 @@ The solution is shown in \fig{fig:test_2w_exact}.
   \hfill
   \subfloat[enrichment radius $R_w=2.0$]{\label{fig:error_2w_2-0} 
         \includegraphics[width=0.48\textwidth]{\results error_2w_2,0.pdf} }
-  \caption[Error distribution in Test case 5.]{$L^2$ error distribution in Test case 5 for two different $R_w$,
+  \caption[Error distribution in Test case 5.]{$L_2$ error distribution in Test case 5 for two different $R_w$,
   represented by green circles.}
   \label{fig:error_distribution_test5}
 \end{figure}
@@ -795,7 +795,7 @@ accumulating outside the smaller enrichment zones, in case of larger enrichment 
 \begin{tabular}{rc|cc|cc}
 \toprule
 \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{shifted XFEM} & \multicolumn{2}{c}{SGFEM}\\ [3pt] %\midrule
-i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+i & h & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
 0 & 0.5000 & 1.01e+02 & --   & 1.06e+02 & --   \\ %\hline
 1 & 0.2500 & 1.66e+01 & 2.61 & 1.78e+01 & 2.57 \\ %\hline
 2 & 0.1250 & 4.22e+00 & 1.97 & 4.45e+00 & 2.00 \\ %\hline
@@ -877,7 +877,7 @@ at the last refinement level for an unknown reason.
 \begin{tabular}{rc|cc|cc}
 \toprule
 \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{$R_w=0.8$} & \multicolumn{2}{c}{$R_w=2.0$}\\ [3pt] %\midrule
-i & h & $\|p-p_h\|_{L^2(\Omega_2)}$ & order & $\|p-p_h\|_{L^2(\Omega_2)}$ & order \\ [3pt] \midrule
+i & h & $\|p-p_h\|_{L_2(\Omega_2)}$ & order & $\|p-p_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
 0 & 0.5000 & 5.09e+01 & --   & 5.08e+01 & --   \\ %\hline
 1 & 0.2500 & 2.30e+00 & 4.46 & 1.66e+00 & 4.93 \\ %\hline
 2 & 0.1250 & 5.66e-01 & 2.03 & 4.05e-01 & 2.04 \\ %\hline
@@ -926,7 +926,7 @@ For the last two methods we also showed that the precision is not dependent on t
 The issue of a~suboptimal convergence order reported in \cite{gracie_modelling_2010} was investigated. 
 We revealed the problem and we suggested a~better strategy for the adaptive quadrature. 
 The improvement was confirmed by the numerical tests in \ref{sec:pressure_results} where we obtained the optimal 
-order of convergence in $L^2$ norm.
+order of convergence in $L_2$ norm.
 An alternative quadrature for integration of enriched functions in polar coordinates was also suggested.
 % The quadrature was implemented but the numerical results were not satisfying. This would need a~deeper 
 % investigation on the parameters that are needed to be set and a~possible bug in a~code is not excluded.
