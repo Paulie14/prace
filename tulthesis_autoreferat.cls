@@ -46,7 +46,8 @@
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions\relax
 
-\LoadClass[a5paper,10pt]{report}
+% \LoadClass[a5paper,10pt]{report}
+\LoadClass[a5paper,9pt]{extreport}
 
 \RequirePackage[noheader]{tul}
 \noTULfooter
@@ -54,6 +55,9 @@
 \RequirePackage{ifthen}
 \RequirePackage{tabularx}
 \RequirePackage{pdfpages}
+
+% amsmath must be used before hyperref to get rid of warnings of undefined destination on equations
+\include{math_defs}
 
 \ifTUL@pdf
  \RequirePackage{hyperref}
