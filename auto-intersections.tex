@@ -1,0 +1,179 @@
+
+In this chapter, the algorithms for intersections of incompatible meshes, which are necessary to our reduced dimensional model, are discussed.
+Not only the cases 1d-2d, 1d-3d, solved in previous chapters, but a~general approach also for cases 2d-3d and 2d-2d is considered.
+The motivation comes from the future needs for the software Flow123d, to enable computations on incompatible meshes even for fractures.
+This includes a~Mortar like coupling method~\cite{brezina_2012}, further development of the XFEM model defiend in this thesis,
+Multilevel Monte Carlo (MLMC)~\cite{giles_mlmc_2015} simulations using random fracture generation or time evolving fracture network.
+The prerequisite for any of these applications is a~fast and robust algorithm for calculating intersections of the individual meshes.
+The content of this chapter includes the results published in the author's article~\cite{brezina_2017}.
+
+
+\section{Introduction to Mesh Intersection}
+
+The research on the currently available algorithms is provided in the introduction.
+In particular the following are mentioned: the PANG algorithm \cite{gander_algorithm_2013} for 2d-2d and 3d-3d intersections in mesh overlapping problems or
+2d-3d intersections algorithm \cite{massing_efficient_2013, gtslib} used in the implementation of the Nitche method.
+
+The suggested approach is based on the \plucker coordinates, further developing the algorithm of Platis and Theoharis \cite{platis_fast_2003}
+for ray-tetrahedron intersections. The algorithm is combined with the advancing front method which allows reusing \plucker coordinates
+and their products among neighboring elements and to reduce the number of arithmetic operations. 
+
+\section{Element Intersections}
+\label{sec:element intersecitons}
+In this section, the algorithms are presented for computing the intersection of a~pair of simplicial elements
+of a~different dimension in a~3d ambient space. The fundamental idea is to compute intersection of 1d-2d 
+simplices using the \plucker coordinates and to reduce all the other cases to this one. 
+
+In general, an intersection can be a~point, a~line segment or a~polygon, called \emph{intersection polygon} (IP) in common.
+IP is represented as a~list of points called \emph{intersection corners} (IC).
+The information about the \emph{topological position} of IC is determined (IC in a~vertex, side or face).
+
+\subsection{\plucker Coordinates}
+\plucker coordinates represent a~line in a~3d space. The definition, properties and the~more general context from computational 
+geometry can be found e.g. in \cite{joswig_plucker_2013}.
+It is shown that using \plucker coordinates and their permuted inner product, the relative position of a~line and triangle
+in ambient 3d space can be determined.
+
+
+\subsection{Intersection Line-Triangle (1d-2d)}
+\label{sec:1d-2d}
+Having computed the \plucker coordinates and all possible permuted inner product in the line-triangle case,
+this data can be further used to derive the barycentric coordinates of the actual IC.
+The formula is derived in detail.
+Then the intersection algorithm for 1d-2d case is suggested, providing also the topological position of the intersection.
+
+
+\subsection{Intersection Line-Tetrahedron (1d-3d)}
+Computation of the line-tetrahedron intersection uses the 1d-2d algorithm for each pair line-face.
+The \plucker coordinates and permuted inner products are computed only once and possibly reused.
+Each result of 1d-2d algorithm is treated carefully to process the topological positions correctly.
+At most two intersection points are returned.
+
+
+\subsection{Intersection Triangle-Tetrahedron (2d-3d)}
+In the intersection algorithm in triangle-tetrahedron case, 9 \plucker coordinates (3 sides, 6 edges) and 18 permuted inner products
+are needed to compute up to 12 side-face intersections and 6 edge-triangle intersections.
+The result is an $n$-side intersection polygon (IP), $n\le 7$.
+
+This algorithm is much trickier to obtain correct topological positions of the ICs and to be able to sort them at the end
+to form a~polygon. The algorithm is thouroughly described concerning all possible situations.
+
+\subsection{Intersection Triangle-Triangle (2d-2d)}
+The intersection of two triangles uses up to 6 calls of the 1d-2d algorithm for all side-triangle combinations.
+The algorithm again carefully propagates the topological data from the 1d-2d cases, so that some computations can be skipped.
+Up to 2 ICs may be found as a~result.
+
+\section{Global Mesh Intersection Algorithm}
+\label{sec:front_advancing}
+A~composed mesh is considered, containing a~3d mesh, that is called call a~bulk mesh, and
+other lower dimensional meshes called a~component meshes. 
+At first, all component-bulk mesh intersections are computed, i.e. 1d-3d and 2d-3d.
+The algorithm includes two steps: finding the first non-empty element-element intersection (initiation),
+prologation of the intersection using the advancing front tracing.
+
+\subsection{Initiation}
+\label{sec:initiation}
+The search for the initial element-element intersection is accelerated by two techniques.
+First, the axes align bounding boxes (AABB) are computed for all elements, to provide fast
+comparison method to detect candidate pairs of elements for the intersection.
+Second, the bounding interval hiearchy (BIH)~\cite{wachter_instant_2006} can be build upon AABB, to speed up the search.
+
+\subsection{Advancing Front Method}
+\label{sec:front}
+An advancing front algorithm is suggested to extend the initial intersections, 1d-3d or 2d-3d,
+looking for candidate pairs among the neighboring component and bulk elements.
+Here it is taken advantage of the topological positions of ICs and the neighboring information on elements.
+This algorithm runs until the component mesh is covered with all possible bulk elements.
+
+\subsection{Intersections Between Component Meshes}
+\label{sec:components}
+Considering a~situation where the component meshes are in the interior of the 3d bulk mesh,
+the component-bulk results are used for search for candidate pairs in the component intersections.
+The storage of the intersection data, which plays an important part here, is described.
+On the other hand, component intersections in the exterior of the bulk mesh must be searched via the initiation
+techniques.
+
+
+\section{Benchmarks}
+\label{sec:benchmarks}
+
+In this section, the suggested element-element algorithms are theoretically compared with other available algorithms
+in terms of floating point operations (FLOPs) count and two numerical benchmarks by the software Flow123d are presented.
+
+\subsection{Theoretical Comparison}
+Three algorithms for the line-triangle intersections are compared: \plucker algorithm 
+described in Section \ref{sec:1d-2d}, the algorithm based on the plane clipping due to Haines \cite{haines_fast_1991}, and the minimum storage
+algorithm due to M{\" o}ller and Trumbore (MT) \cite{moller_fast_1997}. For the later two algorithms straightforward modifications are considered
+to make them return a~qualitatively same output as our algorithms do.
+
+\begin{table}[!htb]
+\begin{center}
+\bgroup
+\def\arraystretch{1.2}
+\setlength\tabcolsep{5pt}
+\begin{tabular}{l|lll}
+\toprule
+    algorithm              & 1d-2d   & 1d-3d    & 2d-3d \\ \midrule
+    \plucker               & 92      & 198      & 426 \\
+    \plucker (edge reuse)  & 45      & 138      & 264 \\
+    Haines                 & 51      & 177      & 469 \\
+    M\"oller and Trumbore  & 42      & 168      & 756 \\
+\bottomrule
+\end{tabular}
+\caption[Comparison of intersection algorithms by FLOPs.]
+    {Raw number of FLOPs used by different intersection algorithms. Second row contains the estimated effective number of FLOPs per intersection,
+    accounting for reusing the computed \plucker data over neighboring elements, while assuming data on edges of 2d and 3d elements are used twice (conservative).}
+\label{tab:fundamental_flops}
+\egroup
+\end{center}
+\end{table}
+%
+The estimated numbers of FLOPs for all cases are summarized in Table \ref{tab:fundamental_flops}.
+Algorithms based on the \plucker coordinates should be competitive with the state of the art algorithms in case of 1d-3d 
+and 2d-3d intersections. The expected performance for the 1d-2d case seems to be poor, however these intersections are computed after 1d-3d and 2d-3d,
+so the \plucker coordinates may be reused.  Similarly, better results are expected in the remaining two intersection cases when the \plucker coordinates and their products are reused by neighboring elements.
+
+\subsection{Global Mesh Intersections}
+Three variants of the suggested algorithms are compared on 2d-3d benchmarks in this section.
+The first variant FS+AF uses a~full search (FS) over the bulk mesh, i.e. it uses only the unordered array of AABB of elements,
+to get the initial pair for the advancing front algorithm (AF).
+The second variant BIH+AF uses the BIH on top of AABB to accelerate the initiation of the AF algorithm.
+The third variant BIH does not use AF at all and relies on the search through BIH only. 
+
+The artificial case considers a~composed mesh consisting of a~cube and two diagonal rectangular 2d meshes.
+A sequence of meshes is prepared with an increasing number of elements.
+All three variants exhibit almost linear time complexity in both the initiation and the intersection phase,
+relatively to the number of bulk and component elements, respectively.
+The FS+AF variant is the fastest one, in particular in its initiation phase.
+the BIH variant is about two times slower than the BIH+AF variant during the intersection phase. 
+
+\begin{graph}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\figpathins intersections_bedrichov_both_speed.pdf}
+    \caption[Comparison of the algorithms on meshes of Bed{\v r}ichov locality.]
+    {Comparison of the algorithms on meshes of Bed{\v r}ichov locality -- 
+        interior fractures on the left,
+        extending fractures on the right.}
+    \label{graph:bedrichov_speed}
+\end{graph}
+%
+Next, the performance of the intersection algorithms on a~mesh of a~real locality in Bed{\v r}ichov in the Jizera mountains
+is analyzed. Two meshes are considered, one with 28 fractures in the interior of the bulk mesh, 
+the other with artificially extended fractures outside the bulk mesh.
+he results for both meshes can be seen in \gref{graph:bedrichov_speed}.
+In the first case, FS+AF and BIH+AF algorithms are nearly twice as fast as BIH.
+Creating the BIH in the BIH+AF variant pays off and the algorithm performs better than the FS+AF variant.
+In the second case, a~large blow up of the FS+AF variant is caused by the exterior component elements
+The better performance of both BIH and BIH+AF variants is evident in this case.
+
+
+
+
+\section{Summary}
+Algorithms for computing intersections of pairs of simplicial elements using \plucker coordinates are suggested in this chapter.
+They are shown theoretically to be competitive with the others state of the art algorithms by the complexity in terms of FLOPs count estimates.
+Three variants of the global mesh intersection algorithm for a~composed mesh are proposed, using 
+advancing front tracing and BIH techniques. Based on the benchmark results, the variant BIH+AF is recommended for general usage.
+% while the FS+AF might be more efficient when there are few component meshes inside a~bulk mesh.
+The algorithm is a~part of the software Flow123d and the results were published in the article~\cite{brezina_2017}.
+It is currently used in the experimental Mortar model for flow and in the XFEM models presented in Chapter~\ref{chap:xfem_mh}.
