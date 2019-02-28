@@ -1,0 +1,195 @@
+% Mathematical modeling plays a~very important role in science and also our daily lives throughout many different
+% fields of knowledge. Using modern finite element methods (FEM), we are able to simulate, investigate and predict
+% various phenomena of both nature and industrial character. Recent advances in the field of FEM
+% enable us to solve models of various scales, dimensions, to overcome numerical problems and also 
+% to couple interfering features together.
+
+A large set of problems with finite element models, that people nowadays deal with, is connected with 
+insufficient accuracy in cases where the model includes large and very small scale phenomena at once.
+% In our case we are interested in modeling of underground processes.
+One can imagine a~simulation of groundwater flow in a~large domain (hundreds of meters or even kilometers) which can be significantly
+influenced by thin fractures in the porous media or artificial wells and boreholes (several centimeters in diameter).
+These disturbances bring discontinuities and singularities into the model which are hard to capture at the geometric level
+and even harder to approximate with the standard polynomial finite elements (FE) at the discretization level.
+There are several ways one can follow to increase the accuracy of the standard finite element method FEM in such models. 
+
+Adaptive meshes can be used in such cases, but it can cost a~lot of computational power to build a~very fine mesh,
+and then solve the problem with increasing number of degrees of freedom.
+It requires very robust meshing algorithms when complex geometries are in question.
+There can be other constraints on the mesh generation in specific applications:
+mesh elements quality, presence of hanging nodes, compatible meshes.
+Considering time dependent problems, such as an~opening of fractures in mechanics,
+remeshing at each time step is required which further amplifies the demands on the meshing tools.
+All these aspects make the generation of computational meshes hard or even close to impossible.
+
+Alternatively, a~reduced dimension concept is often used and models combining different dimensions are developed.
+The geometry is decomposed in objects of different dimensions (2d fractures, 1d wells, 0d point sources)
+and the meshes of these domains are created independently.
+Later the modeled processes must be coupled between the domains of different dimensions.
+The coupling concepts are mostly available at the continuous level but their implementation
+at the discrete level is non-trivial and problems often appear there.
+Two types of meshes are used in these models: compatible and incompatible.
+An incompatible mesh is the one, where the intersections of the computational domains are not aligned to nodes and sides of elements.
+Such meshes with arbitrary intersections are easier to construct, 
+but bring a~whole new set of problems in the coupling.
+
+
+Finally, there are the Extended finite element methods (XFEM).
+The XFEM enables us to take advantage of an a~priori knowledge of the model solution character
+such as discontinuity or singularity of searched quantities.
+The key aspect of the XFEM is that it allows to locally incorporate non-polynomial functions, like a~jump or a~singular function,
+into the finite element solution in places, where these features are expected to appear.
+This way the standard finite element approximation space is extended (enriched) and it is able to approximate the small scale phenomena
+more accurately.
+
+This thesis is aimed at further development of the XFEM and its usage in reduced dimensional models in groundwater flow problems,
+especially in non-planar 1d-2d and 1d-3d coupling. The incompatible meshes are considered and
+the XFEM is used to glue the modeled processes in different dimensions back together. 
+A~model is searched that fits in the concept of the software Flow123d, which is being developed at the
+Technical University of Liberec.
+
+% We intend to create a~model upon an incompatible mesh, where the elements of different dimensions intersect
+% arbitrarily, and then use the XFEM to glue the modeled processes in different dimensions back together. 
+% Apparently this would be a~very ambitious goal, therefore we narrow our work to non-planar 1d-2d and 1d-3d coupling
+% and resolving arisen singularities. 
+
+% Our research scope is focused at modeling of the underground processes in porous media
+% and in this work we address ourselves to a~groundwater flow model in particular.
+% We look for a~model that fits in the reduced dimension concept in the software Flow123d, which is being developed at the
+% Technical University of Liberec (TUL), and we put our effort into implementing the model with XFEM as an additional feature of this software.
+
+
+\section{Flow123d}
+\label{sec:soa_flow123d}
+
+The practical outcome of this thesis is a~new model and its solver implemented as a~part of the software Flow123d.
+Flow123d, last version 2.2.1 released in 2018~\cite{flow123d}, is a~simulator of underground water flow, solute
+and heat transport in fractured porous media.
+The software is developed as an open source code under the versioning system Git where the eponymous project can be found, or 
+one can reach it via the web page \url{http://flow123d.github.io}.
+%
+% \begin{center}
+% \url{http://flow123d.github.io}
+% \end{center}
+
+% It has been developed at the TUL approximately since 2007.
+% The latest stable version 2.2.1 was released in 2018~\cite{flow123d}.
+The main feature of the software is the ability to compute on complex compatible meshes of combined dimensions,
+where the continuum models and discrete fracture network models can be coupled. Only the coupling of co-dimension 1
+is considered, i.e. coplanar 1d-2d and 2d-3d cases.
+This thesis extends the groundwater flow model to non-planar 1d-2d and 1d-3d coupling.
+%
+% \begin{figure}[!htb]
+%   \centering
+%   \includegraphics[width=0.35\textwidth]{\figpath logo-flow-123d-color.pdf}
+%   \caption{Logo of Flow123d.}
+%   \label{fig:logo_flow123d}
+% \end{figure}
+
+% Current version includes mixed-hybrid solver for steady and unsteady Darcy flow, non-linear solver for unsaturated flow (Richards equation),
+% finite volume method and discontinuous Galerkin method for solute transport of several substances and heat transfer model. 
+% Using the operator splitting technique, models for various local processes are supported with the solute transport simulation
+% including dual porosity, sorption, decays and first order reactions.
+
+% The experimental branch of Flow123d based on version 3.0.x, which is about to be officially released,
+% includes a~module for computation of intersections of incompatible meshes,
+% a~rock mechanics model and also the XFEM model based on this thesis.
+
+
+\section{Aims of Thesis}\label{chap:aims}
+% define aims, characterize and briefly explain solution
+
+% We are motivated by several applications where our approach can provide a~new solution of problems with singular behavior
+% and where it extends possibilities of currently available models and methods.
+% Apart from the already mentioned groundwater flow, in which we focus in this work, there are various other applications
+% where our model might be employed or to which it might be extended.
+% We list a~few that are closely related: enhanced geothermal systems and extraction of geothermal energy,
+% oil and gas extraction, CO$_2$ sequestration, safety assessment of an underground nuclear waste repository,
+% transport of substances in human body or transport in fractured porous media in general.
+
+% Considering what we have preceded in the introduction, we see an open space for our 
+The aims of the thesis are in further development of reduced dimensional FEM models,
+especially of co-dimension 2, in combination with the XFEM and incompatible meshes, where the XFEM provides
+a~way for coupling the domains of different dimensions together and to significantly improve the finite element approximation accuracy.
+
+The research aims can be summarized in two major points
+\begin{itemize}
+    \item Propose suitable XFEM enrichments for singular pressure and velocity in Darcy flow model. 
+        If possible, emphasize a~good approximation of the velocity field.
+        
+    \item Suggest new data structures and algorithms for the realization phase in the software Flow123d. 
+\end{itemize}
+The accuracy of the velocity field, is in the main focus in most applications,
+e.g. when the flow model is coupled with a~transport equation.
+
+
+At first, a~1d-2d model with XFEM resolving point singularities in pressure
+based on \cite{gracie_modelling_2010,craig_using_2011} is developed.
+Different XFEMs~\cite{fries_corrected_2008, babuska_stable_2012} are investigated.
+Then a~model for the same problem in the mixed-hybrid form is derived based on~\cite{sistek_bddc_2015}.
+A~new enrichment for velocity is suggested and implemented in Flow123d.
+The model is further extended into 1d-3d coupled model.
+
+% We briefly sketch the steps that we take to successfully reach these goals.
+% We inspire ourselves by the work of Gracie and Craig~\cite{gracie_modelling_2010,craig_using_2011},
+% and we start from a~similar 1d-2d model with XFEM resolving point singularities in pressure.
+% We compare different XFEMs~\cite{fries_corrected_2008, fries_xfem_overview_2010, babuska_stable_2012,gupta_stable_2013},
+% investigate the properties of the methods and we suggest some improvements.
+
+% Then we transform the model to the mixed-hybrid form based on~\cite{brezina_mixed-hybrid_2010, sistek_bddc_2015}.
+% We suggest an enrichment for velocity and a~discretization with mixed finite elements.
+% We implement this XFEM enrichment in Flow123d and we run several numerical experiments.
+% We further extend these results into 1d-3d coupled model.
+
+% To be able to apply the XFEM on the incompatible meshes, it is necessary to determine the intersections
+% between the meshes of different dimensions. We do not restraint us only to 1d-2d and 1d-3d cases, but we suggest
+% a~robust algorithm for finding intersections of simplicial meshes in arbitrary 3d space.
+% Considering a~broader scope, this algorithm can be used also for fractures and cracks in other applications.
+
+% Regarding the implementation and the code design, several non-standard techniques are required
+% in comparison to standard FEM codes.
+% Efficient data structure must be provided for the enriched finite elements.
+% Handling of the additional degrees of freedom of the enrichment must be considered.
+% An accurate integration on the intersected (and enriched) elements is needed to assembly the integrals correctly. 
+% Solving the final linear algebraic system requires an efficient numerical method.
+% A~reasonable output post-processing must be developed, so that the XFEM solution (piecewise non-polynomial solution)
+% can be visualized properly.
+% Each of these sub-problems is not trivial and requires a~new approach or at least extending the existing one.
+
+
+\section{Document Structure} \label{sec:structure}
+
+The thesis is divided into five major parts.
+In Chapter~\ref{chap:reduced}, the reduced dimension concept is described in details and the meshes of combined dimensions are defined.
+The models of groundwater flow, coupling non-planar 1d-2d and 1d-3d domains, are formulated and put in the context of the software Flow123d 
+and other works.
+
+The background research on various XFEMs is provided in Chapter \ref{chap:xfem_soa}.
+It is then followed by Chapter~\ref{chap:xfem_pressure} where a~well-aquifer pressure model is studied and
+in which the singular enrichments are applied by the means of the XFEM.
+Various aspects and properties of the model and the method are studied, different enrichment strategies are compared. 
+
+Next, the mixed-hybrid model for pressure and velocity is formulated in Chapter~\ref{chap:xfem_mh}.
+A~new enrichment for velocity is proposed in the mixed form.
+The coupled models both for non-planar 1d-2d and 1d-3d are defined and followed by several
+numerical tests demonstrating the properties of the new enrichment in XFEM.
+
+Chapter~\ref{chap:intersections} is dedicated to the intersection algorithms.
+The concept of Pl\"ucker coordinates is introduced and algorithms for various intersection cases
+of simplicial elements is described. Numerical experiments are provided.
+
+The thesis is closed with the conclusions in the last Chapter \ref{chap:summary}
+which is followed by the list of author's publications and the bibliography.
+
+
+
+
+
+
+
+
+
+
+
+
+
