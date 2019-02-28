@@ -66,10 +66,9 @@ Further the \emph{shifted} enrichment is suggested leading to local enrichment f
 Next, the Stable Generalized FEM was developed in \cite{babuska_stable_2012, gupta_stable_2013}
 and applied in elastic fracture model. This method is supposed to solve the problem with ill-conditioning,
 which is often met when using enrichments. The local enrichment function on an element $T$ is defined
-\begin{eqnarray} 
-    L_{\alpha}|_{T}(\bx) &=& s(\bx) - \pi_T (s)(\bx), \label{eqn:sgfem_enrich} \\
-    \pi_T (s)(\bx) &=& \sum_{\beta\in\mathcal{I}_N(T)} N_\beta(\bx) s(\bx_\beta).
-\end{eqnarray} 
+\begin{equation} \label{eqn:sgfem_enrich}
+    L_{\alpha}|_{T}(\bx) = s(\bx) - \pi_T (s)(\bx),\quad \pi_T (s)(\bx)=\sum_{\beta\in\mathcal{I}_N(T)} N_\beta(\bx) s(\bx_\beta). 
+\end{equation} 
 where the interpolation $\pi_T$ is built using the linear shape functions
 associated with element nodes. It was later shown in \cite{zhang_robust_2016} that
 further care must be taken for different enrichment types for this method to
