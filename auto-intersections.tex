@@ -3,7 +3,7 @@ In this chapter, the algorithms for intersections of incompatible meshes, which 
 Not only the cases 1d-2d, 1d-3d, solved in previous chapters, but a~general approach also for cases 2d-3d and 2d-2d is considered.
 The motivation comes from the future needs for the software Flow123d, to enable computations on incompatible meshes even for fractures.
 This includes a~Mortar like coupling method~\cite{brezina_2012}, further development of the XFEM model defiend in this thesis,
-Multilevel Monte Carlo (MLMC)~\cite{giles_mlmc_2015} simulations using random fracture generation or time evolving fracture network.
+Multilevel Monte Carlo \cite{giles_mlmc_2015} simulations using random fracture generation or time evolving fracture network.
 The prerequisite for any of these applications is a~fast and robust algorithm for calculating intersections of the individual meshes.
 The content of this chapter includes the results published in the author's article~\cite{brezina_2017}.
 
@@ -12,7 +12,7 @@ The content of this chapter includes the results published in the author's artic
 
 The research on the currently available algorithms is provided in the introduction.
 In particular the following are mentioned: the PANG algorithm \cite{gander_algorithm_2013} for 2d-2d and 3d-3d intersections in mesh overlapping problems or
-2d-3d intersections algorithm \cite{massing_efficient_2013, gtslib} used in the implementation of the Nitche method.
+2d-3d intersections algorithm \cite{massing_efficient_2013} used in the implementation of the Nitche method.
 
 The suggested approach is based on the \plucker coordinates, further developing the algorithm of Platis and Theoharis \cite{platis_fast_2003}
 for ray-tetrahedron intersections. The algorithm is combined with the advancing front method which allows reusing \plucker coordinates

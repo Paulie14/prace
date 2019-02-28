@@ -420,8 +420,8 @@ The singular global enrichment function is defined below.
 % to one of the XFEM.
 
 
-\subsection{Enrichment Function}
-\label{sec:enrichment_func}
+% \subsection{Enrichment Function}
+% \label{sec:enrichment_func}
  The global enrichment function can be obtained from the solution of a~local problem on the neighborhood of the well.
  In this case, it is a~logarithmic function radially symmetric around the well cross-section $\bx_w=[x_w, y_w]$:
 \begin{equation} \label{eqn:enrich_func}
@@ -561,8 +561,8 @@ Four different enrichments are defined according to Section Section \ref{sec:enr
 % \end{equation}
 
 
-\subsection{Integration on Enriched Elements}
-\label{sec:integration}
+% \subsection{Integration on Enriched Elements}
+% \label{sec:integration}
 In order to compute the entries of the system matrix, %\eqref{eqn:s_entry} and \eqref{eqn:r_entry} 
 the expressions containing the enrichment functions have to be integrated accurately. 
 % These of course can be non-polynomial, like they are 
@@ -760,7 +760,7 @@ The solution is split into singular and regular part and searched in the form
 \begin{equation}
 p_2 = p_{sin} + p_{reg} = \sum\limits_{j\in\mathcal{W}} a_j\log r_j + p_{reg}. \label{eqn:2d_press_sol_mult}\\
 \end{equation}
-The averages $\avg{\cdot}_i$, which appear in the derivation, are evaluated numerically.
+The averages $\avg{\cdot}_w$ are evaluated numerically.
 
 % using simple composite midpoint rule integration with 1000 equidistant intervals on $\Gamma_i$.
 

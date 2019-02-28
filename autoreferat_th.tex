@@ -159,9 +159,41 @@ Darcy flow, Fractured porous media
 
 \clearpage
 
+
+
 \tableofcontents
 \clearpage
 
+%% \linenumbers
+
+% \listoffigures
+% \clearpage
+
+% \listofgraphs
+% \clearpage
+% 
+% \listoftables
+% \clearpage
+% 
+% \listofalgorithmes
+% \clearpage
+
+% \listoftables
+% \clearpage
+
+
+\begingroup
+\let\clearpage\relax
+\listoffigures
+\listoftables
+\listofgraphs
+% \listofalgorithmes
+\input auto-list-of-symbols.tex
+\endgroup
+\clearpage
+
+% \input auto-list-of-symbols.tex
+% \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -230,35 +262,37 @@ we are convinced that we dedicated our efforts to a~very interesting and hot top
 We are also not aware of any closely connected work to this topic in the Czech Republic
 which puts us in a pioneer position, in the Czech scientific environment at least.
 
-In the first part of this work, a~reduced dimension concept was described and a~model for coupling
-groundwater flow in non-planar 1d-2d and 1d-3d domains intersecting each other was suggested. 
-The drawbacks of several approaches in FE approximation in such models were discussed leading us to
-our solution: incompatible meshing of the domains and using the XFEM to couple them back together and to improve
+In the first part of this work, a~reduced dimension concept is described and a~model for coupling
+groundwater flow in non-planar 1d-2d and 1d-3d domains intersecting each other is suggested. 
+The drawbacks of several approaches in FE approximation in such models are discussed leading to
+the suggested solution: incompatible meshing of the domains and using the XFEM to couple them back together and to improve
 FE approximation of arisen singularities by proper discrete space enrichments.
 
-We provided an~extensive study of the currently available XFEM \cite{fries_xfem_overview_2010, babuska_stable_2012} in Chapter \ref{chap:xfem_soa}
-and we addressed the singular enrichments in particular. 
-Then in Chapter \ref{chap:xfem_pressure} we created a~model simulating pressure in a~well-aquifer system, inspired by \cite{gracie_modelling_2010, craig_using_2011}.
-We studied different types of enrichments and compared them in terms of
+An~extensive study of the currently available XFEM \cite{fries_xfem_overview_2010, babuska_stable_2012} is provided 
+in Chapter \ref{chap:xfem_soa} and singular enrichments are addressed in particular. 
+Then in Chapter \ref{chap:xfem_pressure}, a~model simulating pressure in a~well-aquifer 1d-2d system,
+inspired by \cite{gracie_modelling_2010, craig_using_2011}, is created.
+Different types of enrichments are studied and compared in terms of
 convergence rate, linear system conditioning and sensitivity to mesh -- singularity alignment.
-In the view of our numerical results, we found the SGFEM to be the most promising method
-for singularity approximation in our model.
-Apart from that we focused on implementation aspects of the XFEM and we improved adaptive quadrature rules
-for an accurate integration on enriched elements. We also investigated the optimal enrichment zone
-of singular enrichments and we verified our model on a~set of numerical test cases.
-Our early work was summarized in \cite{exner_2016}.
+In the view of the numerical results, the SGFEM is found to be the most promising method
+for singularity approximation in the model.
+Apart from that, several implementation aspects of the XFEM are addressed: improved adaptive quadrature rules
+for an accurate integration on enriched elements is suggested, optimal enrichment zone
+for singular enrichments is investigated. 
+The model and methods is verified on a~set of numerical test cases.
+The content of these two chapters is partially summarized in the article \cite{exner_2016}.
 
 
-Chapter \ref{chap:xfem_mh} was dedicated to the XFEM application in a~mixed problem
+Chapter \ref{chap:xfem_mh} is dedicated to the XFEM application in a~mixed problem
 in order to extend the possibilities of the groundwater model in \cite{sistek_bddc_2015, flow123d}.
-The mixed-hybrid form was carefully derived for both non-planar 1d-2d and 1d-3d case.
-We suggested a~new singular SGFEM like enrichment of the standard Raviart-Thomas finite elements
-and we applied it to the velocity discrete space.
-We implemented the model as an~experimental part of the software Flow123d
-and we provided a~set of numerical tests.
+The mixed-hybrid form is carefully derived for both non-planar 1d-2d and 1d-3d case.
+A~new singular SGFEM like enrichment of the standard Raviart-Thomas finite elements is suggested
+and applied to the velocity discrete space.
+The model is implemented as an~experimental part of the software Flow123d
+and a~set of numerical tests is provided.
 Since velocity is important in the attached processes (e.g. transport),
-we put a~stress on the velocity precision and we traced the velocity convergence rate.
-The optimal order of convergence was observed in both 1d-2d and 1d-3d tests,
+a~stress is put on the velocity precision and the velocity convergence rate is traced.
+The optimal order of convergence is observed in both 1d-2d and 1d-3d tests,
 which included single and multiple wells, overlapping enrichment zones and non-zero source prescribed.
 
 The difficulty of the suggested vector enrichment is that it shares a~single degree of freedom per singularity
@@ -276,18 +310,18 @@ however such model is not available in Flow123d yet.
 
 
 A~necessary prerequisite for computations on incompatible meshes is the ability to determine
-the intersections of the different meshed domains. In Chapter \ref{chap:intersections} we developed
-a~fast and robust algorithm to compute such intersections on simplicial meshes.
-Although we do need to solve only the non-planar 1d-2d and 1d-3d cases in our singular models,
-we extended the algorithms also to higher dimensions, namely 2d-2d, 2d-3d.
+the intersections of the different meshed domains. In Chapter \ref{chap:intersections}
+a~fast and robust algorithm for computing such intersections on simplicial meshes is developed.
+Although only the non-planar 1d-2d and 1d-3d cases are necessary in the singular models,
+the algorithms are extended also to higher dimensions, namely 2d-2d, 2d-3d.
 New models in these cases are in focus of our future work and further development of the software Flow123d.
-We exploited the properties of the \plucker coordinates \cite{platis_fast_2003, joswig_plucker_2013}
+The properties of the \plucker coordinates \cite{platis_fast_2003, joswig_plucker_2013} are exploited
 in the element-element intersection algorithms which provide not only the coordinates but also additional topological information.
-This was then used in the global mesh intersection algorithms together with other modern techniques
+This is then used in the global mesh intersection algorithms together with other modern techniques
 such as BIH of axes aligned bounding boxes and advancing front tracing.
-The suggested algorithms were shown to be competitive to other works \cite{moller_fast_1997, haines_fast_1991}.
-The global mesh intersection algorithms were tested in Flow123d on an artificial and a~real case benchmarks
-and they exhibit linear time complexity. The results were summarized in \cite{brezina_2017}.
+The suggested algorithms are shown to be competitive to other works \cite{moller_fast_1997, haines_fast_1991}.
+The global mesh intersection algorithms are tested in Flow123d on an artificial and a~real case benchmarks
+and they exhibit linear time complexity. The results are summarized in \cite{brezina_2017}.
 Possible further improvements include a~deeper study on the precision of the used geometric predicates,
 e.g. regarding the adaptivity in \cite{shewchuk_adaptive_1997}, and thorough code optimization in Flow123d.
 
@@ -358,7 +392,8 @@ in proceedings of \emph{Seminar on Numerical Analysis 2014}, Institute of Comput
 }
 \end{itemize}
 %
-\vspace{0.5cm}
+% \vspace{0.5cm}
+\pagebreak
 %
 {\noindent\large\textsc{Software}}
 \begin{itemize}[label={}, leftmargin=*]
@@ -390,7 +425,8 @@ Combined Dimensions
 \item ESCO '14, Plze{\v n} (CZ), [presentation] \\ European Seminar on Computing
 \item Stanford, 2014 (US) [attendance only] \\ 40th Stanford Geothermal Workshop
 \item SNA '14, Nymburk (CZ), [presentation] \\ Seminar on Numerical Analysis
-\item Student conference '13, Liberec (CZ), [poster] \\ Student conference at the Faculty of Mechatronics, Informatics and Interdisciplinary Studies, TUL
+\item Student conference '13, Liberec (CZ), [poster] \\
+Student conference at the Faculty of Mechatronics, Informatics and Interdisciplinary Studies, Technical University of Liberec
 }
 \end{itemize}
 

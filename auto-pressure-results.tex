@@ -22,16 +22,42 @@ The source is available on GitHub: \url{https://github.com/Paulie14/xfem_project
 % \begin{center}\url{https://github.com/Paulie14/xfem_project}.\end{center}
 
 
-\subsection{Test Cases with Single Well}
-\label{sec:2d_results_single}
+% \subsection{Test Cases with Single Well} \label{sec:2d_results_single}
+% \subsection{Conditioning of System Matrix} \label{sec:res_conditioning}
+% \subsection{Enrichment Radius Estimation} \label{sec:enrichemnt_radius}
+% \subsection{Test Cases with Multiple Wells} \label{sec:2d_results_multiple}
 
-% \begin{graph}[!htb]
-%   \centering    
-%   \includegraphics[width=\textwidth]{\results convergence02.pdf}
-%   \caption[Convergence graph in Test case 2.]{Convergence of the $L_2$ norm of the approximation error in Test case 2. The $\textrm{FEM}_{reg}$
-%   data comes from the problem without the well solved by standard FEM and with optimal convergence order 2.0.}
-%   \label{graph:convergence02}
-% \end{graph}
+Two selected results are displayed in \gref{graph:convergence02} and \fig{fig:error_distribution_test5}.
+In the graph, different enrichment methods defined in \ref{sec:prim_discretization} are compared
+on a~model including a~single well and nonzero source term.
+Optimal convergence order is reached in all XFEMs.
+The "FEM reg" data comes from the problem without the singularity solved by standard FEM and with optimal convergence order 2.0 for a~reference.
+The standard XFEM displays larger error on blending elements as expected.
+However, it together with ramp function XFEM suffers ill-conditioning.
+\begin{graph}[!htb]
+  \centering    
+  \includegraphics[width=0.9\textwidth]{\results convergence02.pdf}
+  \caption[Convergence comparison graph.]{Convergence of the $L_2$ norm of the approximation error.}
+  \label{graph:convergence02}
+\end{graph}
+
+\begin{figure}[!htb]
+  \centering
+  \subfloat[enrichment radius $R_w=0.6$]{\label{fig:error_2w_0-6} 
+        \includegraphics[width=0.48\textwidth]{\results error_2w_0,6.pdf} }
+  \subfloat[enrichment radius $R_w=2.0$]{\label{fig:error_2w_2-0} 
+        \includegraphics[width=0.48\textwidth]{\results error_2w_2,0.pdf} }
+  \caption[Error distribution in Test case 5.]{$L_2$ error distribution in Test case 5 for two different $R_w$,
+  represented by green circles.}
+  \label{fig:error_distribution_test5}
+\end{figure}
+In \fig{fig:error_distribution_test5} the approximation error is displayed
+in case of 2 wells. The error of the regular part of the solution is apparent, 
+the error of the singular part is inferior in case of larger enrichment radius.
+In this problem, the ill-conditioning for shifted XFEM is reported, due
+to multiple enrichment in the enrichment zone overlap.
+
+
 
 % Let us now define four test cases on which we investigate the behavior of the methods, mainly their convergence properties.
 % We suggest four analytic solutions which differ by the regular part $p_{reg}$ 
@@ -348,7 +374,7 @@ The source is available on GitHub: \url{https://github.com/Paulie14/xfem_project
 % quadrature and the convergence order is always close to the optimum of 2.0.
 
 
-\subsection{Conditioning of System Matrix} \label{sec:res_conditioning}
+% \subsection{Conditioning of System Matrix} \label{sec:res_conditioning}
 % A~problem with ill-conditioning of the linear system coming from the XFEM methods is mentioned in Section \ref{sec:soa_xfem}
 % and are encountered also in our test cases in the section above. We do not inspect the matrices of the linear system in details, 
 % but we use some general results on the conjugate gradients method and the Laplace equation to have an insight on this problem.
@@ -423,7 +449,7 @@ The source is available on GitHub: \url{https://github.com/Paulie14/xfem_project
 
 
 
-\subsection{Enrichment Radius Estimation} \label{sec:enrichemnt_radius}
+% \subsection{Enrichment Radius Estimation} \label{sec:enrichemnt_radius}
 % Up to now, we set the enrichment radius $R_w$ in the experiments to a~fixed value, without providing any explanation of the particular choice.
 % In this section, we study the dependence of the solution error on the enrichment radius $R_w$.
 % We look for a~clue for a~particular choice of $R_w$ that is optimal in a~specific sense.
@@ -583,8 +609,8 @@ The source is available on GitHub: \url{https://github.com/Paulie14/xfem_project
 % \gref{graph:radius_conv_2}, from which the error is not decreasing any more.
 
 
-\subsection{Test Cases with Multiple Wells}
-\label{sec:2d_results_multiple}
+% \subsection{Test Cases with Multiple Wells}
+% \label{sec:2d_results_multiple}
 % In this section, more complex test cases are solved, including more than one well intersecting the aquifer.
 % We test the enrichment methods, shifted XFEM and SGFEM in particular, whether they
 % still have such good convergence properties when the wells influence each other and when the enrichment zones coincide with each other.
@@ -731,8 +757,8 @@ The source is available on GitHub: \url{https://github.com/Paulie14/xfem_project
 
 
 
-\section{Summary}
-\label{sec:summary}
+% \section{Summary}
+% \label{sec:summary}
 
 % This Chapter was devoted to the investigation of four different enrichment methods
 % -- the XFEM, the Corrected XFEM with the ramp function and shifting, and the SGFEM. 
