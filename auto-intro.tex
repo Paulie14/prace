@@ -41,12 +41,24 @@ The key aspect of the XFEM is that it allows to locally incorporate non-polynomi
 into the finite element solution in places, where these features are expected to appear.
 This way the standard finite element approximation space is extended (enriched) and it is able to approximate the small scale phenomena
 more accurately.
+See an example of XFEM usage in 1d-2d coupling with point intersections in \fig{fig:aquifers}.
 
 This thesis is aimed at further development of the XFEM and its usage in reduced dimensional models in groundwater flow problems,
 especially in non-planar 1d-2d and 1d-3d coupling. The incompatible meshes are considered and
 the XFEM is used to glue the modeled processes in different dimensions back together. 
 A~model is searched that fits in the concept of the software Flow123d, which is being developed at the
 Technical University of Liberec.
+
+\begin{figure}[!htb]
+%   \vspace{0pt}
+  \centering    
+    \includegraphics[width=0.6\textwidth]{\figpath 2_aquifers-5_wells_mesh_whitebg_crop.pdf}
+  \caption[XFEM example for well-aquifer model with singularities.]
+        { An XFEM example in 1d-2d coupling with singularities at intersection points.
+            Distribution of pressure in 2 aquifers (horizontal planes) intersected by 5 wells 
+            (vertical lines) is displayed. The model is computed on a~coarse mesh without refinement (visible at the bottom). }
+  \label{fig:aquifers}
+\end{figure}
 
 % We intend to create a~model upon an incompatible mesh, where the elements of different dimensions intersect
 % arbitrarily, and then use the XFEM to glue the modeled processes in different dimensions back together. 
