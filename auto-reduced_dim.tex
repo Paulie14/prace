@@ -288,6 +288,7 @@ Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
 \delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2,  \\
 \div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2, \label{eqn:problem_2d_2d_source}\\
 \div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}f_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_2d_1d_source}\\
+%     & + {\color{blue}\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w}\Sigma^m_w\delta_t(t - t^m)} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_2d_1d_source}\\
 \color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_flux_avg}\\
 \fluct{p_2}^m_w &= g^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_press_fluct}\\
 p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:problem_2d_dirichlet}\\
@@ -297,12 +298,14 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:problem_2d_dirich
 where
 \[ 
 {\color{blue}
-    f_w = \sum_{m\in\mathcal{M}}\abs{\Gamma^m_w} \delta_2(\vc x^m_w)\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big) \delta_t(t - t^m).
+%     f_w = \sum_{m\in\mathcal{M}}\abs{\Gamma^m_w} \delta_2(\vc x^m_w)\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big) \delta_t(t - t^m).
+    \Sigma^m_w = \delta_2(\vc x^m_w)\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big), \quad f_w=\sum_{m\in\mathcal{M}}\abs{\Gamma^m_w} \Sigma^m_w  \delta_t(t - t^m).
 } 
 \label{eqn:1d_2d_sigma_source}
 \]
 }
-Term $\delta_t(t - t^m)$ is a~Dirac delta measure. The dimensional coupling terms are highlighted in the blue color.
+Term $\delta_t(t - t^m)$ is a~Dirac delta measure. %The dimensional coupling terms are highlighted in the blue color.
+The average outward flux from the aquifer over $\Gamma_w$ acts as a positive source term in the well (blue colored terms).
 
 % The term $\Sigma^m_w$ is a~constant representing the flux density from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
 % through their intersection $\Gamma^m_w$. 
@@ -363,8 +366,8 @@ Find $[\vc u_1,\,\vc u_3]$ and $[p_1,\,p_3]$ satisfying
 \begin{align}
 \delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3,  \\
 \div\, \vc u_3 &= \delta_3 f_3 && \textrm{in } \Omega_3,\\
-\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}f_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_1d_source}\\
-\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = f_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_flux}\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}\Sigma_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_1d_source}\\
+\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = \Sigma_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_flux}\\
 \fluct{p_3}_w &= g_w && \forall w\in\mathcal{W}, \label{eqn:problem_3d_press_fluct}\\
 p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3, \label{eqn:problem_3d_dirichlet}\\
 \delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,3 \label{eqn:problem_3d_neumann}
@@ -373,14 +376,14 @@ p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3, \label{eqn:problem_3d_dirich
 where
 \[ 
 {\color{blue}
-    f_w(\vc x) = \delta_3\sigma_w(\vc x)\big(\avg{p_3}_w(\vc x)-p_1(\vc x)\big) \quad \vc x \in \Omega^w_1.
+    \Sigma_w(\vc x) = \delta_3\sigma_w(\vc x)\big(\avg{p_3}_w(\vc x)-p_1(\vc x)\big) \quad \vc x \in \Omega^w_1.
 } 
 \label{eqn:1d_3d_sigma_source}
 \]
 }
 
 One can see the dimensional coupling terms highlighted in the blue color.
-In contrast to the 1d-2d case, $f_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
+In contrast to the 1d-2d case, $\Sigma_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
 % The term $\Sigma_w$, similarly to 1d-2d case, represents the flux from the aquifer $\Omega_3$ to the well $\Omega^w_1$.
 % The flux is proportional to the pressure difference with the (variable) permeability coefficient $\sigma_w(\vc x)>0\;[s^{-1}]$ between $\Omega_3$ and $\Omega^w_1$.
 % Analogically we can then read: the average outward flux from the aquifer at point $\vc x\in\Omega^w_1$
