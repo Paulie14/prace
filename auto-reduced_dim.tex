@@ -1,0 +1,390 @@
+
+In this chapter, the concept of combining models of different spatial dimension is introduced.
+The thesis is put into the context of the so called \emph{reduced dimensional models} and
+the long-term research at the Technical University of Liberec concentrated around the software Flow123d.
+Finally, a~well aquifer model which is to be solved in this work is defined, combining 1d-2d and 1d-3d dimensions.
+% Also the relationship to the long-term research at the Technical University in Liberec is described.
+
+% The realistic models of underground processes, namely the groundwater flow and transport, geomechanics and thermal processes, have to deal with 
+% a complex of geological formations containing various small scale features such as fractures and wells. Although the scale of these features
+% can differ from the size of the computational domain by several orders, they influence significantly the global behavior of the system.
+% In the past years, two different approaches for incorporating these features into numerical models have been developed.
+
+The equivalent continuum concept includes the fractures and wells in the model by changing the global properties of the modeled volume
+(e.g. increased/decreased hydraulic conductivity).
+This homogenization approach smears local effects of the disruptions but the model can still provide a~valid approximation for an initial global view of the system.
+% For example, instead of having a~rock with a~complex network of conductive fractures, we use an equivalent continuum with increased conductivity,
+% and the domain can be simply discretized without taking the fractures into account.
+% The concept is also suitable due to the lack of detailed data which people suffer from in most applications.
+% The microscopic effects are neglected by applying the representative elementary volume (homogenization per elements of mesh in FVM, FDM or FEM),
+% the macroscopic effects (larger fractures) can be modeled by equivalent continuum.
+Since the underlying computational mesh does not need to represent the small scale objects, the equivalent continuum models can be computationally cheap,
+but they cannot capture the local effects accurately.
+The other approach considers the disruptions in a~discrete sense, keeping its sizes and properties explicitly in the model.
+This brings more demanding work at the geometric level, where the disruptions have to be represented so that a~suitable computational mesh can be built.
+A significant simplification in this concept is to reduce the dimension of the local phenomena, if possible, and obtain a~reduced dimensional model,
+
+% and to represent these as lower dimensional objects. This means at the geometrical level to neglect the thickness of a~thin fracture and consider a~plane, or
+% neglect the cross-section of a~narrow channel and consider a~line instead. The quantities are then averaged over the complementary dimensions.
+% This approach is referred as \emph{reducing dimensions} or \emph{reduced dimensional model}.
+The concept of reduced dimensions is fundamental in the Discrete Fracture Network (DFN) models \cite{jing_fundamentals_dfn_2007}
+and in models combining DFN with equivalent continuum. The spacial discretization of such models leads to
+meshes composed of elements of different dimension, in the fractured porous media context e.g. in
+\cite{martin_modeling_2005, fumagalli_numerical_2011, brezina_analysis_2015}.
+There is a~limited number of models for coupling of co-dimension 2: 1d-3d coupling or point intersections in non-planar 1d-2d coupling.
+Such models solving flow and transport in vascular systems are e.g. in \cite{dangelo_coupling_2008} and \cite{koppl_tum_2015}.
+
+% 
+% The works mentioned before deal with modeling fractures, however they are not concerned neither about 1d-3d coupling
+% nor point intersections in non-planar 1d-2d coupling. These topics are also studied extensively by different groups, see
+% especially \cite{dangelo_coupling_2008, cattaneo_numerical_2015} and \cite{koppl_tum_2015, koppl_vidotto_2018}.
+% Their applications are mainly addressed to the medical problematic and they analyze the transport of medicaments through
+% the vascular system and to the surrounding tissue. The veins can be viewed as 1d channels and the tissue is modeled as a~porous media,
+% and thus the flow is governed by the same type of equations as in the groundwater simulations.
+
+In the thesis, a reduced dimensional model for fractured porous media being developed by the means of the software Flow123d
+is extended by nonplanar 1d-2d and 1d-3d models.
+
+% In this work we build and expanse a reduced dimensional model on top of the existing one being developed at TUL.
+% It combines both the equivalent continuum and the DFN approach including the communication fractures with surrounding bulk domains.
+% Since the numerical solution is based on FEM, we are interested in how the fractures and bulk are geometrically discretized.
+% Therefore we describe the meshes of combined dimensions below.
+
+
+
+\section{Mesh of Combined Dimensions} \label{sec:mesh_combined}
+As pointed out before, the reduced dimensional models lead to computations on meshes of combined dimensions.
+The reduced dimensional concept splits the computational domain into parts of different dimensions
+$\Omega_d$, $d=1,2,3$. The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
+Apart from Chapter \ref{chap:xfem_pressure}, the simplicial meshes are considered.
+The \emph{compatible} (or conforming, matching) meshes satify the compatibility conditions, i.e.
+the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
+match their faces or they extend out of $\Omega_d$. 
+
+% The motivation to model the small scale disruptions in the bulk domain as lower dimensional objects has been
+% stated in the introduction of the chapter. Now we fix the idea of a~mesh of combined dimensions and we give
+% a~more precise description.
+
+% An open set $\Omega_{3} \subset \Real^3$ represents a~continuous approximation of a~porous medium, i.e. the bulk domain.
+% In the same manner, a~set of 2d manifolds $\Omega_2 \subset \Real^3$ is considered, representing the 2d fractures
+% and a~set of 1d manifolds $\Omega_1 \subset \Real^3$ representing the 1d channels in an arbitrary 3d space.
+% See the Figure \ref{fig:multi-dim}.
+
+
+% The domains $\Omega_2$ and $\Omega_1$ are polytopic (i.e. polygonal and piecewise linear, respectively).
+% Following the documentation of Flow123d \cite{flow123d_doc_2018} and its notation,
+% for every dimension $d=1,2,3$, a~triangulation $\mathcal{T}_{d}$ of the open set $\Omega_d$
+% is introduced that consists of
+% \begin{equation}
+% \begin{aligned}
+%     \textrm{elements } & T_{d}^{i}, & \quad i \in\mathcal{I}_{d,E} = \{1,\dots,N_{d,E} \}, \\
+%     \textrm{faces }    & F_{d}^{i}, & \quad i \in\mathcal{I}_{d,F} = \{1,\dots,N_{d,F} \}, \\
+%     \textrm{nodes }    & \vc x_{i}, & \quad i \in\mathcal{I}_{d,N} = \{1,\dots,N_{d,N} \}.
+% \end{aligned}
+% \end{equation}
+
+% Simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
+% If not specified, the simplicial meshes are used, so the elements are lines, triangles and tetrahedra.
+% By faces $F^i_d$ we understand $(d-1)$-dimensional boundary objects of elements $T_d^i$,
+% i.e. end points $F^i_1$ of $T^i_1$, triangle sides $F^i_2$ of $T^i_2$, tetrahedron faces $F^i_3$ of $T^i_3$.
+% We note that in Chapter \ref{chap:xfem_pressure}, the quadrilateral elements are considered in contrast to the rest of the work
+% due to the use of a~specific FEM library code.
+
+% $\Omega_2\subset\overline\Omega_3$
+% $\Omega_1\subset \overline\Omega_2$
+
+% The elements in \emph{a compatible mesh} must satisfy the following compatibility conditions
+% \begin{equation}
+%         T_{d-1}^i \cap \mathcal{T}_d \subset \mathcal{F}_d,  \qquad \text{where } \mathcal{F}_d = \bigcup_{k\in\mathcal{I}_{d,E}} \partial T_{d}^{k}
+% \end{equation}
+% and
+% \begin{equation}
+%         T_{d-1}^i \cap \mathcal{F}_d = 
+%         \begin{cases}
+%             T_{d-1}^i, \\
+%             \emptyset,
+%         \end{cases}
+% \end{equation}
+% for every $\,i\in\mathcal{I}_{d-1,E}$, and $d=2,3$. 
+% That is, the $(d-1)$-dimensional elements are either between $d$-dimensional elements and
+% match their faces or they poke out of $\Omega_d$. 
+% Under these conditions, a compatible 1d line in 3d space is formed only as an intersection of 
+% two 2d planes.
+% Direct compatibility in case of co-dimension 2, i.e. for 1d and 3d coupling, is not considered.
+
+\emph{An incompatible mesh} (or non-conforming or non-matching), does not have to satisfy the compatibility conditions
+and therefore the intersecting domains can be meshed independtly, reducing the requirements on the meshing tools significantly.
+Then of course the intersections must be computed and the discrete model must deal with the incompatible coupling.
+Therefore Chapter \ref{chap:intersections} is dedicated to a~development of algorithms
+for efficient computation of intersections of incompatible meshes.
+
+% A creation of a~compatible mesh can be challenging on the algorithms, due to the compatibility conditions.
+% The requirements on the element quality can be also limiting, since the intersection of domains can be very arbitrary.
+% Therefore we look for models not requiring the compatible meshes.
+
+% \emph{An incompatible mesh}, also referred as non-conforming or non-matching, does not have to satisfy the compatibility equations above.
+% The creation of the mesh is much simpler when it can be done independently per domain.
+% On the other hand, there are three main challenges at the next levels of the model solution.
+% First, the intersections of the mesh elements must be computed efficiently and the intersection data
+% must be represented in such a way that it can be used simply and cheaply in the FEM code.
+% Second, an efficient numerical integration must be available on the intersecting polygons.
+% Third, stable coupling conditions between dimensions must be provided.
+% Part of this work, Chapter \ref{chap:intersections}, is dedicated to a~development of algorithms
+% for computation of intersections of incompatible meshes.
+
+
+\section{Well-Aquifer Model}
+A~simplified underground water flow model for a~well-aquifer system is defined in this section.
+% A~well-aquifer model that we solve in our work is defined in this section.
+% We follow the reduced dimension concept and introduce a simplified underground water flow model.
+
+Wells are considered as straight narrow tubes (cylinders) $\Omega^w_C$ of radius $\rho_w$,
+indexed by $w\in\mathcal{W}=\{1\ldots W\}$. These are reduced to 1d manifolds
+$\Omega^w_1$, parameterized using a~mapping $\nu_w(t): [0,1] \rightarrow \Omega^w_1$.
+A~lateral surface of a~cylinder $\Omega^w_C$ is denoted $\partial\Omega^w_C$.
+
+% We consider wells (or boreholes, channels) to be straight narrow tubes (cylinders) $\Omega^w_C$ of radius $\rho_w$;
+% we use the index $w\in\mathcal{W}=\{1\ldots W\}$ when referring to a~particular well.
+% Using the reduced dimensional concept, the wells are modeled as lower dimensional objects,
+% i.e. 1d manifolds $\Omega^w_1$ which represent the central lines of cylinders $\Omega^w_C$.
+% The 1d manifold $\Omega^w_1$ can be parameterized using a~mapping $\nu_w: [0,1] \rightarrow \Omega^w_1$:
+% \begin{equation} \label{eqn:1d_parametrization}
+%     \Omega^w_1 = \{\vc x\in\R^3: \vc x = \nu_w(t),\; t\in[0,1] \}. %\quad \nu_w: [0,1] \rightarrow \Omega^w_1
+% \end{equation}
+% Later in the text we suppose that functions in $\Omega^w_1$ depend on the relevant parameter $t$.
+% \begin{equation}
+%     \prtl\Omega^w_C = \{\vc x\in\R^3: \vc x = \nu_w(t) + \vc r,\; \vc r=\rho_w\vc n_{\Omega^w_1}(t),\; t\in[0,1] \},
+% \end{equation}
+% where $\vc n_{\Omega^w_1}(t)$ is the unit normal vector to the line $\Omega^w_1$ at point $t$.
+
+% The domain of a~well $\Omega^w_1$ has a~boundary (obviously consisting of two end points)
+% $\Gamma_1 = \Gamma_{1D} \cup \Gamma_{1N}$, where pressure (Dirichlet boundary condition)
+% or flux (Neumann boundary condition) is prescribed.
+% If possible, and apparent from context, we denote the domains of all wells by
+% \begin{equation}
+%     \Omega_1 = \bigcup_{w\in\mathcal{W}} \Omega^w_1, \quad \Omega_C = \bigcup_{w\in\mathcal{W}} \Omega^w_C.
+% \end{equation}
+
+A~steady groundwater flow governed by Darcy's law is considered in all domains.
+% The same is considered also in wells for simplicity:
+% we can imagine the wells filled with different porous material, or in some tests we fix pressure in wells to a~constant value.
+Without any coupling terms, one writes for every dimension
+\begin{eqnarray}
+     \frac{1}{\delta_d} \vc K_d^{-1} \vc u_d + \grad p_d =& 0  &\qquad \textrm{ in }\Omega_d\\
+      \div\,\vc u_d  =& \delta_d f_d  &\qquad \textrm{ in }\Omega_d
+\end{eqnarray}
+where $\delta_d\vc u_d\; [ms^{-1}]$ is the unknown Darcian velocity, $p_d \; [m]$ is the unknown pressure.
+Parameter $\delta_d$ is the complement measure of the domain: thickness $[m]$ in 2d,
+cross-section $[m^2]$ in 1d and $\delta_3=1\; [-]$ for consistency. Since the wells are considered as cylinders,
+the cross-section $\delta_1$ is constant per well: $\delta_1(\vc x)=\delta^w_1=\pi\rho^2_w$ for all $\vc x\in \Omega^w_1$.
+The quantity $\vc u_d\; [m^{d-4}s^{-1}]$ itself can be seen as flux density, i.e. flux through $\Omega_d$
+with complementary dimension $\delta_d=1$.
+The conductivity tensor $\vc K_d\; [ms^{-1}]$ is generally $3\times 3$ matrix,
+symmetric and positive definite, possibly representing the anisotropy of the media.
+In the source term, $f_d\;[s^{-1}]$ denotes the water source density.
+
+% We note that we use the same operators $\div$ and $\grad$ in all dimensions $d=1,2,3$ for the sake of notation simplicity,
+% although in 1d we understand these as follows
+% \begin{eqnarray}
+% \div\,\vc u_1 = \div_t\,\vc u_1 = \frac{\prtl}{\prtl t} \vc u_1(t), \\
+% \grad p_1 = \grad_t p_1 = \frac{\prtl}{\prtl t} p_1(t),
+% \end{eqnarray}
+% with $t$ being the 1d parameter in \eqref{eqn:1d_parametrization}.
+
+% Two models are presented below, the first one supposes further simplifications and includes 1d-2d coupling between dimensions,
+% the other one couples 1d and 3d domains together.
+
+
+\subsection{1d-2d Model}
+% We consider a~system of aquifers separated by aquitards
+% (based on Gracie and Craig \cite{gracie_modelling_2010,craig_using_2011}).
+% The aquifers are underground horizontal layers of permeable rock containing water in its pores.
+% These layers often have negligible flow in the vertical direction so they can be modeled
+% as 2d planes by means of the reduced dimensional modeling.
+% There can be several aquifers on top of each other, separated by layers of very low permeability
+% which are called aquitards.
+% In contrast to Gracie and Craig, we suppose the aquitards to be impermeable, 
+% so the aquifers can communicate between each other only through the wells.
+% 
+% On the other hand, we add an artificial volume source term on aquifers.
+% This allows us to better study the impact of the prescribed source on the solution
+% which is better suited to the numerical experiments we are going to present. 
+% 
+% The model is defined as a~complex multi-aquifer system to follow our implementation and to see the differences
+% we made in comparison to Gracie and Craig. However, before solving the complex model,
+% we constrain ourselves to a~single aquifer in a~major part of the work.
+
+% If possible, and apparent from context, we denote unions of the domains
+% \begin{equation}
+%     \Omega_1 = \bigcup_{w\in\mathcal{W}} \Omega^w_1, \quad \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^m_2.
+% \end{equation}
+% 
+% The boundary of domains is split $\partial\Omega_d=\Gamma_{dD}\cup\Gamma_{dN}$ and
+% two types of boundary conditions are assumed: Dirichlet on $\Gamma_{dD}$ and Neumann on $\Gamma_{dN}$.
+
+A~system of aquifers separated by aquitards is considered (based on Gracie and Craig \cite{gracie_modelling_2010,craig_using_2011}).
+The aquifers, denoted $\Omega^m_2$, $m\in\mathcal{M}=\{1\ldots M\}$, are underground horizontal layers of permeable rock containing water.
+The aquifers' boundary consists of three parts $\prtl\Omega^m_2 = \Gamma^m_{2D} \cup \Gamma^m_{2N} \cup \bigcup_{\substack{w\in\mathcal{W}}} \Gamma^m_w$,
+where Dirichlet and Neumann boundary conditions are prescribed and cross-sections of the wells and aquifers $\Gamma^m_w = \Omega^m_2 \cap \prtl\Omega^w_C$.
+
+If possible, and apparent from context, the domain unions are denoted
+\begin{equation}
+    \Omega_1 = \bigcup_{w\in\mathcal{W}} \Omega^w_1, \quad \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^m_2, \quad \Gamma_{\#} = \bigcup_{m\in\mathcal{M}} \Gamma^m_{\#}
+\end{equation}
+with $\#$ being $w,\; 2D$ or $2N$.
+
+% where it is further denoted $\Gamma^m_{ext} = \Gamma^m_{2D} \cup \Gamma^m_{2N}$, and $\Gamma^m_{int}=$ consits
+
+% Let $\Omega^m_2$ be the domain of an aquifer with index $m\in\mathcal{M}=\{1\ldots M\}$.
+% We denote the aquifers' boundary $\prtl\Omega^m_2 = \Gamma^m_{ext} \cup \Gamma^m_{int}$,
+% where we call $\Gamma^m_{ext} = \Gamma^m_{2D} \cup \Gamma^m_{2N}$ the exterior boundary, consisting of two parts where we prescribe
+% Dirichlet and Neumann boundary condition, respectively.
+% The interior boundary $\Gamma^m_{int}$ is created by an union of all the cross-sections of the aquifer domain $\Omega^m_2$
+% and wells lateral surfaces
+% \begin{equation}
+%     \Gamma^m_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma^m_w, \quad \Gamma^m_w = \Omega^m_2 \cap \prtl\Omega^w_C.
+% \end{equation}
+% Where possible, we again use the simplified notation
+% \begin{equation}
+%     \Omega_2 = \bigcup_{m\in\mathcal{M}} \Omega^w_2, \quad \Gamma_{\#} = \bigcup_{m\in\mathcal{M}} \Gamma^m_{\#}
+% \end{equation}
+% with $\#$ being $ext,\; int,\; 2D$ or $2N$.
+
+On $\Gamma^m_w$, a~decomposition of an arbitrary function $q\in C(\overbar\Omega^m_2)$ on average and fluctuation parts
+is defined, in the same manner as it can be found in \cite{koppl_vidotto_2018},
+\begin{equation}\label{eqn:average_decomposition}
+    q = \avg{q}^m_w + \fluct{q}^m_w \quad \textrm{on } \Gamma^m_w, \qquad \avg{q}^m_w = \frac{1}{{\abs{\Gamma^m_w}}} \int_{\Gamma^m_w} q \dd s.
+\end{equation}
+% where
+% \begin{equation} \label{eqn:average_definition}
+%     
+% \end{equation}
+% It holds for the fluctuation term from the definition \eqref{eqn:average_definition}
+% \begin{equation}
+% \int_{\Gamma^m_w} \fluct{q}^m_w \dd s = \int_{\Gamma^m_w} q - \avg{q}^m_w \dd s = 0.
+% \end{equation}
+
+% The average term is linear, since it holds 
+% \begin{equation}
+%     \avg{q_1+q_2}^m_w = \avg{q_1}^m_w + \avg{q_2}^m_w.
+% \end{equation}
+
+% The point where the reduced domain $\Omega^w_1$ intersects with aquifer $\Omega^m_2$ is denoted $\vc x^m_w=\nu_w(t^m)$.
+% In order to prescribe a~communication term in $\Omega^w_1$, we use a~Dirac measure at the point $t^m$
+% \begin{equation}
+%     c = 
+%     \begin{cases}
+%         1 & t = t^m \\
+%         0 & t \neq t^m
+%     \end{cases}, 
+%     \quad \int_0^1 q(t) \delta_t(t - t^m) \dd t = q(t^m), \quad q\in C(\overbar\Omega^w_1).
+% \end{equation}
+
+The definition of the 1d-2d well-aquifer problem follows:
+\thmproblem{ \label{thm:problem_2d}
+Find $[\vc u_1,\,\vc u_2]$ and $[p_1,\,p_2]$ satisfying
+\begin{subequations}
+\begin{align}
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,2,  \\
+\div\, \vc u_2 &= \delta_2 f_2 && \textrm{in } \Omega_2, \label{eqn:problem_2d_2d_source}\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}f_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_2d_1d_source}\\
+\color{blue}\avg{-\delta_2 \vc K_2 \grad p_2 \cdot \vc n}^m_w &= \color{blue}\Sigma^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_flux_avg}\\
+\fluct{p_2}^m_w &= g^m_w && \forall w\in\mathcal{W},\; \forall m\in\mathcal{M}, \label{eqn:problem_2d_press_fluct}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,2, \label{eqn:problem_2d_dirichlet}\\
+\delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,2 \label{eqn:problem_2d_neumann}
+\end{align}
+\end{subequations}
+where
+\[ 
+{\color{blue}
+    f_w = \sum_{m\in\mathcal{M}}\abs{\Gamma^m_w} \delta_2(\vc x^m_w)\sigma^m_w\big(\avg{p_2}^m_w-p_1(\vc x^m_w)\big) \delta_t(t - t^m).
+} 
+\label{eqn:1d_2d_sigma_source}
+\]
+}
+Term $\delta_t(t - t^m)$ is a~Dirac delta measure. The dimensional coupling terms are highlighted in the blue color.
+
+% The term $\Sigma^m_w$ is a~constant representing the flux density from the aquifer $\Omega^m_2$ to the well $\Omega^w_1$
+% through their intersection $\Gamma^m_w$. 
+% The flux is proportional to the pressure difference with the permeability coefficient $\sigma^m_w>0\;[s^{-1}]$ between $\Omega^m_2$ and $\Omega^w_1$.
+% If the pressure difference is negative, the flux is in opposite direction.
+% We can then read: the average outward flux from the aquifer
+% over $\Gamma^m_w$ in \eqref{eqn:problem_2d_flux_avg} acts as a~positive source term in the well in \eqref{eqn:problem_2d_1d_source}.
+% 
+% The equation \eqref{eqn:problem_2d_press_fluct} prescribes the fluctuation of pressure on $\Gamma^m_w$,
+% which is not defined by the coupling terms. In reality, wells are very narrow in comparison to the scale of aquifers
+% and so the changes in pressure on $\Gamma^m_w$ are very small. Thus we consider $g^m_w \approx \rho_w$ and
+% we neglect the effects of $g^m_w$ as shown later.
+% 
+% The last two equations are the boundary conditions, the first one \eqref{eqn:problem_2d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
+% the later one \eqref{eqn:problem_2d_neumann} sets the inward flux $g_{dN}$. The sign of the flux in \eqref{eqn:problem_2d_neumann}
+% is chosen such that it is consistent with the software Flow123d.
+% 
+% The problematic place of a reduced dimensional model, if done in the simplest way, would be that after the reduction of wells,
+% the 1d-2d intersections are degenerated to points. Then the term in the flux coupling condition \eqref{eqn:problem_2d_flux_avg} would rather
+% appear as a~point source on the right hand side of \eqref{eqn:problem_2d_2d_source} creating strong singularities in the solution.
+% However, keeping the real scale of the intersections in the model by means of \eqref{eqn:problem_2d_flux_avg}, we cut off the singularity peaks
+% at finite height and get rid of the singular solution part running to infinity.
+% Still there is left the problem of capturing the intersections and adjacent steep gradients in the solution by the numerical discretization.
+% This is the same motivation found in models in \cite{gracie_modelling_2010,craig_using_2011,koppl_vidotto_2018} and ours,
+% although treated very differently at the numerical level in each of the works.
+
+\subsection{1d-3d Model}
+In the 1d-3d model, the aquifer is not reduced to a plane but it is represented as a~3d domain $\Omega_3$,
+with a~boundary $\prtl\Omega_3 = \Gamma_{3D} \cup \Gamma_{3N} \cup \bigcup_{\substack{w\in\mathcal{W}}} \Gamma_w$,
+where Dirichlet and Neumann boundary conditions are prescribed and cross-sections of the wells and aquifers $\Gamma_w = \Omega_3 \cap \prtl\Omega^w_C$,
+analogically to the 1d-2d model.
+
+% In this model the aquifer domain is not reduced to a plane but it is represented as a~3d domain.
+% This would be a necessary consideration when the aquifer cannot be properly modeled in layers.
+% Let us denote the domain $\Omega_3$, we do not have the index $m$ here.
+% The boundary $\prtl\Omega_3 = \Gamma_{ext} \cup \Gamma_{int}$,
+% where the exterior boundary consists of two parts $\Gamma_{ext} = \Gamma_{3D} \cup \Gamma_{3N}$,
+% analogically to the 1d-2d model.
+
+% The interior boundary $\Gamma_{int}$ is created by an union of all the cross-sections of the domain $\Omega_3$
+% and wells lateral surfaces
+% \begin{equation}
+%     \Gamma_{int} = \bigcup_{\substack{w\in\mathcal{W}}} \Gamma_w, \quad \Gamma_w = \Omega_3 \cap \prtl\Omega^w_C.
+% \end{equation}
+On $\Gamma_w$ the average decomposition $w = \avg{g}_w + \{g\}_w$ is defined in a~similar manner
+as in the 1d-2d case. However, the average is computed over a circle edge, perpendicular to $\Omega^w_1$,
+with its center at a~point $\nu_w(t)\in \Omega^w_1$
+\begin{equation} \label{eqn:average_definition_3d}
+    \avg{g}_w(t) = \frac{1}{2\pi\rho_w} \int_0^{2\pi} g (t + \rho_w \vc n_{\Omega^w_1}(t,\theta)) \rho_w \dd \theta.
+\end{equation}
+with $\vc n_{\Omega^w_1}(t,\theta)$ being the unit normal vector of $\Omega^w_1$ at point $\nu_w(t)$ in the direction
+determined by the angle $\theta$.
+
+The definition of the 1d-3d problem follows:
+\thmproblem{ \label{thm:problem_3d}
+Find $[\vc u_1,\,\vc u_3]$ and $[p_1,\,p_3]$ satisfying
+\begin{subequations}
+\begin{align}
+\delta_d^{-1} \vc K_d^{-1} \vc u_d + \grad p_d &= 0 && \textrm{in } \Omega_d,\;d=1,3,  \\
+\div\, \vc u_3 &= \delta_3 f_3 && \textrm{in } \Omega_3,\\
+\div\, \vc u_1 &= \delta_1 f_1 + {\color{blue}f_w} && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_1d_source}\\
+\avg{\color{blue}-\delta_3 \vc K_3 \grad p_3 \cdot \vc n}_w &\color{blue} = f_w && \textrm{in } \Omega^w_1,\;\forall w\in\mathcal{W}, \label{eqn:problem_3d_flux}\\
+\fluct{p_3}_w &= g_w && \forall w\in\mathcal{W}, \label{eqn:problem_3d_press_fluct}\\
+p_d &= g_{dD} && \textrm{on } \Gamma_{dD},\; d=1,3, \label{eqn:problem_3d_dirichlet}\\
+\delta_d \vc K_d \grad p_d \cdot \vc n &= g_{dN} && \textrm{on } \Gamma_{dN},\; d=1,3 \label{eqn:problem_3d_neumann}
+\end{align}
+\end{subequations}
+where
+\[ 
+{\color{blue}
+    f_w(\vc x) = \delta_3\sigma_w(\vc x)\big(\avg{p_3}_w(\vc x)-p_1(\vc x)\big) \quad \vc x \in \Omega^w_1.
+} 
+\label{eqn:1d_3d_sigma_source}
+\]
+}
+
+One can see the dimensional coupling terms highlighted in the blue color.
+In contrast to the 1d-2d case, $f_w(\vc x)$, $\vc x\in\Omega^w_1$, varies through the well domain.
+% The term $\Sigma_w$, similarly to 1d-2d case, represents the flux from the aquifer $\Omega_3$ to the well $\Omega^w_1$.
+% The flux is proportional to the pressure difference with the (variable) permeability coefficient $\sigma_w(\vc x)>0\;[s^{-1}]$ between $\Omega_3$ and $\Omega^w_1$.
+% Analogically we can then read: the average outward flux from the aquifer at point $\vc x\in\Omega^w_1$
+% in \eqref{eqn:problem_3d_flux} acts as a~positive source term in the well in \eqref{eqn:problem_3d_1d_source}.
+% The last two equations are the boundary conditions, the first one \eqref{eqn:problem_3d_dirichlet} prescribes the boundary pressure $g_{dD}$, 
+% the later one \eqref{eqn:problem_3d_neumann} sets the inward flux $g_{dN}$ in the same manner as in 1d-2d case.
+

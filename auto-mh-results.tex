@@ -1,0 +1,902 @@
+
+\section{Flow123d implementation}
+Several aspects of the implementation in the software Flow123d is described in this section.
+Mainly, the changes in the input file format are addressed,
+adaptive integration and refined output mesh are described.
+
+% \subsection{Adaptive quadrature}
+The adaptive integration strategy is adopted from the pressure model from Section \ref{sec:integration}.
+Additionally, the quadrature rules are generalized to all the dimensions, which enables
+computations on 2d and 3d elements, including integration over their faces which is necessary in the mixed model.
+
+% \subsection{Output Mesh}
+% \label{sec:output_mesh}
+An approach to the visualization of the results containing enriched non-plynomial approximation  in VTK format is described.
+The construction of an adaptively refined output mesh is suggested, in order to display singular enrichments.
+
+
+\section{Numerical Tests in Flow123d}
+\subsection{Test Cases in 1d-2d} \label{sec:num_test_cases_1d2d}
+In this section, a~set of numerical tests of the 1d-2d model defined in \ref{sec:coupled_12d} is provided.
+Some of the properties of the velocity enrichment is demonstrated, optimal convergence rate in velocity $L_2$ error
+is shown. Different sizes of the enrichment zone are compared.
+
+\begin{figure}[!htb]
+    \centering
+    \subfloat[TC2-a]{
+    \includegraphics[width=0.482\textwidth]{\results tc_26_no_source_error_2,0.pdf} }
+    \subfloat[TC2-b]{
+    \includegraphics[width=0.482\textwidth]{\results tc_26_source_error_2,0.pdf} }
+    \caption[Error distribution in 1d-2d.]
+    {Test case in 1d-2d. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+    The green circle indicates the enrichment radius $R_w$. }
+    \label{fig:mh_tc2_error}
+\end{figure}
+A selected result is displayed in \fig{fig:mh_tc2_error}.
+It includes 2 wells, perpendicular to the aquifer intersecting it near its center.
+The enrichment zones overlap each other in the middle, resulting in very small error.
+The left subfigure corresponds to a~problem with zero source term, the right subfigure
+has a~sinusoidal source term prescribed.
+
+\subsection{Test Cases in 1d-3d} \label{sec:num_test_cases_1d3d}
+In this section, a~set of numerical tests of the 1d-3d model defined in \ref{sec:coupled_13d} is provided.
+As in the 1d-2d case, the optimal convergence rate in velocity $L_2$ error is demonstrated,
+different sizes of the enrichment zone are compared.
+
+\begin{figure}[!htb]
+    \centering
+    \subfloat[TC5-a]{
+    \includegraphics[width=0.482\textwidth]{\results tc_33_2w_no_source_error_2,0.pdf} }
+    \subfloat[TC5-b]{
+    \includegraphics[width=0.482\textwidth]{\results tc_33_2w_source_error_2,0.pdf} }
+    \caption[Error distribution in 1d-3d.]
+    {Test case in 1d-3d. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+    The green cylinders indicate the enrichment zone. }
+    \label{fig:mh_tc5_error}
+\end{figure}
+A selected result is displayed in \fig{fig:mh_tc5_error}.
+It has the same setting as the 1d-2d case in \ref{sec:num_test_cases_1d2d},
+it is however extruded to 3 dimension along the $z$ axis.
+Lower error can be seen in the enriched zone in the left subfigure,
+the error of the singular part of the solution is inferior to the error of the regular part
+in the right subfigure.
+
+% The implementation of the mixed-hybrid model using XFEM is a~part of the software Flow123d, version 3.0.x.
+% The code is not however included in the official release yet, but it can be found on GitHub in an experimental branch \verb'PE_xfem_master'.
+% There are some new features in the master development branch at the moment which prevent a~fast conflictless merge.
+% 
+% All about Flow123d, including its installation and usage inside Docker, the input file format and running simulations
+% can be found through the official web pages~\cite{flow123d}, its GitHub pages and its current documentation~\cite{flow123d_doc_2018}.
+% 
+% Flow123d uses the YAML file format as the main input format. To solve the model with singularities and XFEM, additional
+% keys must be specified. Code \ref{code:flow123d_input} provides an example input file structure. 
+% 
+% \vspace{0.5cm}
+% \begin{code}
+% \caption{Flow123d input including XFEM.}
+% \label{code:flow123d_input}
+% % \begin{verbatim}
+% %         problem: !Coupling_Sequential
+% %         ...
+% %         flow_equation: !Flow_Darcy_MH
+% %             ...
+% %             output_specific:
+% %             compute_errors: true
+% %             python_solution: analytical_solution.py
+% %             output_linear_system: true
+% %             use_xfem:
+% %             use_xfem: true
+% %             enrich_velocity: true
+% %             enr_radius: 2.0
+% %             dim: 2
+% %             ...
+% % \end{verbatim}
+% \texttt{
+% problem: !Coupling\_Sequential \\
+% \mbox{}\phantom{mm} ... \\
+% \mbox{}\phantom{mm}    flow\_equation: !Flow\_Darcy\_MH \\
+% \mbox{}\phantom{mmmm}        ... \\
+% \mbox{}\phantom{mmmm}        output\_specific: \\
+% \mbox{}\phantom{mmmmmm}            compute\_errors: true \\
+% \mbox{}\phantom{mmmmmm}            python\_solution: analytical\_solution.py \\
+% \mbox{}\phantom{mmmmmm}            output\_linear\_system: true \\
+% \mbox{}\phantom{mmmmmm}            fields: \\
+% \mbox{}\phantom{mmmmmmmm}             - velocity\_enr \\
+% \mbox{}\phantom{mmmmmmmm}             - velocity\_reg \\
+% \mbox{}\phantom{mmmmmmmm}             - velocity\_diff \\
+% \mbox{}\phantom{mmmmmmmm}             - velocity\_exact \\
+% \mbox{}\phantom{mmmmmmmm}             - pressure\_diff \\
+% \mbox{}\phantom{mmmm}        use\_xfem: \\
+% \mbox{}\phantom{mmmmmm}            use\_xfem: true \\
+% \mbox{}\phantom{mmmmmm}            enrich\_velocity: true \\
+% \mbox{}\phantom{mmmmmm}            enr\_radius: 2.0 \\
+% \mbox{}\phantom{mmmmmm}            dim: 2 \\
+% \mbox{}\phantom{mmmm}       output\_stream: \\
+% \mbox{}\phantom{mmmmmm}         ... \\
+% \mbox{}\phantom{mmmmmm}         output\_mesh: \\
+% \mbox{}\phantom{mmmmmmmm}        max\_level: 6 \\
+% \mbox{}\phantom{mmmmmmmm}        refine\_by\_error: false \\
+% \mbox{}\phantom{mmmmmmmm}        error\_control\_field: pressure\_exact \\
+% \mbox{}\phantom{mmmm}        ... \\
+% \mbox{}\phantom{mm} ...}
+% \end{code}
+%  
+% % \noindent
+% In the first 3 lines the specific problem and equation are selected,
+% Darcy flow with mixed-hybrid solver in our case. On the lines 6-8, it is set that the $L_2$ norm of the solution is to be computed,
+% the analytic solution is passed through the python script and the linear system is set to be output in the Matlab format.
+% On the lines 9-14, the fields (quantities) that are to be output are selected, these are in a~row: the enriched (singular) part of velocity,
+% the regular part of velocity, the elementwise $L_2$ velocity error, the exact solution of velocity by the Python script and the elementwise $L_2$ pressure error.
+% 
+% On the lines 15-19, the XFEM is actually switched on. It is set that velocity is to be enriched (the only choice at the moment),
+% the enrichment radius is set to 2.0 and the dimension in which the XFEM is applied is selected (is equal 3 in 3d cases).
+% Finally on the lines 22-25, the refined output mesh can be defined. The output mesh can be refined to visualize the non-polynomial solution properly
+% (described later in Section \ref{sec:output_mesh}). The maximal level of the refinement and possibly the adaptive refinement by error can be selected.
+% 
+% The rest of the input file is standard as in other Flow123d simulations.
+% We use similar settings in our test cases where analytic solution is available.
+
+
+
+
+
+
+% The adaptive quadrature implemented in Flow123d is based on the one developed for the quadrilateral meshes
+% in Section \ref{sec:integration}. The same adaptive quadrature rules are used, only the distance function $r$
+% is adapted to the simplicial elements. The detail of refined subelements and quadrature points
+% is displayed in \fig{fig:adapt_refinement_flow123d}.
+% %
+% \begin{figure}[!htb]
+%   \centering    
+%   \subfloat[adaptive quadrature refinement]{\label{fig:adapt_refinement_flow123d_a} 
+%     \includegraphics[height=6cm]{\figpath adaptive_refinement.pdf} }
+%   \hspace{0pt}
+%   \subfloat[adaptive quadrature in detail]{\label{fig:adapt_refinement_flow123d_b} 
+%     \includegraphics[height=6cm]{\figpath adaptive_refinement_detail.pdf} }
+%   \caption[Adaptive quadrature in Flow123d.]
+%   {Adaptive quadrature for triangle elements implemented in Flow123d.
+%    Black lines denote enriched elements edges, red lines denote adaptive refinement (subelements edges) and the well
+%    edge is blue.
+%   }
+%   \label{fig:adapt_refinement_flow123d}
+% \end{figure}
+% 
+% The adaptive quadrature is generalized for all three dimensions.
+% This way we can use it in the computation of both integrals over elements and integrals
+% over element faces (e.g. for accurate computation of $z^w_j$ in $\pi^{RT}_T$ interpolant \eqref{eqn:sgfem_interpolant_vel}).
+% Such quadrature on a~face of tetrahedron is shown in \fig{fig:adaptive_refinement_ellipse}.
+% \begin{figure}[!htb]
+%   \centering    
+%     \includegraphics[height=6cm]{\figpath adaptive_refinement_ellipse.pdf}
+%   \caption[Adaptive quadrature on a~face of tetrahedron.]
+%   {Adaptive quadrature on a~face of tetrahedron intersected by a~well.
+%    The well is parallel to $z$-axis (the gray and blue circles indicate the cylinder),
+%    the tetrahedron face is covered by the red subelements.
+%    First the face is mapped to the plane of the blue cross-section, then the subelements are
+%    constructed adaptively around the circle and mapped back to the face.
+%    Finally, the quadrature points are placed in the subelements.
+%    The actual cross-section is an ellipse (green points/purple axes).
+%   }
+%   \label{fig:adaptive_refinement_ellipse}
+% \end{figure}
+% 
+% 
+% 
+% In 3 dimensions the distance vector \eqref{eqn:distance_vector_in_3d} is used to determine the distance of nodes and elements from the singularity.
+% The subelements are refined using the edge splitting technique which is later described in Section \ref{sec:element_refinement}.
+
+
+
+% % Bey's algorithm (red refinement of tetrahedron):
+% %p.29 https://www5.in.tum.de/pub/Joshi2016_Thesis.pdf
+% %p.108 http://www.bcamath.org/documentos_public/archivos/publicaciones/sergey_book.pdf    - brandts_2011
+% %https://www.math.uci.edu/~chenlong/iFEM/doc/html/uniformrefine3doc.html#1
+% %J. Bey. Simplicial grid refinement: on Freudenthal's algorithm and the optimal number of congruence classes. Numer. Math. 85(1):1--29, 2000. p11 Algorithm: RedRefinement3D.
+% %p.4 http://www.vis.uni-stuttgart.de/uploads/tx_vispublications/vis97-grosso.pdf
+% 
+% Due to the enrichment, the finite element approximation is not polynomial anymore.
+% If we want to look at the discrete solution, e.g. in Paraview, we have to interpolate it into a~space of piecewise
+% constant or linear functions which can be viewed in such software. However, the interpolation on the computational mesh
+% is quite coarse, so we suggested creating a~finer mesh specially refined for the output.
+% 
+% Two types of refinement is implemented -- uniform and adaptive. In the first case the mesh is uniformly refined in
+% specified number of steps. In the later case the refinement is governed by an~error criterion which bounds 
+% the measured elementwise $L_2$ norm of the difference between the (enriched) discrete solution and its constant/linear approximation.
+% The refinement criterion reads as follows
+% \begin{equation} \label{eqn:output_ref_criterion}
+%     \frac{\norm{v_h - \pi_{out}v_h}_{T}}{\norm{v_h}_{T}} < \textrm{tol}
+% \end{equation}
+% where $\pi_{out}$ is the interpolator to a~space of constant or linear functions on an arbitrary element $T$ of the output mesh.
+% The relative tolerance $\textrm{tol}$ is specified by the user.
+% 
+% The refinement is meant to be used for the enriched discrete solutions in particular, however in Flow123d the output mesh can be refined
+% according to any scalar quantity present in the model. Thus for the quantity $v_h$ in \eqref{eqn:output_ref_criterion} one can use
+% for example the source term, the hydraulic conductivity or the supplied analytic solution.
+% 
+% \subsubsection{Element Refinement}
+% \label{sec:element_refinement}
+% The refinement of elements for the output mesh is done using edge splitting technique (the so called red refinement).
+% Since the output mesh is used only for better visualization of non-polynomial quantities, we do not
+% care about any hanging nodes present in the refined mesh.
+% 
+% In 2d case, the refinement of an element is a~straightforward process: find the midpoints of all sides, connect them and generate 4 triangles.
+% These triangles are congruent and have equal surface areas.
+% %
+% \begin{figure}[!htb]
+%     \centering    
+%     \includegraphics[width=0.6\textwidth]{\results output_refine.pdf} 
+%     \caption[Output mesh refinement.]
+%   {An example of an adaptive output mesh refinement in 3d.
+%   A~singular function $1/r$ is displayed.}
+%   \label{fig:output_refinement_flow123d}
+% \end{figure}
+% %
+% On the other hand, the 3d case is more complicated. After splitting the edges, we obtain 4 tetrahedra at the vertices
+% of the original one. The octahedron that remains in the middle can be subdivided according to one of its three diagonals.
+% Only the choice of the shortest octahedron diagonal leads to a regular tetrahedra decomposition.
+% This algorithm originally comes from Bey~\cite{bey_2000}, further e.g. in~\cite{brandts_2011}.
+% 
+% We demonstrate the refinement in \fig{fig:output_refinement_flow123d} where we used the adaptively refined output mesh to
+% visualize a~singular function $1/r$ in a~cube. The domain is actually cut by a~diagonal plane. One can see the mesh edges in
+% the left half of the cube.
+
+  
+  
+% \section{Numerical Tests in Flow123d}
+% We present several numerical tests in which we demonstrate the properties and the behavior of the suggested enrichments in the mixed-hybrid method.
+% The tests are computed using our implementation in Flow123d.
+% The test setting in 2d is similar to the one used in Section \ref{sec:2d_results_single} and \ref{sec:2d_results_multiple}.
+% We will again investigate cases on different domains, with a~single well or with multiple wells, with a~source term or without.
+% 
+% An input file for Flow123d in Yaml format is prepared for each test.
+% The pseudo-analytic solution is passed into Flow123d as a~Python script.
+% The solution error is evaluated against the~pseudo-analytic solution determined according
+% to Section \ref{sec:prim_analytic_solution}. We remind the pressure solution \eqref{eqn:2d_press_sol_mult} from which the velocity solution is derived:
+% \begin{eqnarray}
+% p_2 &=& p_{sin} + p_{reg} = \sum\limits_{j\in\mathcal{W}} a_j\log r_j + p_{reg}, \label{eqn:2d_press_solution}\\
+% \vc u_2 &=& -\vc K_2 \grad p_2 = - \vc K_2 \Bigg[ \sum\limits_{j\in\mathcal{W}} a_j\frac{\vc r_j}{r_j^2} + \grad p_{reg} \Bigg].  \label{eqn:2d_vel_solution}
+% \end{eqnarray}
+% 
+% The meshes used for computations are simplicial and unstructured.
+% They are prepared by the software Gmsh using the default "MeshAdapt" algorithm.
+% When examining the convergence of the method, we use Linux shell scripts and parameterized ".geo" files for Gmsh
+% to generate series of refined meshes.
+% We output the results into VTK format and visualize them in Paraview software.
+
+% \subsection{Test Cases in 1d-2d} \label{sec:num_test_cases_1d2d}
+% In this section, a~set of numerical tests of the 1d-2d model defined in \ref{sec:coupled_12d} is provided.
+% Some of the properties of the velocity enrichment is demonstrated, optimal convergence rate in velocity $L_2$ error
+% is shown. Different sizes of the enrichment zone are compared.
+
+% \subsubsection{Test Case 1}
+% In the first test case we consider $\Omega_2$ to be a~circular shaped domain of radius 5.0.
+% A~well is perpendicular to the domain and is intersecting the domain in its center.
+% 
+% Since the enrichment in 2d is of our main interest in this test case, we want to minimize any other effects
+% influencing the approximation error. The strength of the singularity is determined by the pressure difference
+% between the well and the aquifer, so the accuracy of the solution in the vicinity of the well is also dependent
+% on the accuracy of pressure in the well, on $p_1(\vc x_w)$ in particular.
+% A~simple way to achieve that is simulating constant pressure inside the well by setting very high conductivity $\vc K_1=10^{10}$
+% and setting a~constant Dirichlet boundary condition $g_{1D}$ on both ends of the well.
+% 
+% Let us denote three different settings: 
+% \begin{itemize}
+%     \item TC1-a: $f=0$,
+%     \item TC1-b: $f=U\sin(\omega x)$,
+%     \item TC1-c: $f=U\sin(\omega x)$, no singularity (regular case)
+% \end{itemize}
+% The first setting considers a~zero source term,
+% the second sets the sinusoidal source term.
+% The last setting is the regular problem without the singularity, which we solve with
+% the standard mixed-hybrid finite element method (MHFEM).
+% The input parameters are gathered in Table \ref{tab:tc1_data}.
+% %
+% \begin{table}[!hb]
+% \begin{center}
+% \begin{tabular}{cccccccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% $\vc K$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $R_w$ & $g_{1D}$ & $\omega$ & $U$ \\
+% \midrule
+% $10^{-3}$ & [3.33,3.33] & 0.03 & 10.0 & 2.0 & 100 & 1.0 & 200\\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for Test case 1.}
+% \label{tab:tc1_data}
+% \end{center}
+% \end{table}
+% 
+% % \noindent
+% The model is computed on a~series of refined meshes and the convergence of our method is examined.
+% The approximation error of velocity is displayed in \fig{fig:mh_tc1_error}. We can see that 
+% the error is mainly accumulated outside the edge of the enriched zone in case of the zero source term.
+% Considering the source term, the error of the singular part is inferior to the error of the regular part, as it is apparent
+% in the right subfigure.
+% %
+% \begin{figure}[!htb]
+%     \centering
+%     \subfloat[TC1-a]{
+%     \includegraphics[width=0.482\textwidth]{\results tc-23-error.pdf} }
+%     %\hspace{5pt}
+%     \subfloat[TC1-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc-24-error.pdf} }
+%     \caption[Error distribution in Test case 1.]
+%     {Results of Test case 1. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green circle indicates the enrichment radius $R_w$.}
+%     \label{fig:mh_tc1_error}
+% \end{figure}
+% %
+% %
+% % 24_2d_circle_well_source_only_template.yaml
+% %
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC1-a} & \multicolumn{2}{c|}{TC1-b} & \multicolumn{2}{c}{TC1-c}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.368 &  $7.11\cdot10^{-3}$  &  -   &  $2.42\cdot10^{-1}$  &  -   &  $2.42\cdot10^{-1}$ &   -   \\
+% 2 & 0.913 &  $5.31\cdot10^{-3}$  & 0.72 &  $1.72\cdot10^{-1}$  & 0.84 &  $1.72\cdot10^{-1}$ &  0.84 \\
+% 3 & 0.575 &  $3.30\cdot10^{-3}$  & 1.03 &  $9.99\cdot10^{-2}$  & 1.19 &  $9.99\cdot10^{-2}$ &  1.19 \\
+% 4 & 0.358 &  $2.19\cdot10^{-3}$  & 0.87 &  $6.40\cdot10^{-2}$  & 0.94 &  $6.41\cdot10^{-2}$ &  0.94 \\
+% 5 & 0.271 &  $1.61\cdot10^{-3}$  & 1.11 &  $4.50\cdot10^{-2}$  & 1.26 &  $4.51\cdot10^{-2}$ &  1.26 \\
+% 6 & 0.176 &  $1.08\cdot10^{-3}$  & 0.92 &  $3.03\cdot10^{-2}$  & 0.92 &  $3.02\cdot10^{-2}$ &  0.94 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table of SGFEM in Test case 1.}
+% \label{tab:mh_tc1_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+% The convergence results are shown in Table \ref{tab:mh_tc1_convergence}.
+% There are three convergence columns in the table corresponding to different settings.
+% The one on the left is for the zero source term case,
+% the middle one is for the model including the source term,
+% the last column shows the convergence of the regular problem without the singularity solved with MHFEM.
+% We see that the convergence of velocity is nearly optimal, closing to 1.0, in all three situations.
+% Comparing the magnitude of the approximation error between TC1-b and TC1-c,
+% we see that the singularity is only minimally affecting the error which is the desired result.
+% 
+% 
+% \subsubsection{Test Case 2}
+% In the second test case we consider a~square shaped domain $\Omega_2=[0,10]\times[0,10]$,
+% with two wells perpendicular to the domain $\Omega_2$.
+% Similarly to the previous case, the source term is set to zero or defined as $f=U\sin(\omega x)$, $U=80$, $\omega=1.0$.
+% The pressure inside the wells is fixed to a~constant value in the same way as in the previous case 
+% by setting high conductivity $\vc K_1$ and a~constant Dirichlet boundary condition $g_{1D}$ on both ends of the well.
+% The parameters of the wells are gathered in Table \ref{tab:tc2_data}.
+% %
+% \begin{table}[!hb]
+% \begin{center}
+% \begin{tabular}{ccccccccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $R_w$ & $g_{1D}$\\
+% \midrule
+% 1& [4.1,4.3] & 0.03 & 10.0 & 2.0 & 150 \\
+% 2& [5.7,5.9] & 0.03 & 10.0 & 2.0 & 100 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for the wells in Test case 2.}
+% \label{tab:tc2_data}
+% \end{center}
+% \end{table}
+% 
+% We solved the model with two different enrichment radii. Let us denote the following five settings:
+% \begin{itemize}
+%     \item TC2-a: $f=0$, $R_w=0.6$
+%     \item TC2-b: $f=0$, $R_w=2.0$
+%     \item TC2-c: $f=U\sin(\omega x)$, $R_w=0.6$
+%     \item TC2-d: $f=U\sin(\omega x)$, $R_w=2.0$
+%     \item TC2-e: $f=U\sin(\omega x)$, no singularity (regular case)
+% \end{itemize}
+% Setting the larger enrichment radius leads to enrichment zones overlap.
+% % The last situation, the regular problem, is computed only as a~reference as in Test Case 1.
+% 
+% \begin{figure}[!htb]
+%     \centering
+%     \subfloat[TC2-a]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_26_no_source_error_0,6.pdf} }
+%     \subfloat[TC2-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_26_no_source_error_2,0.pdf} } \\
+%     \subfloat[TC2-c]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_26_source_error_0,6.pdf} }
+%     \subfloat[TC2-d]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_26_source_error_2,0.pdf} }
+%     \caption[Error distribution in Test case 2.]
+%     {Results of Test case 2. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green circle indicates the enrichment radius $R_w$. }
+%     \label{fig:mh_tc2_error}
+% \end{figure}
+% %
+% 
+% The approximation error of velocity is displayed in \fig{fig:mh_tc2_error}. We can again observe
+% the error mainly accumulating outside the edge of the enriched zone in TC2-a,b,c.
+% The error near the first well is little higher since the singularity is stronger (there is higher pressure inside the well).
+% In case TC2-b, we see a~very small error in the overlap of the enrichment zones
+% since both singular enrichments are active there.
+% Comparing TC2-c and TC2-d, we see that the larger enrichment radius makes the error in the singular part insignificant
+% in the scale of the error of the regular part.
+% % Considering the source term, the error of the singular part is inferior to the error of the regular part, as it is apparent
+% % in the right subfigure.
+% 
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC2-a } & \multicolumn{2}{c|}{ TC2-c } & \multicolumn{2}{c}{TC2-d}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.368 &  $6.71\cdot10^{-2}$  &  -   &  $1.38\cdot10^{-1}$  &  -   &  $1.10\cdot10^{-1}$ &   -   \\
+% 2 & 0.913 &  $3.44\cdot10^{-2}$  & 1.67 &  $7.80\cdot10^{-2}$  & 1.42 &  $6.94\cdot10^{-1}$ &  1.13 \\
+% 3 & 0.575 &  $2.64\cdot10^{-2}$  & 0.70 &  $5.50\cdot10^{-2}$  & 0.93 &  $4.59\cdot10^{-2}$ &  1.10 \\
+% 4 & 0.358 &  $1.89\cdot10^{-2}$  & 0.81 &  $3.85\cdot10^{-2}$  & 0.87 &  $3.12\cdot10^{-2}$ &  0.93 \\
+% 5 & 0.271 &  $1.34\cdot10^{-2}$  & 0.89 &  $2.62\cdot10^{-2}$  & 0.98 &  $2.06\cdot10^{-2}$ &  1.06 \\
+% 6 & 0.176 &  $9.24\cdot10^{-3}$  & 0.90 &  $1.79\cdot10^{-2}$  & 0.94 &  $1.37\cdot10^{-2}$ &  0.99 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table of SGFEM in Test case 2.}
+% \label{tab:mh_tc2_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+% The convergence results are shown in Table \ref{tab:mh_tc2_convergence}.
+% The three columns in the table correspond to three selected settings in Test case 2.
+% We see that the convergence order of velocity approximation is closing to the optimum in all situations.
+% The overlapping enrichment zones do not corrupt the accuracy of the approximation in TC2-d.
+% Comparing the magnitude of the error in TC2-c and TC2-d columns, we see that the larger enrichment radius leads
+% to a~slightly increased accuracy while the convergence order is the same.
+% 
+% The model with TC2-b setting is converging also optimally, but we do not present all the results for the sake of brevity.
+% The larger enrichment radius in TC2-b leads to decrease of the magnitude of the overall error,
+% approximately with factor of 3.0 to the TC2-a setting.
+% Similarly to Test case 1, the regular problem without singularities TC2-e is also computed.
+% The convergence results correspond to the setting TC2-d,
+% the magnitude of the approximation error and the convergence order are almost identical
+% due to the accurate approximation of the singularities.
+% 
+% % %
+% % \begin{figure}[!htb]
+% %     \centering
+% %     \includegraphics[width=0.85\textwidth]{\results tc_26_inf-sup.pdf}
+% %     \caption[numerical verification of inf-sup condition TC2]
+% %     {Graph representing numerical verification of the inf-sup condition in Test Case 2.}
+% %     \label{fig:mh_tc2_inf_sup}
+% % \end{figure}
+% % %
+% 
+% 
+% 
+% \subsubsection{Test Case 3}
+% The following test case copies the setting of Test case 2, however it includes five wells.
+% The input parameters for the wells are gathered in Table \ref{tab:tc3_data}.
+% The wells 1,2 and 4 can be seen as the pumping wells, the others as the injection wells.
+% Let us again denote 4 different settings with two enrichment radii:
+% \begin{itemize}
+%     \item TC3-a: $f=0$, $R_w=0.8$,
+%     \item TC3-b: $f=0$, $R_w=2.0$,
+%     \item TC3-c: $f=U\sin(\omega x)$, $R_w=0.8$,
+%     \item TC3-d: $f=U\sin(\omega x)$, $R_w=2.0$.
+% %     \item TC3-e: $f=U\sin(\omega x)$, no singularity
+% \end{itemize}
+% %
+% \begin{table}[!htb]
+% \begin{center}
+% \begin{tabular}{ccccccccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $g_{1D}$\\
+% \midrule
+% 1& [2.8,2.5] & 0.03 & 20.0 & -150 \\
+% 2& [4.9,5.4] & 0.03 & 10.0 & -30 \\
+% 3& [2.9,7.4] & 0.03 & 10.0 & 120 \\
+% 4& [7.3,7.8] & 0.03 & 10.0 & -50 \\
+% 5& [7.4,2.8] & 0.03 & 20.0 & 100 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for the wells in Test case 3.}
+% \label{tab:tc3_data}
+% \end{center}
+% \end{table}
+% %
+% \begin{figure}[!htb]
+%     \centering
+%     \subfloat[TC3-a]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_51_no_source_error_0,8.pdf} }
+%     \subfloat[TC3-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_51_no_source_error_2,0.pdf} } \\
+%     \subfloat[TC3-c]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_51_source_error_0,8.pdf} }
+%     \subfloat[TC3-d]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_51_source_error_2,0.pdf} }
+%     \caption[Error distribution in Test case 3.]
+%     {Results of Test case 3. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green circle indicates the enrichment radius $R_w$. }
+%     \label{fig:mh_tc3_error}
+% \end{figure}
+% %
+% 
+% The distribution of the velocity error is shown in \fig{fig:mh_tc3_error}. 
+% We can see in setting TC3-a that the error is again concentrated on the edges of the enrichment zones of
+% the strongest singularities. In setting TC3-b, the error is largest in the central area, 
+% which is affected by all the singularities, however it is covered only by the enrichment zone of the well 2.
+% The solution is well approximated inside the four enrichment zones
+% of the wells 1,3,4,5, we see only small effects of the other singularities there.
+% 
+% In the subfigures for settings TC3-c and TC3-d, we see the same behavior of the error as in previous test case.
+% The error of the regular part is significant in TC3-d while the error of the singular part is not apparent.
+% 
+% The convergence for the selected settings is displayed in Table \ref{tab:mh_tc3_convergence}.
+% We see a~nearly optimal convergence order in all three columns. It is again apparent that
+% the larger enrichment radius pushes the approximation error down a~bit but it does not effect the
+% convergence order.
+% 
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC3-a } & \multicolumn{2}{c|}{ TC3-c } & \multicolumn{2}{c}{TC3-d}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.412 & $2.82\cdot10^{-2}$  &  -   & $1.19\cdot10^{-1}$  &  -   & $1.16\cdot10^{-1}$ &   -   \\
+% 2 & 0.946 & $2.11\cdot10^{-2}$  & 0.72 & $7.67\cdot10^{-2}$  & 1.10 & $7.33\cdot10^{-2}$ &  1.13 \\
+% 3 & 0.650 & $1.43\cdot10^{-2}$  & 1.03 & $5.06\cdot10^{-2}$  & 1.11 & $4.87\cdot10^{-2}$ &  1.09 \\
+% 4 & 0.431 & $1.08\cdot10^{-2}$  & 0.68 & $3.50\cdot10^{-2}$  & 0.89 & $3.32\cdot10^{-2}$ &  0.93 \\
+% 5 & 0.292 & $7.34\cdot10^{-3}$  & 1.00 & $2.31\cdot10^{-2}$  & 1.06 & $2.19\cdot10^{-2}$ &  1.06 \\
+% 6 & 0.193 & $5.05\cdot10^{-3}$  & 0.91 & $1.56\cdot10^{-2}$  & 0.96 & $1.47\cdot10^{-2}$ &  0.98 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table of SGFEM in Test case 3.}
+% \label{tab:mh_tc3_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+
+% \subsection{Test Cases in 1d-3d} \label{sec:num_test_cases_1d3d}
+% 
+% In this section, a~set of numerical tests of the 1d-3d model defined in \ref{sec:coupled_13d} is provided.
+% As in the 1d-2d case, the optimal convergence rate in velocity $L_2$ error is demonstrated,
+% different sizes of the enrichment zone are compared.
+
+
+
+% We now present several test cases in 3 dimensions. The geometries of the test cases
+% are analogical to the previous test cases in 2d, but extruded to the third dimension in $z$ coordinate.
+
+% \subsubsection{Test Case 4}
+% In the first 3d test case, the 3d domain $\Omega_3$ is a~cylinder with the bottom base in $xy$ plane
+% with the center at $[3.33,3.33,0]$, of height 2.0 and radius 5.0.
+% A~well is intersecting the cylinder along its vertical axis.
+% Similarly to the 2d case, we set high conductivity $\vc K_1$ inside the well
+% and a~constant Dirichlet boundary condition $g_{1D}$ on both ends of the well to have constant pressure there.
+% A~homogeneous Neumann boundary condition for normal flux is applied on both bases of the cylinder. The flow is then governed 
+% by the well and the Dirichlet boundary condition on the lateral surface of the cylinder.
+% Therefore we can still use the pseudo-analytic solution from Section \ref{sec:prim_analytic_solution}.
+% 
+% Let us have three different settings: 
+% \begin{itemize}
+%     \item TC4-a: $f=0$,
+%     \item TC4-b: $f=U\sin(\omega x)$,
+%     \item TC4-c: $f=U\sin(\omega x)$, no singularity (regular case).
+% \end{itemize}
+% We use the same parameters for the nonzero source terms as before.
+% The the input parameters are gathered in Table \ref{tab:tc4_data}.
+% %
+% \begin{table}[!htb]
+% \begin{center}
+% \begin{tabular}{cccccccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% $\vc K$ & $\rho_w$ & $\sigma_w$ & $R_w$ & $g_{1D}$ & $\omega$ & $U$ \\
+% \midrule
+% $10^{-3}$ & 0.03 & 10.0 & 2.0 & 100 & 1.0 & 80\\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for Test case 4.}
+% \label{tab:tc4_data}
+% \end{center}
+% \end{table}
+% %
+% \begin{figure}[!htb]
+%     \centering
+% %     \subfloat[TC4-a]{
+% %     \includegraphics[width=0.482\textwidth]{\results tc_25_no_source_error_1,0.pdf} }
+%     \subfloat[TC4-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_25_no_source_error_2,0.pdf} }
+% %     \subfloat[TC4-c]{
+% %     \includegraphics[width=0.482\textwidth]{\results tc_25_source_error_1,0.pdf} }
+%     \subfloat[TC4-d]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_25_source_error_2,0.pdf} }
+%     \caption[Error distribution in Test case 4.]
+%     {Results of Test case 4. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green cylinder indicates the enrichment zone. }
+%     \label{fig:mh_tc4_error}
+% \end{figure}
+% 
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC4-a } & \multicolumn{2}{c|}{ TC4-b } & \multicolumn{2}{c}{TC4-c}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.348 &  $1.16\cdot10^{-2}$  &  -   &  $1.81\cdot10^{-1}$  &  -   &  $1.81\cdot10^{-1}$ &   -   \\
+% 2 & 1.063 &  $1.10\cdot10^{-2}$  & 0.20 &  $1.50\cdot10^{-1}$  & 0.79 &  $1.50\cdot10^{-1}$ &  0.80 \\
+% 3 & 0.845 &  $8.89\cdot10^{-3}$  & 0.95 &  $1.12\cdot10^{-1}$  & 1.27 &  $1.12\cdot10^{-2}$ &  1.28 \\
+% 4 & 0.632 &  $7.90\cdot10^{-3}$  & 0.40 &  $8.90\cdot10^{-2}$  & 0.79 &  $8.88\cdot10^{-2}$ &  0.79 \\
+% 5 & 0.544 &  $7.27\cdot10^{-3}$  & 0.56 &  $7.36\cdot10^{-2}$  & 1.28 &  $7.34\cdot10^{-2}$ &  1.28 \\
+% 6 & 0.408 &  $6.67\cdot10^{-3}$  & 0.30 &  $5.45\cdot10^{-2}$  & 1.04 &  $5.47\cdot10^{-2}$ &  1.02 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table in Test case 4.}
+% \label{tab:mh_tc4_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+% The approximation error of velocity is displayed in \fig{fig:mh_tc4_error}. We can see that higher
+% error is accumulated outside the edge of the enriched zone in TC4-a. However, we observe a~significant error also
+% along the edges of the cylinder bases where the two boundaries with the Dirichlet and the homogeneous Neumann boundary condition
+% are adjacent. The velocity shape functions on the elements with sides on both types of boundaries are obviously unable to approximate
+% the solution correctly there. This error on the boundary also slows down the convergence rate, as it can be seen in Table \ref{tab:mh_tc4_convergence}.
+% Considering the source term in TC4-b, the error of the singular part is inferior to the error of the regular part, as it is apparent
+% in the right subfigure. The error along the edges of the cylinder bases is negligible in contrast to TC4-a.
+% 
+% 
+% 
+% \subsubsection{Test Case 5}
+% In the second 3d test case, the domain $\Omega_3$ is a~block with the bottom base in $xy$ plane,
+% with height 2.0.
+% Two wells intersecting the block are perpendicular to its base.
+% The parameters of the wells are specified in Table \ref{tab:tc5_data}.
+% 
+% \begin{table}[!hb]
+% \begin{center}
+% \begin{tabular}{cccccccc}
+% \toprule
+% % \multicolumn{2}{c}{Item} \\
+% % \cmidrule(r){1-2}
+% $w$ & $\bx_w$  & $\rho_w$ & $\sigma_w$ & $g_{1D}$\\
+% \midrule
+% 1& [4.1,4.3] & 0.03 & 10.0 & 150 \\
+% 2& [5.7,5.9] & 0.03 & 10.0 & 100 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Input data for the wells in Test case 5.}
+% \label{tab:tc5_data}
+% \end{center}
+% \end{table}
+% %
+% Analogically to the previous test case, the constant pressure inside the wells is enforced
+% and zero normal flux is prescribed on both bases of the block..
+% We use again the pseudo-analytic solution to determine the approximation error.
+% 
+% Let us have four different settings: 
+% \begin{itemize}
+%     \item TC5-a: $f=0$, $R_w=1.0$,
+%     \item TC5-b: $f=0$, $R_w=2.0$,
+%     \item TC5-c: $f=U\sin(\omega x)$, $R_w=1.0$,
+%     \item TC5-d: $f=U\sin(\omega x)$, $R_w=2.0$.
+% \end{itemize}
+% We use the same parameters for the nonzero source terms as before: $U=80$, $\omega=1.0$.
+% %
+% \begin{figure}[!htb]
+%     \centering
+%     \subfloat[TC5-a]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_33_2w_no_source_error_1,0.pdf} }
+%     \subfloat[TC5-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_33_2w_no_source_error_2,0.pdf} } \\
+%     \subfloat[TC5-c]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_33_2w_source_error_1,0.pdf} }
+%     \subfloat[TC5-d]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_33_2w_source_error_2,0.pdf} }
+%     \caption[Error distribution in Test case 5.]
+%     {Results of Test case 5. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green cylinders indicate the enrichment zone. }
+%     \label{fig:mh_tc5_error}
+% \end{figure}
+% %
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC5-a } & \multicolumn{2}{c|}{ TC5-c } & \multicolumn{2}{c}{TC5-d}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.404 & $5.70\cdot10^{-2}$  &  -   & $2.49\cdot10^{-1}$  &  -   & $2.43\cdot10^{-1}$ &   -   \\
+% 2 & 1.190 & $5.36\cdot10^{-2}$  & 0.37 & $2.07\cdot10^{-1}$  & 1.12 & $2.04\cdot10^{-1}$ &  1.05 \\
+% 3 & 0.878 & $4.29\cdot10^{-2}$  & 0.73 & $1.55\cdot10^{-1}$  & 0.95 & $1.53\cdot10^{-2}$ &  0.93 \\
+% 4 & 0.681 & $3.38\cdot10^{-2}$  & 0.95 & $1.19\cdot10^{-1}$  & 1.02 & $1.18\cdot10^{-2}$ &  1.04 \\
+% 5 & 0.515 & $2.83\cdot10^{-2}$  & 0.63 & $9.22\cdot10^{-2}$  & 0.92 & $9.03\cdot10^{-2}$ &  0.96 \\
+% 6 & 0.416 & $2.37\cdot10^{-2}$  & 0.83 & $7.51\cdot10^{-2}$  & 0.96 & $7.35\cdot10^{-2}$ &  0.96 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table in Test case 5.}
+% \label{tab:mh_tc5_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+% We show the distribution of the error in \fig{tab:mh_tc5_convergence} and the convergence results in Table \ref{fig:mh_tc5_error}.
+% In case of settings TC5-a and TC5-b, a~significant error can be again observed on the edges of the block bases as in the previous case.
+% Due to this error the convergence rate is suboptimal.
+% On the other hand for the settings TC5-c and TC5-d, the results are satisfying and the approximation error behaves similarly
+% as in the 2 cases. The error of the regular part is dominating as it can be seen in the subfigures. The convergence order 
+% is optimal.
+% 
+% The well 1 causes a~stronger singularity due to the higher pressure difference,
+% therefore the error outside the enrichment zone of the well is also higher.
+% This is apparent especially in the subfigure TC5-b. We can also observe a~very low error
+% inside the enrichment zones overlap.
+% 
+% \subsubsection{Test Case 6}
+% This test case is analogical to the previous test case, however it includes 5 wells.
+% The wells are perpendicular to the $xy$ plane and they have the same parameters as in the 2d Test Case 3.
+% The following settings are used:
+% \begin{itemize}
+%     \item TC6-a: $f=0$, $R_w=1.0$,
+%     \item TC6-b: $f=0$, $R_w=2.0$,
+%     \item TC6-c: $f=U\sin(\omega x)$, $R_w=1.0$,
+%     \item TC6-d: $f=U\sin(\omega x)$, $R_w=2.0$,
+%     \item TC6-e: $f=U\sin(\omega x)$, no singularity.
+% \end{itemize}
+% %
+% \begin{figure}[!htb]
+%     \centering
+%     \subfloat[TC6-a]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_no_source_error_1,0.pdf} }
+%     \subfloat[TC6-b]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_no_source_error_2,0.pdf} } \\
+%     \subfloat[TC6-c]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_source_error_1,0.pdf} }
+%     \subfloat[TC6-d]{
+%     \includegraphics[width=0.482\textwidth]{\results tc_31_5w_source_error_2,0.pdf} }
+%     \caption[Error distribution in Test case 6.]
+%     {Results of Test case 6. The elementwise $L_2$ error in velocity is displayed at refinement level 5.
+%     The green cylinders indicate the enrichment zone. }
+%     \label{fig:mh_tc6_error}
+% \end{figure}
+% %
+% 
+% \begin{table}[!htb]
+% \begin{center}
+% \bgroup
+% \def\arraystretch{1.2}
+% \setlength\tabcolsep{5pt}
+% % \begin{tabular}{r|c|c|c|c|c|r|r}
+% \begin{tabular}{rc|cc|cc|cc}
+% \toprule
+% \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{ TC6-c } & \multicolumn{2}{c|}{ TC6-d } & \multicolumn{2}{c}{TC6-e}\\ [3pt] %\midrule
+% i & h & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$
+%     & order & $\|\vc u-\vc u_h\|_{L_2(\Omega_2)}$ & order \\ [3pt] \midrule
+% 1 & 1.404 &  $2.52\cdot10^{-1}$  &  -   & $2.51\cdot10^{-1}$ &  -   &  $2.49\cdot10^{-1}$ &   -   \\
+% 2 & 1.190 &  $2.15\cdot10^{-1}$  & 0.96 & $2.11\cdot10^{-1}$ & 1.04 &  $2.10\cdot10^{-1}$ &  1.03 \\
+% 3 & 0.878 &  $1.62\cdot10^{-1}$  & 0.93 & $1.59\cdot10^{-1}$ & 0.93 &  $1.59\cdot10^{-2}$ &  0.92 \\
+% 4 & 0.681 &  $1.25\cdot10^{-1}$  & 1.01 & $1.23\cdot10^{-1}$ & 1.01 &  $1.23\cdot10^{-2}$ &  1.02 \\
+% 5 & 0.515 &  $9.55\cdot10^{-2}$  & 0.98 & $9.39\cdot10^{-2}$ & 0.98 &  $9.31\cdot10^{-2}$ &  0.99 \\
+% 6 & 0.416 &  $7.75\cdot10^{-2}$  & 0.97 &   -                & -    &  $7.54\cdot10^{-2}$ &  0.98 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Convergence table in Test case 6.}
+% \label{tab:mh_tc6_convergence}
+% \egroup
+% \end{center}
+% \end{table}
+% 
+% The distribution of the error is displayed in \fig{tab:mh_tc6_convergence}
+% and the convergence results are summarized in Table \ref{fig:mh_tc6_error}.
+% Setting the zero source term in the settings TC6-a,b, the optimal convergence rate is again corrupted
+% by the error on the edges of the bases of the block, although in TC6-a it is not that significant.
+% Considering the model with the settings TC6-c,d, we see that the singularities are well approximated
+% and the dominant error is in the regular part of the solution.
+% The optimal convergence is comparable to the regular case TC6-e.
+% 
+% For the setting TC6-d, the algebraic solver failed due to insufficient memory on the finest mesh. Since most of the elements
+% are enriched from at least one well, there are several rows relatively full which causes loss of sparsity and higher memory consumption.
+% 
+% 
+% \subsubsection{Test Case 7}
+% In this test case we want to demonstrate a~more general setting including 10 wells of different tilt.
+% All the wells are set with the following parameters: $\sigma_w=100,\; \vc K_1=100,\; \rho_w=0.03,\; R_w=0.8$.
+% % The pressure is approximately constant in the wells and is set: $g^1_{1D}=150$, $g^2_{1D}=100$, $g^3_{1D}=200$,
+% % $g^4_{1D}=100$, $g^5_{1D}=300$, $g^6_{1D}=-50$, $g^7_{1D}=100$, $g^8_{1D}=200$, $g^9_{1D}=-50$ and $g^{10}_{1D}=200$.
+% Instead of fixing pressure in the wells, we prescribe fluxes by the means of the inhomogeneous Neumann boundary condition
+% at the top of the wells. The fluxes are gathered in the first row of Table \ref{tab:tc7_data}, the second row
+% contains the fluxes scaled by the cross-section, i.e. flux density for Flow123d input.
+% The rock block conductivity is set to $10^{-2}$, a~Dirichlet boundary condition $g_{3D}=25(3-z)$
+% is applied on the sides and a~homogeneous Neumann boundary condition for normal fluxes is set at the bases.
+% %
+% \begin{table}[!htb]
+% \begin{center}
+% \begin{tabular}{r|cccccccccc}
+% \toprule
+% $w$ & 1  & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\ \midrule
+% $g^w_{1N}$ & 1.414 & 0.848 & 0.565 & 1.414 & 1.131 & -1.131 & 0.848 & 0.848 & -1.131 & 0.565\\[8pt]
+% $\dfrac{g^w_{1N}}{\delta_1}$ & 500  & 300 & 200 & 500 & 400 & -400 & 300 & 300 & -400 & 200\\[8pt]
+% \bottomrule
+% \end{tabular}
+% \caption{Prescribed fluxes at the top of the wells in Test case 7.}
+% \label{tab:tc7_data}
+% \end{center}
+% \end{table}
+% 
+% \begin{figure}[!htb]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{\results tc_40_10w.pdf}
+%     \caption[Error distribution in Test case 7.]
+%     {Results of Test case 7. Ten wells are represented symbolically by the blue tubes.
+%     The block is clipped so that we can see inside. The magnitude of velocity is displayed.}
+%     \label{fig:mh_tc7_error}
+% \end{figure}
+% 
+% An analytical solution is not available in this case, we can only inspect the discrete solution qualitatively,
+% see the solution of velocity \fig{fig:mh_tc7_error}.
+% The block is meshed regularly, the element size can be noticed along the edges of the lower base.
+% The refined solution in the vicinity of the wells is due to the refined output mesh.
+% 
+% We calculate the water balance over the domain boundaries.
+% There is zero flux on the bases of the block and also at the bottom of the wells.
+% The sum of the fluxes at the top of the wells is equal 5.372, while the flux over the 
+% block sides is -5.376, i.e. the difference between what flows into and out of the system is 0.004.
+% Thus, we can conclude, that the communication between the wells and the block 
+% is well approximated in terms of the water balance.
+
+% \section{Summary}
+% The summary of the chapter is provided.
+
+% In this chapter we developed an XFEM in a~mixed-hybrid form for approximation of singularities in both 2d and 3d problems.
+% The model was formulated following the concept of the software Flow123d and using the Lagrange multipliers for dimensional coupling.
+% We used what we have learned in Chapter \ref{chap:xfem_pressure} and transferred our experience into creating
+% an SGFEM like enrichment of velocity in the vicinity of the singularities to improve the approximation.
+% This enrichment was applied in the discretization together with the lowest order Raviart-Thomas FE.
+% The properties of such enrichment were described.
+% The numerical validation of the inf-sup stability was discussed, however this topic is left open for further research.
+% 
+% Regarding the reduced dimensional modeling, our approach enables coupling of non-planar 1d-2d domains
+% and coupling of co-dimension 2 in 3d. The possibility to compute such problems on incompatible meshes is a~significant advantage,
+% as it was demonstrated even in the small artificial test cases.
+% 
+% The coupled models were implemented as a~part of the software Flow123d.
+% Some of the technical aspects of the code extensions were discussed,
+% the input file, the adaptive integration and the output mesh refinement in particular.
+% The solution of the algebraic linear system was not addressed.
+% A direct solver or Krylov subspace iterative methods with some standard preconditioners were used.
+% This topic would definitely deserve more attention in future, in order to solve larger problems efficiently.
+% 
+% At last, an extensive set of numerical tests was performed and convergence results were presented.
+% Although pressure converges suboptimally, because its FE approximation is not enriched, velocity error
+% reaches optimal order of convergence.
+% Solutions with different enrichment radii and overlapping enrichment zones were compared in most of the test cases.
+% The last test case simulated a~more complex problem with multiple wells intersecting the rock in different angles.
+
+
+
+
