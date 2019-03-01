@@ -1,13 +1,12 @@
 
-In this chapter we provide a~background research on the XFEM,
+A~background research on the XFEM is provided in this chapter,
 describing the fundamentals and giving an overview on the evolution of the XFEM.
 Different enrichment methods and various types of enrichments are discussed.
 
 \section{Basic Concept} \label{sec:soa_xfem}
 
-The fundamentals of the XFEM are described. The history and the early development of the XFEM is well written
+The history and the early development of the XFEM is well written
 in an overview article by Fries and Belytschko~\cite{fries_xfem_overview_2010}.
-
 The main feature of this method is the extension of a~space of polynomial shape functions of the finite element
 method with a~special function, that enables to better approximate some local effects. This is called \emph{enrichment}.
 The special function (enrichment function) is often non-polynomial and describes discontinuity or singularity,
@@ -44,7 +43,7 @@ In case of discontinuities, only the nodes of cut elements are enriched.
 In case of singularity, the enrichment must well approximate the adjacent high gradients.
 To this end, the enrichment zone is typically chosen as a~radial area in the vicinity of the singularity
 of fixed (enrichment) radius, which is necessary to obtain optimal convergence rate, discussed e.g. in \cite{fries_corrected_2008}.
-The optimal size of the enrichment zone is however not addresed, apart from \cite{gupta_enr_zone_2016}, where
+The optimal size of the enrichment zone is however not addressed, apart from \cite{gupta_enr_zone_2016}, where
 an a~priori estimate for the enrichment radius dependent on $h$ is provided, although containing an unknown constant.
 This matter is investigated in detail later in the thesis.
 
@@ -54,17 +53,18 @@ This matter is investigated in detail later in the thesis.
 In this section, different types of available enrichment methods are discussed.
 In \cite{fries_corrected_2008, fries_xfem_overview_2010} the Corrected XFEM is introduced
 and the so called \emph{blending} elements (not all element nodes are enriched) and \emph{reproducing} elements
-(all element nodes enriched). The problems with lack of the partition of unity on the blending elements is addressed
-and solution suggested by means of the \emph{ramp function} $G(\bx)$ in \eqref{eqn:xfem_ramp}.
+(all element nodes enriched) are differentiated. The problem with lack of the partition of unity on the blending elements is addressed
+and a~solution is suggested by means of the \emph{ramp function} $G(\bx)$ in \eqref{eqn:xfem_ramp}.
 $G(\bx)$ is equal 1 on reproducing elements, is a~ramp in blending elements and diminishes elsewhere.
 \begin{eqnarray} 
     L(\bx) &=& G(\bx) s_(\bx), \label{eqn:xfem_ramp}\\
     L_{\alpha}(\bx) &=& G(\bx) \left[s(\bx) - s(\bx_\alpha)\right]. \label{eqn:xfem_shift}
 \end{eqnarray}
-Further the \emph{shifted} enrichment is suggested leading to local enrichment function in \eqref{eqn:xfem_shift}.
+Further the \emph{shifted} enrichment is suggested leading to local enrichment function in \eqref{eqn:xfem_shift},
+$\bx_\alpha$ being element nodes.
 
 Next, the Stable Generalized FEM was developed in \cite{babuska_stable_2012, gupta_stable_2013}
-and applied in elastic fracture model. This method is supposed to solve the problem with ill-conditioning,
+and applied in an elastic fracture model. This method is supposed to solve the problem with ill-conditioning,
 which is often met when using enrichments. The local enrichment function on an element $T$ is defined
 \begin{equation} \label{eqn:sgfem_enrich}
     L_{\alpha}|_{T}(\bx) = s(\bx) - \pi_T (s)(\bx),\quad \pi_T (s)(\bx)=\sum_{\beta\in\mathcal{I}_N(T)} N_\beta(\bx) s(\bx_\beta). 
@@ -72,7 +72,7 @@ which is often met when using enrichments. The local enrichment function on an e
 where the interpolation $\pi_T$ is built using the linear shape functions
 associated with element nodes. It was later shown in \cite{zhang_robust_2016} that
 further care must be taken for different enrichment types for this method to
-yield optimal convergence and not to suffer with ill-conditioning irrespectful to mesh -- dicontinuity (or singularity) alignment.
+yield optimal convergence and not to suffer with ill-conditioning independent of mesh -- discontinuity (or singularity) alignment.
 
 
 \section{XFEM in Flow Problems on Meshes of Combined Dimensions} \label{sec:soa_xfem_combined}
