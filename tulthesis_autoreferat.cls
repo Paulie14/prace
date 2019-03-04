@@ -132,7 +132,8 @@
 \if@twoside
     \fancyfoot[RO,LE]{\textbf{\thepage}}
 \else
-    \fancyfoot[R]{\thepage}
+%     \fancyfoot[R]{\thepage}
+    \fancyfoot[C]{\thepage}
 \fi
 \newlength{\title@line}
 
@@ -202,7 +203,9 @@
 \raisebox{-2.5pt}[0pt][0pt]\spojovaci\\
 \raisebox{1pt}{Liberec \TUL@rok}
 \vspace*{-2cm}
-\cleardoublepage}}
+% \cleardoublepage
+\clearpage
+}}
 
 
 \newcommand{\Assignment}{

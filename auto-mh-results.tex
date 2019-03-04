@@ -11,14 +11,14 @@ computations on 2d and 3d elements, including integration over their faces which
 
 % \subsection{Output Mesh}
 % \label{sec:output_mesh}
-An approach to the visualization of the results containing enriched non-plynomial approximation  in VTK format is described.
+An approach to the visualization of the results containing enriched non-polynomial approximation  in VTK format is described.
 The construction of an adaptively refined output mesh is suggested, in order to display singular enrichments.
 
 
 \section{Numerical Tests in Flow123d}
 \subsection{Test Cases in 1d-2d} \label{sec:num_test_cases_1d2d}
 In this section, a~set of numerical tests of the 1d-2d model defined in \ref{sec:coupled_12d} is provided.
-Some of the properties of the velocity enrichment is demonstrated, optimal convergence rate in velocity $L_2$ error
+Some of the properties of the velocity enrichment are demonstrated, optimal convergence rate in velocity $L_2$ error
 is shown. Different sizes of the enrichment zone are compared.
 
 \begin{figure}[!htb]
@@ -34,9 +34,9 @@ is shown. Different sizes of the enrichment zone are compared.
 \end{figure}
 A selected result is displayed in \fig{fig:mh_tc2_error}.
 It includes 2 wells, perpendicular to the aquifer intersecting it near its center.
-The enrichment zones overlap each other in the middle, resulting in very small error.
-The left subfigure corresponds to a~problem with zero source term, the right subfigure
-has a~sinusoidal source term prescribed.
+The enrichment zones overlap each other in the middle, resulting in very small velocity error.
+The left subfigure corresponds to a~problem with zero source term. In the right subfigure,
+a~sinusoidal source term prescribed, the error of the singular part is inferior.
 
 \subsection{Test Cases in 1d-3d} \label{sec:num_test_cases_1d3d}
 In this section, a~set of numerical tests of the 1d-3d model defined in \ref{sec:coupled_13d} is provided.
@@ -60,6 +60,31 @@ it is however extruded to 3 dimension along the $z$ axis.
 Lower error can be seen in the enriched zone in the left subfigure,
 the error of the singular part of the solution is inferior to the error of the regular part
 in the right subfigure.
+
+\pagebreak
+
+Finally, a~more complex problem is solved, including 10 wells of different tilt inside of a~rock block.
+A~Dirichlet boundary condition is applied on the sides and a~zero normal flux boundary condition is set at the bases.
+An analytical solution is not available in this case, the discrete solution can be inspected qualitatively only,
+see the solution of velocity \fig{fig:mh_tc7_error}.
+The block is meshed regularly, the element size can be noticed along the edges of the lower base.
+The refined solution in the vicinity of the wells is due to the refined output mesh.
+
+The water balance over the domain boundaries can be computed.
+The relative difference between the flux into and out of the system is below 0.1 \%.
+Thus, we can conclude, that the communication between the wells and the block 
+is well approximated in terms of the water balance.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{\results tc_40_10w.pdf}
+    \caption[Velocity in 10 wells problem.]
+    {Magnitude of velocity in 10 wells problem. Ten wells are represented symbolically by the blue tubes.
+    The block is clipped so that we can see inside.}
+    \label{fig:mh_tc7_error}
+\end{figure}
+
+
 
 % The implementation of the mixed-hybrid model using XFEM is a~part of the software Flow123d, version 3.0.x.
 % The code is not however included in the official release yet, but it can be found on GitHub in an experimental branch \verb'PE_xfem_master'.
